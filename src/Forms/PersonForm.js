@@ -12,7 +12,6 @@ const PersonForm = (props)=>{
             <p>edad {props.dataPerson.edad} </p>
             <p>NIT: {props.dataPerson.nit} </p>
             <p>genero: {props.dataPerson.genero} </p>
-
         </div>
     )
 };

@@ -8,7 +8,7 @@ export const DataPerson = {
     fecha_nacimiento: "2/2/1994",
     edad: 26,
     docuemento: "000302200-9",
-    NIT: "0265-544811-54",
+    nit: "0265-544811-54",
     genero: "masculino",
   }
 };
