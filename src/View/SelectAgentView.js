@@ -45,7 +45,7 @@ const SelectAgentView = (props)=>{
             <p>Carnet: {props.agent.carnet.value}</p>
             <p>Genero: {props.agent.genero.value}</p>
             <button onClick={handleClose}>modificar</button>
-            <button onClick={props.click, props.confirm} >guardar</button>
+            <button onClick={props.click} >guardar</button>
           </div>
         </div>
       );

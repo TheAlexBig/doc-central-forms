@@ -30,7 +30,7 @@ const ConfirmDataView = (props) => {
         {Object.keys(props.data).map((atributo, index) => {
           return (
             <p>
-              {atributo != "id" ?
+              {atributo !== "id" ?
                 <div>
                   {props.data[atributo].label}: {props.data[atributo].value}
                 </div>: null}

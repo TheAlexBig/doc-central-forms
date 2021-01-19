@@ -48,6 +48,7 @@ const App = () => {
 
   const selectAgent = (event, id) => {    
     setAgent({savedAgent:DataAgent[id]})
+    console.log(agent.savedAgent)
   };
 
   const changePersonHandler = (event, atributo) => {
@@ -102,7 +103,7 @@ const App = () => {
   };
 
   switch(step.show){
-    case 'agent':{
+    default:{
       vista =(
         <div>
         {DataAgent.map((agent, index) => {
@@ -110,8 +111,7 @@ const App = () => {
             <SelectAgentView
               key={agent.id.value}
               agent={agent}
-              click={(event) => selectAgent(event, agent.id.value)}
-              confirm={(event) => changeState(event, 'person')}
+              click={(event) => {selectAgent(event, agent.id.value); changeState(event, 'person')}}
             />
           );
         })}
@@ -127,7 +127,7 @@ const App = () => {
           {Object.keys(personStates).map((atributo, index) => {
             return (
               <DefaultForm
-                key={atributo}
+                key={personStates[atributo].label}
                 id={atributo}
                 text={personStates[atributo].label}
                 dep={personStates.departamento.value}

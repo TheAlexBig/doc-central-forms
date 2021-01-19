@@ -16,7 +16,7 @@ const DefaultForm = (props) => {
     case "Domicilio": {
       typeInput = (
         <div style={style.container}>
-          <label for={props.id}>{props.text}</label>
+          <label >{props.text}</label>
           <select id={props.id} onChange={props.changed}>
             {DataDepMuni[props.dep].map((dep, index) => {
               return <option value={dep}>{dep}</option>;
@@ -29,7 +29,7 @@ const DefaultForm = (props) => {
     case "Departamento": {
         typeInput = (
           <div style={style.container}>
-            <label for={props.id}>{props.text}</label>
+            <label >{props.text}</label>
             <select id={props.id} onChange={props.changed}>
               {Object.keys(DataDepMuni).map((dep, index) => {
                 return <option value={dep}>{dep}</option>;
@@ -42,7 +42,7 @@ const DefaultForm = (props) => {
       case "Documento": {
         typeInput = (
           <div style={style.container}>
-              <label for={props.id}>{props.text}</label>
+              <label >{props.text}</label>
             <InputMask mask="99999999-9" id={props.id}  onChange={props.changed}/>
           </div>
         );
@@ -51,7 +51,7 @@ const DefaultForm = (props) => {
       case "NIT": {
         typeInput = (
           <div style={style.container}>
-              <label for={props.id}>{props.text}</label>
+              <label >{props.text}</label>
             <InputMask mask="9999-999999-999-9" id={props.id}  onChange={props.changed}/>
           </div>
         );
@@ -60,7 +60,7 @@ const DefaultForm = (props) => {
       case "Genero": {
         typeInput = (
           <div style={style.container}>
-            <label for={props.id}>{props.text}</label>
+            <label >{props.text}</label>
             <select id={props.id} onChange={props.changed}>
               {props.gen.map((dep, index) => {
                 return <option value={dep}>{dep}</option>;
@@ -73,13 +73,13 @@ const DefaultForm = (props) => {
     default: {
       typeInput = (
         <div style={style.container}>
-            <label for={props.id}>{props.text}</label>
+            <label >{props.text}</label>
           <input id={props.id} type="text" onChange={props.changed}></input>
         </div>
       );
       break;
     }
   }
-  return <div>{props.text != "Id" ?  typeInput  : null}</div>;
+  return <div>{props.text !== "Id" ?  typeInput  : null}</div>;
 };
 export default DefaultForm;
