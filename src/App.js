@@ -102,6 +102,45 @@ const App = () => {
     SetViewModal(true)
   };
 
+  const style = {
+    container: {
+      display: "flex",
+      flexDirection: "column",
+      backgroundColor:"yellow"
+    },
+  };
+
+  const setVista = (data, savedData, textData, handler, press) =>{
+    vista =(
+      <div >
+        
+      <form style={style.container} onSubmit={press}>
+        {Object.keys(data).map((atributo, index) => {
+          return (
+            <DefaultForm
+              key={data[atributo].label}
+              data={data}
+              atributo={data[atributo]}
+              changed={(event) => handler(event, atributo)}
+            />
+          );
+        })}
+        <button type="submit">Guardar</button>
+      </form>
+      {viewModal?
+          <div>
+            <ConfirmDataView
+            data={savedData}
+            confirm={(event) => changeState(event, textData)}
+            stay={(event)=>stayEvent(event)}
+            />
+          </div>
+        :null}
+    </div>
+    );
+  return vista;
+  }
+
   switch(step.show){
     default:{
       vista =(
@@ -120,102 +159,22 @@ const App = () => {
        break;
     }
     case 'person':{
-      vista =(
-        <div>
-          
-        <form onSubmit={handlePersonSubmit}>
-          {Object.keys(personStates).map((atributo, index) => {
-            return (
-              <DefaultForm
-                key={personStates[atributo].label}
-                id={atributo}
-                text={personStates[atributo].label}
-                dep={personStates.departamento.value}
-                gen={personStates.genero.option}
-                changed={(event) => changePersonHandler(event, atributo)}
-              />
-            );
-          })}
-          <button type="submit">Guardar</button>
-        </form>
-        {viewModal?
-            <div>
-              <ConfirmDataView
-              data={savedPersonStates}
-              confirm={(event) => changeState(event, 'car')}
-              stay={(event)=>stayEvent(event)}
-              />
-            </div>
-          :null}
-      </div>
-      );
+      setVista(personStates, savedPersonStates, 'car', changePersonHandler, handlePersonSubmit);
       break;
     }
     case 'car':{
-      vista=(
-        <div>
-        <form onSubmit={handleCarSubmit}>
-          {Object.keys(carStates).map((atributo, index) => {
-            return (
-              <DefaultForm
-                key={atributo}
-                id={atributo}
-                text={carStates[atributo].label}
-                type="text"
-                changed={(event) => changeCarHandler(event, atributo)}
-              />
-            );
-          })}
-          <button type="submit">Guardar</button>
-        </form>
-        {viewModal?
-            <div>
-              <ConfirmDataView
-              data={savedCarStates}
-              confirm={(event) => changeState(event, 'detail')}
-              stay={(event)=>stayEvent(event)}
-              />
-            </div>
-          :null}
-      </div>
-      );
+      setVista(carStates, savedCarStates, 'detail', changeCarHandler, handleCarSubmit);
       break;
     }
     case 'detail':{
-      vista=(
-        <div>
-        <form onSubmit={handleDetailSubmit}>
-          {Object.keys(detailStates).map((atributo, index) => {
-            return (
-              <DefaultForm
-                key={atributo}
-                id={atributo}
-                text={detailStates[atributo].label}
-                dep={detailStates.departamento.value}
-                changed={(event) => changeDetailHandler(event, atributo)}
-              />
-            );
-          })}
-          <button type="submit">Guardar</button>
-        </form>
-        {viewModal?
-            <div>
-              <ConfirmDataView
-              data={savedDetailStates}
-              confirm={(event) => changeState(event, 'agent')}
-              stay={(event)=>stayEvent(event)}
-              />
-            </div>
-          :null}
-      </div>
-      );
+     setVista(detailStates, savedDetailStates, 'agent', changeDetailHandler, handleDetailSubmit)
       break;
     }
   }
 
 
   return (
-    <div>
+    <div style={{display: "flex", backgroundColor:"black",  height:"100vh", justifyContent:"center", alignItems:"center"}} >
       {vista}
       {verificar}
 
