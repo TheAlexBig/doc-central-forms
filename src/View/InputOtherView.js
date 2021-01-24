@@ -1,55 +1,52 @@
 import React , { useState } from "react";
 import TextField from "@material-ui/core/TextField";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 const InputTextView = (props) => {
   let typeInput = null;
-  const [isError, setIsError] = useState({
-    error:false,
-    errorMessage: ""
-  })
-
+  const [conoce, setConoce] = useState(false);
   const style = {
     container: {
       display: "flex",
-      flexDirection: "column",
+      // flexDirection: "column",
       // margin: "0px 0px 15px 0px",
     },
   };
-
-  const validateNumber = () =>{
-    if(!/^[0-9]+$/.test(props.atributo.value)){
-      setIsError({
-        error:true,
-        errorMessage:"Solo se admiten numeros"
-      })
-    }else{
-      setIsError({
-        error:false,
-        errorMessage:""
-      })
-    }
-  }
 
   const input = (type) => {
 if(type==="number"){
 typeInput=(
   <TextField
-  error={isError.error}
-  helperText={isError.errorMessage}
     style={style.container}
     label={props.atributo.label}
     onChange={props.changed}
     type={type}
-    onBlur={validateNumber}
-    onKeyUp={validateNumber}
     required
   />
 );
+}
+if(type==="checkbox"){
+  typeInput=(
+    <FormControlLabel
+    control={
+      <Checkbox
+      onClick={() => setConoce(!conoce)}
+        onChange={props.changed}
+        value={conoce?"No":"Sí"}
+        color="primary"
+        size="small"
+        name="conoce"
+      />
+    }
+    label={props.atributo.label}
+  />
+  )
+
 }else{
   typeInput = (
-    <div style={style.container}>
       <TextField
-        id="date"
+      style={style.container}
         label={props.atributo.label}
         type={type}
         onChange={props.changed}
@@ -58,7 +55,7 @@ typeInput=(
           shrink: true,
         }}
       />
-    </div>
+
   );
 }
     return typeInput;
@@ -66,15 +63,15 @@ typeInput=(
 
   switch (props.atributo.type) {
     case "date": {
-      input("date");
+      input(props.atributo.type);
       break;
     }
     case "time": {
-      input("time");
+      input(props.atributo.type);
       break;
     }
     default: {
-      input("number");
+      input(props.atributo.type);
       break;
     }
   }

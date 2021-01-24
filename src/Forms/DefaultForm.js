@@ -8,7 +8,6 @@ const DefaultForm = (props) => {
     container: {
       display: "flex",
       flexDirection: "column",
-      width: "20vw",
       padding: "10px"
     },
   };

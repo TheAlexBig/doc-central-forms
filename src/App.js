@@ -10,7 +10,9 @@ import personValidation from "./Validations/PersonValidation"
 import carValidation from "./Validations/CarValidation"
 import DefaultForm from "./Forms/DefaultForm";
 import Button from '@material-ui/core/Button';
-import FormControl from '@material-ui/core/FormControl';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
 import { ValidatorForm} from 'react-material-ui-form-validator';
 
 
@@ -19,7 +21,7 @@ const App = () => {
   let vista=null;
   let verificar=null;
   const[step, setStep]=useState({
-    show:'car'
+    show:'agent'
   });
 
   const [viewModal, SetViewModal]=useState(false)
@@ -30,6 +32,14 @@ const App = () => {
 
   const [savedDetailStates, setSavedDetailStates] = useState(
     JSON.parse(JSON.stringify(DataDetails))
+  );
+
+  const [vendorStates, setVendorStates] = useState(
+    JSON.parse(JSON.stringify(DataPerson))
+  );
+
+  const [savedVendorStates, setSavedVendorStates] = useState(
+    JSON.parse(JSON.stringify(DataPerson))
   );
 
   const [personStates, setPersonStates] = useState(
@@ -72,6 +82,23 @@ const App = () => {
       setSavedPersonStates(personStates);
       SetViewModal(true)
 
+    }
+  };
+
+  const changeVendorHandler = (event, atributo) => {
+    const vendors = {
+      ...vendorStates,
+    };
+    vendors[atributo].value = event.target.value;
+    setVendorStates(vendors);
+    
+  };
+
+  const handleVendorSubmit = (event) => {
+    if(personValidation(vendorStates)){
+      event.preventDefault();
+      setSavedVendorStates(vendorStates);
+      SetViewModal(true)
     }
   };
 
@@ -118,15 +145,17 @@ const App = () => {
     container: {
       display: "flex",
       flexDirection: "column",
-      backgroundColor:"white"
+      marginTop:-10,
+
     },
   };
 
-  const setVista = (data, savedData, textData, handler, press) =>{
+  const setVista = (data, savedData, textData, handler, press, label) =>{
     vista =(
-      <div >
-        
-      <ValidatorForm style={style.container} onSubmit={press}>
+      <Paper elevation={2} style={{width: "25%"}}>
+        <Typography variant="h5" style={{display:"flex", justifyContent:"center", alignItems:"center"}}>{label}</Typography>
+        <Divider />
+      <ValidatorForm autoComplete="off" style={style.container} onSubmit={press}>
         {Object.keys(data).map((atributo, index) => {
           return (
             <DefaultForm
@@ -148,7 +177,7 @@ const App = () => {
             />
           </div>
         :null}
-    </div>
+    </Paper>
     );
   return vista;
   }
@@ -171,15 +200,19 @@ const App = () => {
        break;
     }
     case 'person':{
-      setVista(personStates, savedPersonStates, 'car', changePersonHandler, handlePersonSubmit);
+      setVista(personStates, savedPersonStates, 'car', changePersonHandler, handlePersonSubmit, "Datos del Comprador");
+      break;
+    }
+    case 'vendor':{
+      setVista(vendorStates, savedVendorStates, 'detail', changeVendorHandler, handleVendorSubmit, "Datos del Vendedor");
       break;
     }
     case 'car':{
-      setVista(carStates, savedCarStates, 'detail', changeCarHandler, handleCarSubmit);
+      setVista(carStates, savedCarStates, 'vendor', changeCarHandler, handleCarSubmit, "Datos del Vehiculo");
       break;
     }
     case 'detail':{
-     setVista(detailStates, savedDetailStates, 'agent', changeDetailHandler, handleDetailSubmit)
+     setVista(detailStates, savedDetailStates, 'agent', changeDetailHandler, handleDetailSubmit, "Datos adicionales")
       break;
     }
   }
