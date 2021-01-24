@@ -9,7 +9,7 @@ const DefaultForm = (props) => {
       display: "flex",
       flexDirection: "column",
       width: "20vw",
-      backgroundColor:"red"
+      padding: "10px"
     },
   };
   let input = null;
@@ -25,7 +25,9 @@ const DefaultForm = (props) => {
       );
       break;
     }
-    case ("text"||"textnum"):{
+    case("text-num"):
+    case("text"):
+    case ("textnum"):{
       input=(
         <InputTextView 
         atributo={props.atributo}

@@ -8,17 +8,19 @@ const useStyles=makeStyles((theme) =>({
         display:'flex',
         flexDirection:'column',
         margin: '15px 0px 15px 0px',
-        width: '50%',
-        backgroundColor: 'gray'
+        backgroundColor: '#607d8b'
     },
     paper: {
-        position: 'absolute',
-        width: 400,
-        backgroundColor: theme.palette.background.paper,
-        //border: '2px solid #000',
-        //boxShadow: theme.shadows[5],
-        marginTop: 50,
-        padding: theme.spacing(2, 4, 3),
+      backgroundColor: theme.palette.background.paper,
+      border: '2px solid #000',
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+      },
+
+      modal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
       },
 }));
 
@@ -57,7 +59,7 @@ const SelectAgentView = (props)=>{
         </div>
             <div>
             <Modal
-            
+              className={classes.modal}
               open={open}
               onClose={handleClose}
               aria-labelledby="modal-title"

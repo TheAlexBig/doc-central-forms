@@ -1,6 +1,9 @@
 import React from "react";
 import { DataDepMuni } from "../Data/DataDepMuni";
-import InputMask from "react-input-mask";
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
 
 const InputSelectView = (props) => {
   let typeInput = null;
@@ -9,20 +12,20 @@ const InputSelectView = (props) => {
     container: {
       display: "flex",
       flexDirection: "column",
-      margin: "0px 0px 15px 0px",
     },
   };
 
   const input = (toMap) => {
     typeInput = (
-      <label style={style.container}>
-        {props.atributo.label}
-        <select onChange={props.changed}>
+      <FormControl style={style.container}>
+      <InputLabel id={props.atributo.label} > {props.atributo.label} </InputLabel>        
+        <Select labelId={props.atributo.label} onChange={props.changed} required>
           {toMap.map((opt, index) => {
-            return <option value={opt}>{opt}</option>;
+            return <MenuItem value={opt}>{opt}</MenuItem>;
           })}
-        </select>
-      </label>
+        </Select>
+      </FormControl>
+
     );
     return typeInput;
   };

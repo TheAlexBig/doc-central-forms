@@ -6,14 +6,20 @@ import { DataPerson } from "./Data/DataPerson";
 import { DataCar } from "./Data/DataCar";
 import { DataAgent } from "./Data/DataAgent";
 import {DataDetails} from "./Data/DataDetails";
+import personValidation from "./Validations/PersonValidation"
+import carValidation from "./Validations/CarValidation"
 import DefaultForm from "./Forms/DefaultForm";
+import Button from '@material-ui/core/Button';
+import FormControl from '@material-ui/core/FormControl';
+import { ValidatorForm} from 'react-material-ui-form-validator';
+
 
 const App = () => {
 
   let vista=null;
   let verificar=null;
   const[step, setStep]=useState({
-    show:'agent'
+    show:'car'
   });
 
   const [viewModal, SetViewModal]=useState(false)
@@ -61,9 +67,12 @@ const App = () => {
   };
 
   const handlePersonSubmit = (event) => {
-    event.preventDefault();
-    setSavedPersonStates(personStates);
-    SetViewModal(true)
+    if(personValidation(personStates)){
+      event.preventDefault();
+      setSavedPersonStates(personStates);
+      SetViewModal(true)
+
+    }
   };
 
   const changeState = (event, next) =>{
@@ -83,9 +92,12 @@ const App = () => {
   };
 
   const handleCarSubmit = (event) => {
-    event.preventDefault();
-    setSavedCarStates(carStates);
-    SetViewModal(true)
+    if(carValidation(carStates)){
+      event.preventDefault();
+      setSavedCarStates(carStates);
+      SetViewModal(true)
+    }
+
   };
 
   const changeDetailHandler = (event, atributo) => {
@@ -106,7 +118,7 @@ const App = () => {
     container: {
       display: "flex",
       flexDirection: "column",
-      backgroundColor:"yellow"
+      backgroundColor:"white"
     },
   };
 
@@ -114,7 +126,7 @@ const App = () => {
     vista =(
       <div >
         
-      <form style={style.container} onSubmit={press}>
+      <ValidatorForm style={style.container} onSubmit={press}>
         {Object.keys(data).map((atributo, index) => {
           return (
             <DefaultForm
@@ -125,8 +137,8 @@ const App = () => {
             />
           );
         })}
-        <button type="submit">Guardar</button>
-      </form>
+        <Button type="submit">Guardar</Button>
+      </ValidatorForm>
       {viewModal?
           <div>
             <ConfirmDataView
@@ -174,7 +186,7 @@ const App = () => {
 
 
   return (
-    <div style={{display: "flex", backgroundColor:"black",  height:"100vh", justifyContent:"center", alignItems:"center"}} >
+    <div style={{display: "flex", backgroundColor:"#eeeeee",  height:"100vh", justifyContent:"center", alignItems:"center"}} >
       {vista}
       {verificar}
 
