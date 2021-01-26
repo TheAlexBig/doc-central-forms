@@ -51,6 +51,7 @@ if(type==="checkbox"){
         type={type}
         onChange={props.changed}
         required
+        value={props.atributo.value} 
         InputLabelProps={{
           shrink: true,
         }}

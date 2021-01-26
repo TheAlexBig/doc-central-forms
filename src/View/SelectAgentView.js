@@ -1,74 +1,86 @@
-import React , { useState } from 'react';
-import Modal from '@material-ui/core/Modal';
-import { makeStyles } from '@material-ui/core';
+import React, { useState } from "react";
+import { Button, DialogActions, DialogContent, DialogTitle, makeStyles } from "@material-ui/core";
+import Card from "@material-ui/core/Card";
+import CardActionArea from "@material-ui/core/CardActionArea";
+import CardContent from "@material-ui/core/CardContent";
+import Typography from "@material-ui/core/Typography";
+import Divider from '@material-ui/core/Divider';
+import Dialog from '@material-ui/core/Dialog';
 
+const useStyles = makeStyles((theme) => ({
+  container: {
+    maxWidth:300,
+  },
+  paper: {
+    backgroundColor: theme.palette.background.paper,
+    padding: theme.spacing(2, 4, 3),
+  },
 
-const useStyles=makeStyles((theme) =>({
-    container:{
-        display:'flex',
-        flexDirection:'column',
-        margin: '15px 0px 15px 0px',
-        backgroundColor: '#607d8b'
-    },
-    paper: {
-      backgroundColor: theme.palette.background.paper,
-      border: '2px solid #000',
-      boxShadow: theme.shadows[5],
-      padding: theme.spacing(2, 4, 3),
-      },
-
-      modal: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      },
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 }));
 
+const SelectAgentView = (props) => {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => {
+    setOpen(true);
+  };
 
-const SelectAgentView = (props)=>{
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => {
-        setOpen(true);
-      };
-    
-      const handleClose = () => {
-        setOpen(false);
-      };
-    const classes = useStyles();
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const classes = useStyles();
 
-    const body = (
-        <div className={classes.paper}>
-          <h2 id="modal-title">Agente: {props.agent.id.value}</h2>
-          <div id="modal-content">
-            <p>Nombre: {props.agent.nombres.value}</p>
-            <p>Apellido: {props.agent.apellidos.value}</p>
-            <p>Departamento: {props.agent.departamento.value}</p>
-            <p>Municipio: {props.agent.municipio.value}</p>
-            <p>Carnet: {props.agent.carnet.value}</p>
-            <p>Genero: {props.agent.genero.value}</p>
-            <button onClick={handleClose}>modificar</button>
-            <button onClick={props.click} >guardar</button>
-          </div>
-        </div>
-      );
-    return(
-        <div>
-        <div onClick={handleOpen} className={classes.container}>
-            <p>Nombre: {props.agent.nombres.value}</p>
-            <p>Carnet: {props.agent.carnet.value}</p>
-        </div>
-            <div>
-            <Modal
-              className={classes.modal}
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="modal-title"
-              aria-describedby="modal-content"
-            >
-              {body}
-            </Modal>
-          </div>
-          </div>
-        )
+  const body = (
+    <div className={classes.paper}>
+      <DialogTitle id="modal-title">Datos del agente</DialogTitle>
+      <DialogContent id="modal-content" dividers>
+        <Typography gutterBottom>Nombre: {props.agent.nombres.value}</Typography>
+        <Typography gutterBottom>Apellido: {props.agent.apellidos.value}</Typography>
+        <Typography gutterBottom>Departamento: {props.agent.departamento.value}</Typography>
+        <Typography gutterBottom>Municipio: {props.agent.municipio.value}</Typography>
+        <Typography gutterBottom>Carnet: {props.agent.carnet.value}</Typography>
+        <Typography gutterBottom>Genero: {props.agent.genero.value}</Typography>
+
+      </DialogContent>
+      <DialogActions>
+      <Button autoFocus color="primary" onClick={props.click}>Seleccionar</Button>
+      </DialogActions>
+    </div>
+  );
+  return (
+    <div>
+      <Card>
+        <CardActionArea onClick={handleOpen} className={classes.container}>
+          <CardContent style={{display:"flex", flexDirection:"column", }}>
+          
+          <Typography variant="h6">
+            {props.agent.nombres.value}
+            </Typography>
+            <Divider/>
+            <Typography variant="body2">
+              Carnet: {props.agent.carnet.value}
+            </Typography>
+   
+
+          </CardContent>
+        </CardActionArea>
+      </Card>
+      <div>
+        <Dialog
+          className={classes.modal}
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-title"
+          aria-describedby="modal-content"
+        >
+          {body}
+        </Dialog>
+      </div>
+    </div>
+  );
 };
 export default SelectAgentView;

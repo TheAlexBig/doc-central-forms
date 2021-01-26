@@ -155,7 +155,7 @@ const App = () => {
       <Paper elevation={2} style={{width: "25%"}}>
         <Typography variant="h5" style={{display:"flex", justifyContent:"center", alignItems:"center"}}>{label}</Typography>
         <Divider />
-      <ValidatorForm autoComplete="off" style={style.container} onSubmit={press}>
+      <ValidatorForm  style={style.container} onSubmit={press}>
         {Object.keys(data).map((atributo, index) => {
           return (
             <DefaultForm
@@ -185,7 +185,7 @@ const App = () => {
   switch(step.show){
     default:{
       vista =(
-        <div>
+        <div style={{display:"flex", height:"100%", width:"100%", justifyContent:"space-evenly", alignItems:"center"}}>
         {DataAgent.map((agent, index) => {
           return (
             <SelectAgentView
@@ -200,15 +200,15 @@ const App = () => {
        break;
     }
     case 'person':{
-      setVista(personStates, savedPersonStates, 'car', changePersonHandler, handlePersonSubmit, "Datos del Comprador");
+      setVista(personStates, savedPersonStates, 'vendor', changePersonHandler, handlePersonSubmit, "Datos del Comprador");
       break;
     }
     case 'vendor':{
-      setVista(vendorStates, savedVendorStates, 'detail', changeVendorHandler, handleVendorSubmit, "Datos del Vendedor");
+      setVista(vendorStates, savedVendorStates, 'car', changeVendorHandler, handleVendorSubmit, "Datos del Vendedor");
       break;
     }
     case 'car':{
-      setVista(carStates, savedCarStates, 'vendor', changeCarHandler, handleCarSubmit, "Datos del Vehiculo");
+      setVista(carStates, savedCarStates, 'detail', changeCarHandler, handleCarSubmit, "Datos del Vehiculo");
       break;
     }
     case 'detail':{

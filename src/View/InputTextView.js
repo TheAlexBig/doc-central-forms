@@ -90,7 +90,8 @@ const InputTextView = (props) => {
             label={props.atributo.label}
             onChange={props.changed}
             onBlur={validateText}
-            onKeyUp={validateText}
+            onKeyUp={validateText}  
+            value={props.atributo.value} 
             required
           />
         );
@@ -147,6 +148,7 @@ const InputTextView = (props) => {
           onChange={props.changed}
           maskChar=""
           onBlur={validateDocument}
+          value={props.atributo.value} 
         >
           {() => (
             <TextField
@@ -155,6 +157,7 @@ const InputTextView = (props) => {
               style={style.container}
               label={props.atributo.label}
               onChange={props.changed}
+              
               required
             />
           )}

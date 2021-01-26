@@ -19,7 +19,7 @@ const InputSelectView = (props) => {
     typeInput = (
       <FormControl style={style.container}>
       <InputLabel id={props.atributo.label} > {props.atributo.label} </InputLabel>        
-        <Select labelId={props.atributo.label} onChange={props.changed} required>
+        <Select labelId={props.atributo.label} onChange={props.changed} value={props.atributo.value}  required>
           {toMap.map((opt, index) => {
             return <MenuItem value={opt}>{opt}</MenuItem>;
           })}
