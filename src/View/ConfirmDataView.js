@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Modal from "@material-ui/core/Modal";
 import { makeStyles } from "@material-ui/core";
+import GetAge from "../Functions/GetAge";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -34,7 +35,7 @@ const ConfirmDataView = (props) => {
             <p>
               {atributo !== "id" ?
                 <div>
-                  {props.data[atributo].label}: {props.data[atributo].value}
+                  {props.data[atributo].label}: {atributo==="edad"?GetAge(props.data.fecha_nacimiento.value):props.data[atributo].value}
                 </div>: null}
             </p>
           );

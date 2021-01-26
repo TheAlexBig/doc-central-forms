@@ -129,7 +129,7 @@ const InputTextView = (props) => {
                     defaultChecked
                     onClick={() => setDispone(!dispone)}
                     onChange={props.changed}
-                    value="NA"
+                    value="N-T"
                     color="primary"
                     size="small"
                     name="dispone"

@@ -14,6 +14,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import { ValidatorForm} from 'react-material-ui-form-validator';
+import GetAge from './Functions/GetAge'
 
 
 const App = () => {
@@ -222,7 +223,6 @@ const App = () => {
     <div style={{display: "flex", backgroundColor:"#eeeeee",  height:"100vh", justifyContent:"center", alignItems:"center"}} >
       {vista}
       {verificar}
-
     </div>
   );
 };
