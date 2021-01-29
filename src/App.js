@@ -15,6 +15,10 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import { ValidatorForm} from 'react-material-ui-form-validator';
 import GetAge from './Functions/GetAge'
+import PersonForm from "./Forms/PersonForm";
+import CarForm from "./Forms/CarForm";
+import Stepper from "./Utils/Stepper"
+import Contact from "./p"
 
 
 const App = () => {
@@ -40,7 +44,7 @@ const App = () => {
   );
 
   const [savedVendorStates, setSavedVendorStates] = useState(
-    JSON.parse(JSON.stringify(DataPerson))
+    DataPerson
   );
 
   const [personStates, setPersonStates] = useState(
@@ -48,7 +52,7 @@ const App = () => {
   );
 
   const [savedPersonStates, setSavedPersonStates] = useState(
-    JSON.parse(JSON.stringify(DataPerson))
+    DataPerson
   );
 
   const [carStates, setCarStates] = useState(
@@ -56,7 +60,7 @@ const App = () => {
   );
 
   const [savedCarStates, setSavedCarStates] = useState(
-    JSON.parse(JSON.stringify(DataCar))
+    ''
   );
 
   const [agent, setAgent] = useState({
@@ -77,13 +81,8 @@ const App = () => {
     
   };
 
-  const handlePersonSubmit = (event) => {
-    if(personValidation(personStates)){
-      event.preventDefault();
-      setSavedPersonStates(personStates);
-      SetViewModal(true)
-
-    }
+  const handlePersonSubmit = (values) => {
+      setSavedPersonStates(values);
   };
 
   const changeVendorHandler = (event, atributo) => {
@@ -119,13 +118,8 @@ const App = () => {
     setCarStates(cars);
   };
 
-  const handleCarSubmit = (event) => {
-    if(carValidation(carStates)){
-      event.preventDefault();
-      setSavedCarStates(carStates);
-      SetViewModal(true)
-    }
-
+  const handleCarSubmit = (values) => {
+      setSavedCarStates(values);
   };
 
   const changeDetailHandler = (event, atributo) => {
@@ -220,9 +214,27 @@ const App = () => {
 
 
   return (
-    <div style={{display: "flex", backgroundColor:"#eeeeee",  height:"100vh", justifyContent:"center", alignItems:"center"}} >
-      {vista}
-      {verificar}
+    <div  >
+            {/* <Paper elevation={2} style={{width: "25%"}}>
+        <Typography variant="h5" style={{display:"flex", justifyContent:"center", alignItems:"center"}}>Formulario Persona</Typography>
+        <Divider /><PersonForm
+      submit={handlePersonSubmit}
+      />
+      </Paper>
+      <Paper elevation={2} style={{width: "25%"}}>
+        <Typography variant="h5" style={{display:"flex", justifyContent:"center", alignItems:"center"}}>Formulario de carro</Typography>
+        <Divider /><CarForm
+      submit={handleCarSubmit}
+      />
+      </Paper> */}
+      <Stepper 
+      data={savedPersonStates}
+      data1={savedVendorStates}
+      save={handlePersonSubmit}/>
+      <p>{savedPersonStates.nombre} y {savedVendorStates.nombre}</p>
+      <p>{savedPersonStates.genero}</p>
+      <p>{savedCarStates.placa}</p>
+      {/* <Contact/> */}
     </div>
   );
 };
