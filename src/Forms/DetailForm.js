@@ -239,12 +239,12 @@ const PersonForm = (prop) => {
                             onClick={() => checkConoce("vendedor")}
                             color="primary"
                             size="small"
-                            onChange={() => {
-                              handleChange;
+                            onChange={(event) => {
+                              handleChange(event);
                               props.setFieldValue(
                                 "identifica_vendedor",
                                 conoce.vendedor ? "No" : "Sí"
-                              );
+                              )
                             }}
                           />
                         }
@@ -260,8 +260,8 @@ const PersonForm = (prop) => {
                             onClick={() => checkConoce("comprador")}
                             color="primary"
                             size="small"
-                            onChange={() => {
-                              handleChange;
+                            onChange={(event) => {
+                              handleChange(event);
                               props.setFieldValue(
                                 "identifica_comprador",
                                 conoce.comprador ? "No" : "Sí"
