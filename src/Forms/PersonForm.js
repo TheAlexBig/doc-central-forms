@@ -1,18 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { DataDepMuni } from "../Data/DataDepMuni";
-import { DataPerson } from "../Data/DataPerson";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputMask from "react-input-mask";
 import Grid from "@material-ui/core/Grid";
-import { Formik} from "formik";
+import { Formik } from "formik";
+import ConfirmPersonView from "../View/ConfirmPersonView"
 import * as Yup from "yup";
 
 const PersonForm = (prop) => {
+  const [open, setOpen] = useState(true);
+  const [guardar, setGuardar]=useState(false);
   const style = {
     ancho: {
       width: "100%",
+    },
+    buttons: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+    },
+    button: {
+      marginTop: 20,
+      marginLeft: 10,
     },
   };
 
@@ -20,21 +30,41 @@ const PersonForm = (prop) => {
     <React.Fragment>
       <Formik
         initialValues={prop.data}
-        onSubmit={(Values,{resetForm}) => {
-          prop.save(Values);
-          resetForm()
+        onSubmit={(Values, { resetForm }) => {
+          if(guardar){
+            prop.save(Values)          
+            //resetForm()
+            setGuardar(!guardar)
+            setOpen(!open)
+            prop.click()
+          } else setOpen(!open)
         }}
         validationSchema={Yup.object().shape({
-          nombre: Yup.string().required("Required"),
-          apellido: Yup.string().required("Required"),
-          departamento: Yup.string().required("Required"),
-          domicilio: Yup.string().required("Required"),
-          fecha_nacimiento: Yup.string().required("Required"),
-          documento: Yup.string()
+          nombre: Yup.string()
+            .required("Requerido")
+            .matches(
+              /^(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)+$/,
+              "Solo se aceptan letras en este campo"
+            ),
+          apellido: Yup.string()
+            .required("Requerido")
+            .matches(
+              /^(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)+$/,
+              "Solo se aceptan letras en este campo"
+            ),
+          departamento: Yup.string().required("Requerido"),
+          domicilio: Yup.string().required("Requerido"),
+          fecha_nacimiento: Yup.date()
             .required("Required")
+            .max("2030-12-31", "Debe ser una fecha válida")
+            .min("1900-01-01", "Debe ser una fecha válida"),
+          documento: Yup.string()
+            .required("Requerido")
             .min(10, "completa este campo"),
-          nit: Yup.string().required("Required").min(17, "completa este campo"),
-          genero: Yup.string().required("Required"),
+          nit: Yup.string()
+            .required("Requerido")
+            .min(17, "completa este campo"),
+          genero: Yup.string().required("Requerido"),
         })}
       >
         {(props) => {
@@ -49,7 +79,10 @@ const PersonForm = (prop) => {
           } = props;
           return (
             <form onSubmit={handleSubmit}>
+            {open?
+              <div>
               <Grid container spacing={3}>
+
                 <Grid item xs={12} sm={6}>
                   <TextField
                     style={style.ancho}
@@ -58,6 +91,7 @@ const PersonForm = (prop) => {
                     name="nombre"
                     value={values.nombre}
                     onChange={handleChange}
+                    onBlur={handleBlur}
                     helperText={
                       errors.nombre && touched.nombre && errors.nombre
                     }
@@ -125,11 +159,13 @@ const PersonForm = (prop) => {
                     }
                     margin="normal"
                   >
-                    {values.departamento.length === 0
-                      ? <MenuItem value="0">0</MenuItem>
-                      : DataDepMuni[values.departamento].map((opt, index) => {
-                          return <MenuItem value={opt}>{opt}</MenuItem>;
-                        })}
+                    {values.departamento.length === 0 ? (
+                      <MenuItem value="0">0</MenuItem>
+                    ) : (
+                      DataDepMuni[values.departamento].map((opt, index) => {
+                        return <MenuItem value={opt}>{opt}</MenuItem>;
+                      })
+                    )}
                   </TextField>
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -225,13 +261,29 @@ const PersonForm = (prop) => {
                   </TextField>
                 </Grid>
               </Grid>
-              <Grid container justify="flex-end">
-                <Grid item xs={12} sm={4}>
-                  <Button style={style.ancho} type="submit">
-                    Submit
+              <div style={style.buttons}>   
+              <Button onClick={prop.back} style={style.button}>
+                      Atras
+                    </Button>       
+                  <Button color="primary" variant="outlined" style={style.button} type="submit">
+                    Verificar
+                  </Button>   
+              </div>
+              </div>
+        :
+            <div>
+              <ConfirmPersonView
+              value={values}/>
+              <div style={style.buttons}>
+                  <Button style={style.button} type="submit">
+                    Modificar
                   </Button>
-                </Grid>
-              </Grid>
+                  <Button color="primary" variant="contained" style={style.button} type="submit" onClick={()=>setGuardar(!guardar)}>
+                    Guardar
+                  </Button>  
+              </div>
+            </div>
+        }
             </form>
           );
         }}

@@ -6,6 +6,7 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import Divider from '@material-ui/core/Divider';
 import Dialog from '@material-ui/core/Dialog';
+import Grid from "@material-ui/core/Grid";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -38,12 +39,12 @@ const SelectAgentView = (props) => {
     <div className={classes.paper}>
       <DialogTitle id="modal-title">Datos del agente</DialogTitle>
       <DialogContent id="modal-content" dividers>
-        <Typography gutterBottom>Nombre: {props.agent.nombres.value}</Typography>
-        <Typography gutterBottom>Apellido: {props.agent.apellidos.value}</Typography>
-        <Typography gutterBottom>Departamento: {props.agent.departamento.value}</Typography>
-        <Typography gutterBottom>Municipio: {props.agent.municipio.value}</Typography>
-        <Typography gutterBottom>Carnet: {props.agent.carnet.value}</Typography>
-        <Typography gutterBottom>Genero: {props.agent.genero.value}</Typography>
+        <Typography gutterBottom><b>Nombre: </b>{props.agent.nombres.value}</Typography>
+        <Typography gutterBottom><b>Apellido: </b>{props.agent.apellidos.value}</Typography>
+        <Typography gutterBottom><b>Departamento: </b>{props.agent.departamento.value}</Typography>
+        <Typography gutterBottom><b>Municipio: </b>{props.agent.municipio.value}</Typography>
+        <Typography gutterBottom><b>Carnet: </b>{props.agent.carnet.value}</Typography>
+        <Typography gutterBottom><b>Genero: </b>{props.agent.genero.value}</Typography>
 
       </DialogContent>
       <DialogActions>
@@ -52,7 +53,7 @@ const SelectAgentView = (props) => {
     </div>
   );
   return (
-    <div>
+    <Grid item xs={12} sm={4} >
       <Card>
         <CardActionArea onClick={handleOpen} className={classes.container}>
           <CardContent style={{display:"flex", flexDirection:"column", }}>
@@ -80,7 +81,7 @@ const SelectAgentView = (props) => {
           {body}
         </Dialog>
       </div>
-    </div>
+    </Grid>
   );
 };
 export default SelectAgentView;

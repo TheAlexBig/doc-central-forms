@@ -11,5 +11,4 @@ export const DataCar = {
     "num_motor":'',
     "num_chasis":'',
     "num_vin":'',
-    check_vin:true
 };
