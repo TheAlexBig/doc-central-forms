@@ -55,8 +55,8 @@ const CarForm = (prop) => {
           placa: Yup.string()
             .required("Required")
             .matches(
-              /^[A-Z\-0-9]+$/,
-              "Solo se admiten numeros y letras mayusculas"
+              /^([A-Z0-9])+(-{1})([A-Z0-9])+$/g,
+              "Solo se admiten numeros, letras mayusculas y el uso de un solo guión"
             ),
           marca: Yup.string()
             .required("Required")

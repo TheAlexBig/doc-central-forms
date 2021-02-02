@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import "./App.css";
+import { BrowserRouter as Router, Switch, Route} from "react-router-dom";
 import { DataPerson } from "./Data/DataPerson";
 import { DataCar } from "./Data/DataCar";
 import { DataAgent } from "./Data/DataAgent";
 import { DataDetails } from "./Data/DataDetails";
 import Stepper from "./Utils/Stepper";
+import Blog from "./HomePage/Blog";
 
 const App = () => {
   const [savedDetailStates, setSavedDetailStates] = useState(
@@ -50,20 +51,29 @@ const App = () => {
   // };
 
   return (
-    <div>
-      <Stepper
-        dataA={DataAgent}
-        saveA={selectAgent}
-        dataP={savedPersonStates}
-        saveP={handlePersonSubmit}
-        dataV={savedVendorStates}
-        saveV={handleVendorSubmit}
-        dataC={savedCarStates}
-        saveC={handleCarSubmit}
-        dataD={savedDetailStates}
-        saveD={handleDetailSubmit}
-      />
-    </div>
+    <Router>
+      <div>
+        <Switch>
+          <Route exact path="/compra-venta">
+            <Stepper
+              dataA={DataAgent}
+              saveA={selectAgent}
+              dataP={savedPersonStates}
+              saveP={handlePersonSubmit}
+              dataV={savedVendorStates}
+              saveV={handleVendorSubmit}
+              dataC={savedCarStates}
+              saveC={handleCarSubmit}
+              dataD={savedDetailStates}
+              saveD={handleDetailSubmit}
+            />
+          </Route>
+          <Route exact path="/">
+            <Blog />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 };
 

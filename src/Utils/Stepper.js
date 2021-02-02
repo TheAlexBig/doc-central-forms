@@ -164,11 +164,16 @@ export default function Checkout(props) {
                 <Button onClick={handleBack} className={classes.button}>
                   Generar documento
                 </Button>
+                <Button  className={classes.button} href="/compra-venta">
+                  Repetir formulario
+                </Button>
+                <Button  className={classes.button} href="/">
+                  Volver al menú
+                </Button>
               </React.Fragment>
             ) : (
               <React.Fragment>
                 {getStepContent(activeStep)}
-
               </React.Fragment>
             )}
           </React.Fragment>
