@@ -6,6 +6,8 @@ import Header from './Header';
 import MainFeaturedPost from './MainFeaturedPost';
 import FeaturedPost from './FeaturedPost';
 
+
+
 const mainFeaturedPost = {
   title: 'Central Docs',
   description:
@@ -31,8 +33,8 @@ export default function Blog() {
   return (
     <React.Fragment>
       <CssBaseline />
+      <Header title="Central Docs" />
       <Container maxWidth="lg">
-        <Header title="Central Docs" />
         <main>
           <MainFeaturedPost post={mainFeaturedPost} />
           <Grid container spacing={4}>

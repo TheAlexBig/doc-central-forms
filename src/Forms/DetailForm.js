@@ -7,12 +7,12 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Grid from "@material-ui/core/Grid";
 import { Formik } from "formik";
-import ConfirmDetailsView from "../View/ConfirmDetailsView"
+import ConfirmDetailsView from "../View/ConfirmDetailsView";
 import * as Yup from "yup";
 
 const PersonForm = (prop) => {
   const [open, setOpen] = useState(true);
-  const [guardar, setGuardar]=useState(false);
+  const [guardar, setGuardar] = useState(false);
   const [conoce, setConoce] = useState({
     vendedor: false,
     comprador: false,
@@ -25,12 +25,9 @@ const PersonForm = (prop) => {
     setConoce(conocer);
   };
   const style = {
-    ancho: {
-      width: "100%",
-    },
     buttons: {
-      display: 'flex',
-      justifyContent: 'flex-end',
+      display: "flex",
+      justifyContent: "flex-end",
     },
     button: {
       marginTop: 20,
@@ -43,13 +40,13 @@ const PersonForm = (prop) => {
       <Formik
         initialValues={prop.data}
         onSubmit={(Values, { resetForm }) => {
-          if(guardar){
-            prop.save(Values)          
+          if (guardar) {
+            prop.save(Values);
             //resetForm()
-            setGuardar(!guardar)
-            setOpen(!open)
-            prop.click()
-          } else setOpen(!open)
+            setGuardar(!guardar);
+            setOpen(!open);
+            prop.click();
+          } else setOpen(!open);
         }}
         validationSchema={Yup.object().shape({
           precio: Yup.number()
@@ -234,7 +231,7 @@ const PersonForm = (prop) => {
                       <FormControlLabel
                         control={
                           <Checkbox
-                          checked={conoce.vendedor}
+                            checked={conoce.vendedor}
                             name="identifica_vendedor"
                             onClick={() => checkConoce("vendedor")}
                             color="primary"
@@ -244,7 +241,7 @@ const PersonForm = (prop) => {
                               props.setFieldValue(
                                 "identifica_vendedor",
                                 conoce.vendedor ? "No" : "Sí"
-                              )
+                              );
                             }}
                           />
                         }
@@ -273,26 +270,37 @@ const PersonForm = (prop) => {
                       />
                     </Grid>
                   </Grid>
-                  <div style={style.buttons}>   
-              <Button onClick={prop.back} style={style.button}>
+                  <div style={style.buttons}>
+                    <Button onClick={prop.back} style={style.button}>
                       Atras
-                    </Button>       
-                  <Button color="primary" variant="outlined" style={style.button} type="submit">
-                    Verificar
-                  </Button>   
-              </div>
+                    </Button>
+                    <Button
+                      color="primary"
+                      variant="outlined"
+                      style={style.button}
+                      type="submit"
+                    >
+                      Verificar
+                    </Button>
+                  </div>
                 </div>
               ) : (
                 <div>
                   <ConfirmDetailsView value={values} />
                   <div style={style.buttons}>
-                  <Button style={style.button} type="submit">
-                    Modificar
-                  </Button>
-                  <Button color="primary" variant="contained" style={ style.button} type="submit" onClick={()=>setGuardar(!guardar)}>
-                    Guardar
-                  </Button>  
-              </div>
+                    <Button style={style.button} type="submit">
+                      Modificar
+                    </Button>
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      style={style.button}
+                      type="submit"
+                      onClick={() => setGuardar(!guardar)}
+                    >
+                      Guardar
+                    </Button>
+                  </div>
                 </div>
               )}
             </form>

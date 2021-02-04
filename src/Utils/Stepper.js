@@ -1,8 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
 import Paper from "@material-ui/core/Paper";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
@@ -13,7 +11,7 @@ import SelectAgentView from "../View/SelectAgentView";
 import PersonForm from "../Forms/PersonForm";
 import CarForm from "../Forms/CarForm";
 import DetailForm from "../Forms/DetailForm";
-import { Grid } from "@material-ui/core";
+import Header from "../HomePage/Header"
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -76,20 +74,11 @@ export default function Checkout(props) {
     switch (step) {
       case 0:
         return (
-          <Grid container spacing={3}>
-            {props.dataA.map((agent, index) => {
-              return (
-                <SelectAgentView
-                  key={agent.id}
-                  agent={agent}
-                  click={(event) => {
-                    props.saveA(event, agent.id.value);
-                    handleNext();
-                  }}
-                />
-              );
-            })}
-          </Grid>
+          <SelectAgentView
+          data={props.dataA}
+          click={handleNext}
+          save={props.saveA}
+          />
         );
       case 1:
         return (
@@ -135,13 +124,7 @@ export default function Checkout(props) {
   return (
     <React.Fragment>
       <CssBaseline />
-      <AppBar position="absolute" color="default" className={classes.appBar}>
-        <Toolbar>
-          <Typography variant="h6" color="inherit" noWrap>
-            Central Docs
-          </Typography>
-        </Toolbar>
-      </AppBar>
+      <Header title="Central Docs"/>
       <main className={classes.layout}>
         <Paper className={classes.paper}>
           <Typography component="h1" variant="h4" align="center">

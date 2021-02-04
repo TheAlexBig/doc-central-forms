@@ -27,7 +27,7 @@ const App = () => {
     savedAgent: "",
   });
 
-  const selectAgent = (event, id) => {
+  const selectAgent = (id) => {
     setAgent({ savedAgent: DataAgent[id] });
   };
 
@@ -70,6 +70,7 @@ const App = () => {
           </Route>
           <Route exact path="/">
             <Blog />
+         
           </Route>
         </Switch>
       </div>
