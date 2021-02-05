@@ -6,6 +6,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Grid from "@material-ui/core/Grid";
 import MenuItem from "@material-ui/core/MenuItem";
 import { Formik } from "formik";
+import Typography from "@material-ui/core/Typography";
 import ConfirmCarView from "../View/ConfirmCarView"
 import * as Yup from "yup";
 
@@ -28,6 +29,10 @@ const CarForm = (prop) => {
     button: {
       marginTop: 20,
       marginLeft: 10,
+    },
+    title: {
+      display: "flex",
+      justifyContent: "center",
     },
   };
   const disable = (type) => {
@@ -125,6 +130,11 @@ const CarForm = (prop) => {
               {open?
               <div>
               <Grid container spacing={3}>
+              <Grid item xs={12}>
+              <Typography variant="h5" style={style.title}>
+                Datos del vehiculo
+              </Typography>
+            </Grid>
                 <Grid item xs={12} sm={6}>
                   <TextField
                     style={style.ancho}

@@ -6,6 +6,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import InputMask from "react-input-mask";
 import Grid from "@material-ui/core/Grid";
 import { Formik } from "formik";
+import Typography from "@material-ui/core/Typography";
 import ConfirmPersonView from "../View/ConfirmPersonView"
 import * as Yup from "yup";
 
@@ -23,6 +24,10 @@ const PersonForm = (prop) => {
     button: {
       marginTop: 20,
       marginLeft: 10,
+    },
+    title: {
+      display: "flex",
+      justifyContent: "center",
     },
   };
 
@@ -82,7 +87,11 @@ const PersonForm = (prop) => {
             {open?
               <div>
               <Grid container spacing={3}>
-
+              <Grid item xs={12}>
+              <Typography variant="h5" style={style.title}>
+                {prop.title}
+              </Typography>
+            </Grid>
                 <Grid item xs={12} sm={6}>
                   <TextField
                     style={style.ancho}

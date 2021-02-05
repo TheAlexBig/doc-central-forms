@@ -37,6 +37,10 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(3),
     },
   },
+  header:{
+    display:"flex",
+    flexDirection: "row"
+  },
   stepper: {
     padding: theme.spacing(3, 0, 5),
   },
@@ -47,6 +51,12 @@ const useStyles = makeStyles((theme) => ({
   button: {
     marginTop: theme.spacing(3),
     marginLeft: theme.spacing(1),
+  },
+  buttonHome: {
+    marginTop: theme.spacing(-3),
+    marginLeft: theme.spacing(-3),
+    justifyContent:"left",
+    alignSelf:"flex-start"
   },
 }));
 
@@ -61,14 +71,24 @@ const steps = [
 export default function Checkout(props) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
+  const [lastStep, setLastStep]=React.useState(0)
 
   const handleNext = () => {
+    if(activeStep+1>lastStep){
+      setLastStep(activeStep+1);
+    }
     setActiveStep(activeStep + 1);
+
   };
 
   const handleBack = () => {
     setActiveStep(activeStep - 1);
   };
+  const handleStep=(index)=>{
+    if(index<=lastStep){
+      setActiveStep(index)
+    }
+  }
 
   function getStepContent(step) {
     switch (step) {
@@ -87,6 +107,7 @@ export default function Checkout(props) {
             save={props.saveP}
             click={handleNext}
             back={handleBack}
+            title={"Datos del comprador"}
           />
         );
       case 2:
@@ -105,6 +126,7 @@ export default function Checkout(props) {
             save={props.saveV}
             click={handleNext}
             back={handleBack}
+            title={"Datos del vendedor"}
           />
         );
       case 4:
@@ -127,13 +149,19 @@ export default function Checkout(props) {
       <Header title="Central Docs"/>
       <main className={classes.layout}>
         <Paper className={classes.paper}>
-          <Typography component="h1" variant="h4" align="center">
+          
+          <Button color="default"  className={classes.buttonHome} href="/">
+                  Volver al menú
+                </Button>
+          <Typography component="h1" variant="h4" align="center" style={{marginTop:-15}}>
             Compra venta de vehiculo
           </Typography>
+          
+
           <Stepper activeStep={activeStep} className={classes.stepper}>
-            {steps.map((label) => (
+            {steps.map((label, index) => (
               <Step key={label}>
-                <StepLabel>{label}</StepLabel>{" "}
+                <StepLabel onClick={()=>handleStep(index)}>{label}</StepLabel>{" "}
                 {/* //AQUI PUEDO CAMBIAR ORIENTACION STEPPER */}
               </Step>
             ))}

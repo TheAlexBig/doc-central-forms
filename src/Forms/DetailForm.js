@@ -7,6 +7,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Grid from "@material-ui/core/Grid";
 import { Formik } from "formik";
+import Typography from "@material-ui/core/Typography";
 import ConfirmDetailsView from "../View/ConfirmDetailsView";
 import * as Yup from "yup";
 
@@ -25,6 +26,9 @@ const PersonForm = (prop) => {
     setConoce(conocer);
   };
   const style = {
+    ancho: {
+      width: "100%",
+    },
     buttons: {
       display: "flex",
       justifyContent: "flex-end",
@@ -32,6 +36,10 @@ const PersonForm = (prop) => {
     button: {
       marginTop: 20,
       marginLeft: 10,
+    },
+    title: {
+      display: "flex",
+      justifyContent: "center",
     },
   };
 
@@ -77,6 +85,11 @@ const PersonForm = (prop) => {
               {open ? (
                 <div>
                   <Grid container spacing={3}>
+                  <Grid item xs={12}>
+              <Typography variant="h5" style={style.title}>
+                Datos adicionales
+              </Typography>
+            </Grid>
                     <Grid item xs={12} sm={6}>
                       <TextField
                         style={style.ancho}
