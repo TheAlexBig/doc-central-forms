@@ -11,7 +11,12 @@ import SelectAgentView from "../View/SelectAgentView";
 import PersonForm from "../Forms/PersonForm";
 import CarForm from "../Forms/CarForm";
 import DetailForm from "../Forms/DetailForm";
-import Header from "../HomePage/Header"
+import Header from "../HomePage/Header";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -31,16 +36,16 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(3),
     marginBottom: theme.spacing(3),
     padding: theme.spacing(2),
-    minHeight:400,
+    minHeight: 400,
     [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
       marginTop: theme.spacing(6),
       marginBottom: theme.spacing(6),
       padding: theme.spacing(3),
     },
   },
-  header:{
-    display:"flex",
-    flexDirection: "row"
+  header: {
+    display: "flex",
+    flexDirection: "row",
   },
   stepper: {
     padding: theme.spacing(3, 0, 5),
@@ -56,8 +61,11 @@ const useStyles = makeStyles((theme) => ({
   buttonHome: {
     marginTop: theme.spacing(-3),
     marginLeft: theme.spacing(-3),
-    justifyContent:"left",
-    alignSelf:"flex-start"
+    justifyContent: "left",
+    alignSelf: "flex-start",
+  },
+  dialog: {
+    padding: theme.spacing(1),
   },
 }));
 
@@ -71,34 +79,67 @@ const steps = [
 
 export default function Checkout(props) {
   const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const dialog = (
+    <Dialog
+        className={classes.dialog}
+        open={open}
+        onClose={handleClose}
+      >
+        <DialogTitle>Ventana de confirmación</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Typography> Al regresar a Inicio perderas todos los datos que hayas ingresado</Typography>
+            <Typography>¿Estas seguro de que quieres regresar?</Typography>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="secondary" autoFocus>
+            Cancelar
+          </Button>
+          <Button href="/" >
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
+  ) 
+
   const [activeStep, setActiveStep] = React.useState(0);
-  const [lastStep, setLastStep]=React.useState(0)
+  const [lastStep, setLastStep] = React.useState(0);
 
   const handleNext = () => {
-    if(activeStep+1>lastStep){
-      setLastStep(activeStep+1);
+    if (activeStep + 1 > lastStep) {
+      setLastStep(activeStep + 1);
     }
     setActiveStep(activeStep + 1);
-
   };
 
   const handleBack = () => {
     setActiveStep(activeStep - 1);
   };
-  const handleStep=(index)=>{
-    if(index<=lastStep){
-      setActiveStep(index)
+  const handleStep = (index) => {
+    if (index <= lastStep) {
+      setActiveStep(index);
     }
-  }
+  };
 
   function getStepContent(step) {
     switch (step) {
       case 0:
         return (
           <SelectAgentView
-          data={props.dataA}
-          click={handleNext}
-          save={props.saveA}
+            data={props.dataA}
+            click={handleNext}
+            save={props.saveA}
           />
         );
       case 1:
@@ -147,22 +188,30 @@ export default function Checkout(props) {
   return (
     <React.Fragment>
       <CssBaseline />
-      <Header title="Central Docs"/>
+      <Header title="Central Docs" />
       <main className={classes.layout}>
         <Paper className={classes.paper}>
-          
-          <Button color="default"  className={classes.buttonHome} href="/">
-                  Volver al menú
-                </Button>
-          <Typography component="h1" variant="h4" align="center" style={{marginTop:-15}}>
+          <Button
+            color="default"
+            className={classes.buttonHome}
+            onClick={handleClickOpen}
+          >
+            Volver al menú
+          </Button>
+          {dialog}
+          <Typography
+            component="h1"
+            variant="h4"
+            align="center"
+            style={{ marginTop: -15 }}
+          >
             Compra venta de vehiculo
           </Typography>
-          
 
           <Stepper activeStep={activeStep} className={classes.stepper}>
             {steps.map((label, index) => (
               <Step key={label}>
-                <StepLabel onClick={()=>handleStep(index)}>{label}</StepLabel>{" "}
+                <StepLabel onClick={() => handleStep(index)}>{label}</StepLabel>{" "}
                 {/* //AQUI PUEDO CAMBIAR ORIENTACION STEPPER */}
               </Step>
             ))}
@@ -176,17 +225,15 @@ export default function Checkout(props) {
                 <Button onClick={handleBack} className={classes.button}>
                   Generar documento
                 </Button>
-                <Button  className={classes.button} href="/compra-venta">
+                <Button className={classes.button} href="/compra-venta">
                   Repetir formulario
                 </Button>
-                <Button  className={classes.button} href="/">
+                <Button className={classes.button} href="/">
                   Volver al menú
                 </Button>
               </React.Fragment>
             ) : (
-              <React.Fragment>
-                {getStepContent(activeStep)}
-              </React.Fragment>
+              <React.Fragment>{getStepContent(activeStep)}</React.Fragment>
             )}
           </React.Fragment>
         </Paper>
