@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import {makeStyles } from "@material-ui/core";
-import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardContent from "@material-ui/core/CardContent";
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
+import {makeStyles } from "@mui/material";
+import Card from "@mui/material/Card";
+import CardActionArea from "@mui/material/CardActionArea";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
 import ConfirmAgentView from "./ConfirmAgentView";
-import Grid from "@material-ui/core/Grid";
+import Grid from "@mui/material/Grid";
 
 const useStyles = makeStyles((theme) => ({
   title: {

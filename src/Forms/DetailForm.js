@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 import { DataDepMuni } from "../Data/DataDepMuni";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import Grid from "@material-ui/core/Grid";
+import MenuItem from "@mui/material/MenuItem";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Grid from "@mui/material/Grid";
 import { Formik } from "formik";
-import Typography from "@material-ui/core/Typography";
+import Typography from "@mui/material/Typography";
 import ConfirmDetailsView from "../View/ConfirmDetailsView";
 import * as Yup from "yup";
 

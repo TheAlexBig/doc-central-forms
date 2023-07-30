@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Switch, Route} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import { DataPerson } from "./Data/DataPerson";
 import { DataCar } from "./Data/DataCar";
 import { DataAgent } from "./Data/DataAgent";
@@ -53,7 +53,7 @@ const App = () => {
   return (
     <Router>
       <div>
-        <Switch>
+        <Routes>
           <Route exact path="/compra-venta">
             <Stepper
               dataA={DataAgent}
@@ -72,7 +72,7 @@ const App = () => {
             <Blog />
          
           </Route>
-        </Switch>
+        </Routes>
       </div>
     </Router>
   );
