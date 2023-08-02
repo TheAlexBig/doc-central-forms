@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
-import { DataPerson } from "./Data/DataPerson";
-import { DataCar } from "./Data/DataCar";
-import { DataAgent } from "./Data/DataAgent";
-import { DataDetails } from "./Data/DataDetails";
-import Stepper from "./Utils/Stepper";
-import Blog from "./HomePage/Blog";
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { DataPerson } from './Data/DataPerson';
+import { DataCar } from './Data/DataCar';
+import { DataAgent } from './Data/DataAgent';
+import { DataDetails } from './Data/DataDetails';
+import Stepper from './Utils/Stepper';
+import Blog from './HomePage/Blog';
 
 const App = () => {
   const [savedDetailStates, setSavedDetailStates] = useState(
@@ -24,7 +24,7 @@ const App = () => {
   );
 
   const [, setAgent] = useState({
-    savedAgent: "",
+    savedAgent: '',
   });
 
   const selectAgent = (id) => {
@@ -47,14 +47,13 @@ const App = () => {
     setSavedDetailStates(values);
   };
 
-  // const style = {
-  // };
-
   return (
     <Router>
-      <div>
-        <Routes>
-          <Route exact path="/compra-venta">
+      <Routes>
+        <Route
+          exact
+          path="/compra-venta"
+          element={
             <Stepper
               dataA={DataAgent}
               saveA={selectAgent}
@@ -67,13 +66,10 @@ const App = () => {
               dataD={savedDetailStates}
               saveD={handleDetailSubmit}
             />
-          </Route>
-          <Route exact path="/">
-            <Blog />
-         
-          </Route>
-        </Routes>
-      </div>
+          }
+        />
+        <Route exact path="/" element={<Blog />} />
+      </Routes>
     </Router>
   );
 };

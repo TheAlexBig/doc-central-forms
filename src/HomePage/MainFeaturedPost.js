@@ -1,17 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
+import escritorioImage from '../Images/escritorio3.jpg';
+import UseClasses from '../Utils/UseClasses';
 
-const useStyles = makeStyles((theme) => ({
+const styles = (_theme) => ({
   mainFeaturedPost: {
     position: 'relative',
-    backgroundColor: theme.palette.grey[800],
-    color: theme.palette.common.white,
-    marginBottom: theme.spacing(4),
-    backgroundImage: require('../Images/escritorio3.jpg'),
+    marginBottom: '4px',
+    backgroundImage: escritorioImage,
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center',
@@ -22,31 +21,33 @@ const useStyles = makeStyles((theme) => ({
     bottom: 0,
     right: 0,
     left: 0,
-    backgroundColor: 'rgba(0,0,0,.3)',
   },
   mainFeaturedPostContent: {
     position: 'relative',
-    padding: theme.spacing(3),
-    [theme.breakpoints.up('md')]: {
-      padding: theme.spacing(6),
-      paddingRight: 0,
-    },
+    padding: '6px',
   },
-}));
+});
 
-export default function MainFeaturedPost(props) {
-  const classes = useStyles();
+const MainFeaturedPost = (props) => {
+  const classes = UseClasses(styles);
   const { post } = props;
 
   return (
-    <Paper className={classes.mainFeaturedPost} style={{ backgroundImage: `url(${post.image})`}}>
-      {/* Increase the priority of the hero background image */}
-      {<img style={{ display: 'none' }} src={post.image} alt={post.imageText} />}
+    <Paper
+      className={classes.mainFeaturedPost}
+      style={{ backgroundImage: `url(${post.image})` }}
+    >
+      <img style={{ display: 'none' }} src={post.image} alt={post.imageText} />
       <div className={classes.overlay} />
       <Grid container>
         <Grid item md={6}>
           <div className={classes.mainFeaturedPostContent}>
-            <Typography component="h1" variant="h3" color="inherit" gutterBottom>
+            <Typography
+              component="h1"
+              variant="h3"
+              color="inherit"
+              gutterBottom
+            >
               {post.title}
             </Typography>
             <Typography variant="h5" color="inherit" paragraph>
@@ -57,8 +58,10 @@ export default function MainFeaturedPost(props) {
       </Grid>
     </Paper>
   );
-}
+};
 
 MainFeaturedPost.propTypes = {
   post: PropTypes.object,
 };
+
+export default MainFeaturedPost;

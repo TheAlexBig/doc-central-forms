@@ -1,0 +1,11 @@
+{
+    "editor.formatOnPaste": false, // required 
+    "editor.formatOnType": false, // required
+    "[javascript]":{
+        "editor.formatOnSave": false
+    },
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "files.autoSave": "onFocusChange", // optional but recommended"
+}
