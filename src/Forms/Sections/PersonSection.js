@@ -10,7 +10,7 @@ import * as Yup from 'yup';
 import ConfirmDataView from '../../View/ConfirmDataView';
 import { DataDepMuni } from '../../Data/DataDepMuni';
 import { defaultStyle } from '../FormStyles';
-import { generateButtons } from '../FormButtons';
+import { viewDefaultAccept, viewDefaultEdit } from '../FormButtons';
 
 const PersonSection = ({
   data = {},
@@ -23,7 +23,7 @@ const PersonSection = ({
   const [guardar, setGuardar] = useState(false);
 
   const submit = () => setGuardar(!guardar);
-  const buttons = generateButtons({ nextStep: submit });
+  const buttons = [viewDefaultEdit(), viewDefaultAccept(submit)];
 
   return (
     <Formik
@@ -110,8 +110,10 @@ const PersonSection = ({
                       }
                       margin="normal"
                     >
-                      {Object.keys(DataDepMuni).map((opt) => (
-                        <MenuItem value={opt}>{opt}</MenuItem>
+                      {Object.keys(DataDepMuni).map((opt, index) => (
+                        <MenuItem value={opt} key={`Departamento-${index}`}>
+                          {opt}
+                        </MenuItem>
                       ))}
                     </TextField>
                   </Grid>
@@ -140,8 +142,10 @@ const PersonSection = ({
                       {values.departamento.length === 0 ? (
                         <MenuItem value="0">0</MenuItem>
                       ) : (
-                        DataDepMuni[values.departamento].map((opt) => (
-                          <MenuItem value={opt}>{opt}</MenuItem>
+                        DataDepMuni[values.departamento].map((opt, index) => (
+                          <MenuItem value={opt} key={`Municipio-${index}`}>
+                            {opt}
+                          </MenuItem>
                         ))
                       )}
                     </TextField>

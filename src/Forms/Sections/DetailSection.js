@@ -12,7 +12,7 @@ import ConfirmDataView from '../../View/ConfirmDataView';
 import { DataDepMuni } from '../../Data/DataDepMuni';
 import { DetailValidationSchema } from '../ValidationSchema/DetailValidationSchema';
 import { defaultStyle } from '../FormStyles';
-import { generateButtons } from '../FormButtons';
+import { viewDefaultAccept, viewDefaultEdit } from '../FormButtons';
 
 const PersonForm = ({
   data = {},
@@ -27,7 +27,7 @@ const PersonForm = ({
     vendedor: false,
     comprador: false,
   });
-  const checkConoce = (type) => {
+  const checkKnow = (type) => {
     const conocer = {
       ...conoce,
     };
@@ -35,7 +35,7 @@ const PersonForm = ({
     setConoce(conocer);
   };
   const submit = () => setGuardar(!guardar);
-  const buttons = generateButtons({ nextStep: submit });
+  const buttons = [viewDefaultEdit(), viewDefaultAccept(submit)];
 
   return (
     <Formik
@@ -223,7 +223,7 @@ const PersonForm = ({
                         <Checkbox
                           checked={conoce.vendedor}
                           name="identifica_vendedor"
-                          onClick={() => checkConoce('vendedor')}
+                          onClick={() => checkKnow('vendedor')}
                           color="primary"
                           size="small"
                           onChange={(event) => {
@@ -244,7 +244,7 @@ const PersonForm = ({
                         <Checkbox
                           name="identifica_comprador"
                           checked={conoce.comprador}
-                          onClick={() => checkConoce('comprador')}
+                          onClick={() => checkKnow('comprador')}
                           color="primary"
                           size="small"
                           onChange={(event) => {
