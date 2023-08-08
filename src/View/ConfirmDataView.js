@@ -19,6 +19,7 @@ const ConfirmDataView = ({ data = {}, buttons = [] }) => {
       marginLeft: 10,
     },
   };
+
   return (
     <>
       <Grid container spacing={2} alignItems="center">
@@ -27,23 +28,24 @@ const ConfirmDataView = ({ data = {}, buttons = [] }) => {
             Verificación de datos
           </Typography>
         </Grid>
-        {Object.keys(data).map((key) => (
+        {Object.keys(data).map((key, index) => (
           <PropertyViewItem
-            key={key + data[key]}
+            key={`${key}:${index}`}
             label={key}
             value={data[key]}
           />
         ))}
       </Grid>
       <Grid container style={style.buttons}>
-        {buttons.map((buttonItem) => (
-          <Grid item xs={6} key={`Grid-${buttonItem.text}`}>
+        {buttons.map((buttonItem, index) => (
+          <Grid item xs={6} key={`Grid-${buttonItem.text}:${index}`}>
             <Button
-              key={buttonItem.text}
+              key={`${buttonItem.text}:${index}`}
               color={buttonItem.color}
               variant={buttonItem.variant}
               style={style.button}
               onClick={buttonItem.action}
+              type={buttonItem.type}
             >
               {buttonItem.text}
             </Button>

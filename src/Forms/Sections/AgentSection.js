@@ -43,7 +43,7 @@ const AgentSection = ({
   const verifyButtons = [
     {
       color: 'secondary',
-      variant: 'contained',
+      variant: 'outlined',
       style: defaultStyle.button,
       type: 'submit',
       action: handleClose,
@@ -51,7 +51,7 @@ const AgentSection = ({
     },
     {
       color: 'primary',
-      variant: 'contained',
+      variant: 'outlined',
       style: defaultStyle.button,
       type: 'submit',
       action: () => {
