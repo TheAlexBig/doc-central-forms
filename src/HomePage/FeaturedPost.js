@@ -1,16 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Hidden from '@material-ui/core/Hidden';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
+import CardActionArea from '@mui/material/CardActionArea';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Hidden from '@mui/material/Hidden';
+import UseClasses from '../Utils/UseClasses';
 
-
-const useStyles = makeStyles({
+const styles = (_theme) => ({
   card: {
     display: 'flex',
   },
@@ -18,13 +17,13 @@ const useStyles = makeStyles({
     flex: 1,
   },
   cardMedia: {
-      maxHeight:500,
+    maxHeight: 500,
     width: 160,
   },
 });
 
 export default function FeaturedPost(props) {
-  const classes = useStyles();
+  const classes = UseClasses(styles);
   const { post } = props;
 
   return (
@@ -42,7 +41,11 @@ export default function FeaturedPost(props) {
             </CardContent>
           </div>
           <Hidden xsDown>
-            <CardMedia className={classes.cardMedia} image={post.image} title={post.imageTitle} />
+            <CardMedia
+              className={classes.cardMedia}
+              image={post.image}
+              title={post.imageTitle}
+            />
           </Hidden>
         </Card>
       </CardActionArea>

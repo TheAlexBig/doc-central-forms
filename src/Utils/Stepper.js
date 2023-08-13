@@ -1,84 +1,87 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Paper from "@material-ui/core/Paper";
-import Stepper from "@material-ui/core/Stepper";
-import Step from "@material-ui/core/Step";
-import StepLabel from "@material-ui/core/StepLabel";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import SelectAgentView from "../View/SelectAgentView";
-import PersonForm from "../Forms/PersonForm";
-import CarForm from "../Forms/CarForm";
-import DetailForm from "../Forms/DetailForm";
-import Header from "../HomePage/Header";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import React from 'react';
 
-const useStyles = makeStyles((theme) => ({
+import CssBaseline from '@mui/material/CssBaseline';
+import Paper from '@mui/material/Paper';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import { Grid } from '@mui/material';
+import AgentSection from '../Forms/Sections/AgentSection';
+import PersonSection from '../Forms/Sections/PersonSection';
+import CarSection from '../Forms/Sections/CarSection';
+import DetailForm from '../Forms/Sections/DetailSection';
+import Header from '../HomePage/Header';
+import useClasses from './UseClasses';
+
+const styles = (_theme) => ({
   appBar: {
-    position: "relative",
+    position: 'relative',
   },
   layout: {
-    width: "auto",
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.up(700 + theme.spacing(2) * 2)]: {
-      width: 700,
-      marginLeft: "auto",
-      marginRight: "auto",
-    },
+    width: 'auto',
+    marginLeft: '4px',
+    marginRight: '4px',
   },
   paper: {
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(3),
-    padding: theme.spacing(2),
+    marginTop: '4px',
+    marginBottom: '4px',
+    padding: '4px',
     minHeight: 400,
-    [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
-      marginTop: theme.spacing(6),
-      marginBottom: theme.spacing(6),
-      padding: theme.spacing(3),
-    },
   },
   header: {
-    display: "flex",
-    flexDirection: "row",
+    display: 'flex',
+    flexDirection: 'row',
   },
   stepper: {
-    padding: theme.spacing(3, 0, 5),
+    padding: '3px 0px 6px',
   },
   buttons: {
-    display: "flex",
-    justifyContent: "flex-end",
+    display: 'flex',
+    justifyContent: 'flex-end',
   },
   button: {
-    marginTop: theme.spacing(3),
-    marginLeft: theme.spacing(1),
+    marginTop: '4px',
+    marginLeft: '4px',
   },
   buttonHome: {
-    marginTop: theme.spacing(-3),
-    marginLeft: theme.spacing(-3),
-    justifyContent: "left",
-    alignSelf: "flex-start",
+    marginTop: '-4px',
+    marginLeft: '-4px',
+    justifyContent: 'left',
+    alignSelf: 'flex-start',
   },
   dialog: {
-    padding: theme.spacing(1),
+    padding: '4px',
   },
-}));
+});
 
 const steps = [
-  "Seleccionar agente",
-  "Datos comprador",
-  "Datos vehiculo",
-  "Datos vendedor",
-  "Detalles adicionales",
+  'Seleccionar agente',
+  'Datos comprador',
+  'Datos vehiculo',
+  'Datos vendedor',
+  'Detalles adicionales',
 ];
 
-export default function Checkout(props) {
-  const classes = useStyles();
+const CheckOut = ({
+  dataA,
+  saveA,
+  dataP,
+  saveP,
+  dataC,
+  saveC,
+  dataV,
+  saveV,
+  dataD,
+  saveD,
+}) => {
+  const classes = useClasses(styles);
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -90,28 +93,25 @@ export default function Checkout(props) {
   };
 
   const dialog = (
-    <Dialog
-        className={classes.dialog}
-        open={open}
-        onClose={handleClose}
-      >
-        <DialogTitle>Ventana de confirmación</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            <Typography> Al regresar a Inicio perderas todos los datos que hayas ingresado</Typography>
-            <Typography>¿Estas seguro de que quieres regresar?</Typography>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="secondary" autoFocus>
-            Cancelar
-          </Button>
-          <Button href="/" >
-            Aceptar
-          </Button>
-        </DialogActions>
-      </Dialog>
-  ) 
+    <Dialog className={classes.dialog} open={open} onClose={handleClose}>
+      <DialogTitle>Ventana de confirmación</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          <Typography>
+            {' '}
+            Al regresar a Inicio perderas todos los datos que hayas ingresado
+          </Typography>
+          <Typography>¿Estas seguro de que quieres regresar?</Typography>
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="secondary" autoFocus>
+          Cancelar
+        </Button>
+        <Button href="/">Aceptar</Button>
+      </DialogActions>
+    </Dialog>
+  );
 
   const [activeStep, setActiveStep] = React.useState(0);
   const [lastStep, setLastStep] = React.useState(0);
@@ -136,63 +136,66 @@ export default function Checkout(props) {
     switch (step) {
       case 0:
         return (
-          <SelectAgentView
-            data={props.dataA}
+          <AgentSection
+            data={dataA}
             click={handleNext}
-            save={props.saveA}
+            save={saveA}
+            title="Selección de agente"
           />
         );
       case 1:
         return (
-          <PersonForm
-            data={props.dataP}
-            save={props.saveP}
+          <PersonSection
+            data={dataP}
+            save={saveP}
             click={handleNext}
             back={handleBack}
-            title={"Datos del comprador"}
+            title="Datos del comprador"
           />
         );
       case 2:
         return (
-          <CarForm
-            data={props.dataC}
-            save={props.saveC}
+          <CarSection
+            data={dataC}
+            save={saveC}
             click={handleNext}
             back={handleBack}
+            title="Datos del vehiculo"
           />
         );
       case 3:
         return (
-          <PersonForm
-            data={props.dataV}
-            save={props.saveV}
+          <PersonSection
+            data={dataV}
+            save={saveV}
             click={handleNext}
             back={handleBack}
-            title={"Datos del vendedor"}
+            title="Datos del vendedor"
           />
         );
       case 4:
         return (
           <DetailForm
-            data={props.dataD}
-            save={props.saveD}
+            data={dataD}
+            save={saveD}
             click={handleNext}
             back={handleBack}
+            title="Datos adicionales"
           />
         );
       default:
-        throw new Error("Unknown step");
+        throw new Error('Unknown step');
     }
   }
 
   return (
-    <React.Fragment>
+    <>
       <CssBaseline />
       <Header title="Central Docs" />
-      <main className={classes.layout}>
+      <Grid container className={classes.layout}>
         <Paper className={classes.paper}>
           <Button
-            color="default"
+            variant="outlined"
             className={classes.buttonHome}
             onClick={handleClickOpen}
           >
@@ -207,37 +210,35 @@ export default function Checkout(props) {
           >
             Compra venta de vehiculo
           </Typography>
-
           <Stepper activeStep={activeStep} className={classes.stepper}>
-            {steps.map((label, index) => (
+            {steps?.map((label, index) => (
               <Step key={label}>
-                <StepLabel onClick={() => handleStep(index)}>{label}</StepLabel>{" "}
-                {/* //AQUI PUEDO CAMBIAR ORIENTACION STEPPER */}
+                <StepLabel onClick={() => handleStep(index)}>{label}</StepLabel>{' '}
               </Step>
             ))}
           </Stepper>
-          <React.Fragment>
-            {activeStep === steps.length ? (
-              <React.Fragment>
-                <Typography variant="h5" gutterBottom>
-                  Los datos han sido guardados exitosamente.
-                </Typography>
-                <Button onClick={handleBack} className={classes.button}>
-                  Generar documento
-                </Button>
-                <Button className={classes.button} href="/compra-venta">
-                  Repetir formulario
-                </Button>
-                <Button className={classes.button} href="/">
-                  Volver al menú
-                </Button>
-              </React.Fragment>
-            ) : (
-              <React.Fragment>{getStepContent(activeStep)}</React.Fragment>
-            )}
-          </React.Fragment>
+          {activeStep === steps.length ? (
+            <>
+              <Typography variant="h5" gutterBottom>
+                Los datos han sido guardados exitosamente.
+              </Typography>
+              <Button onClick={handleBack} className={classes.button}>
+                Generar documento
+              </Button>
+              <Button className={classes.button} href="/compra-venta">
+                Repetir formulario
+              </Button>
+              <Button className={classes.button} href="/">
+                Volver al menú
+              </Button>
+            </>
+          ) : (
+            <>{getStepContent(activeStep)}</>
+          )}
         </Paper>
-      </main>
-    </React.Fragment>
+      </Grid>
+    </>
   );
-}
+};
+
+export default CheckOut;
