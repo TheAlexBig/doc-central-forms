@@ -12,7 +12,6 @@ const PersonForm = ({
   title = '',
 }) => {
   const [open, setOpen] = useState(true);
-
   const fillForm = (submittedValues) => {
     save(submittedValues);
     setOpen(!open);
@@ -49,7 +48,7 @@ const PersonForm = ({
     );
   }
 
-  return <ConfirmDataView data={data} buttons={viewButtons} />;
+return <ConfirmDataView data={data} buttons={viewButtons} />;
 };
 
 export default PersonForm;
