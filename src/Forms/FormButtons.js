@@ -9,7 +9,7 @@ export const viewDefaultEdit = (action) => ({
   text: 'Modificar',
 });
 
-export const viewDefaultAccept = (action) => ({
+export const formButton = (action) => ({
   color: 'primary',
   variant: 'contained',
   style: defaultStyle.button,

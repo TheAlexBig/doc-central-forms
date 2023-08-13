@@ -303,6 +303,7 @@ const CarStructure = ({
                     variant={buttonItem.variant}
                     style={defaultStyle.button}
                     onClick={buttonItem.action}
+                    type={buttonItem.type}
                   >
                     {buttonItem.text}
                   </Button>

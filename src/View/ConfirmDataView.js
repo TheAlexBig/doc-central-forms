@@ -45,6 +45,7 @@ const ConfirmDataView = ({ data = {}, buttons = [] }) => {
               variant={buttonItem.variant}
               style={style.button}
               onClick={buttonItem.action}
+              type={buttonItem.type}
             >
               {buttonItem.text}
             </Button>

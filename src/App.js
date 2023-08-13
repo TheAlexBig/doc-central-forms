@@ -6,6 +6,7 @@ import { DataAgent } from './Data/DataAgent';
 import { DataDetails } from './Data/DataDetails';
 import Stepper from './Utils/Stepper';
 import Blog from './HomePage/Blog';
+import GetAge from './Functions/GetAge';
 
 const App = () => {
   const [savedDetailStates, setSavedDetailStates] = useState(
@@ -32,11 +33,17 @@ const App = () => {
   };
 
   const handlePersonSubmit = (values) => {
-    setSavedPersonStates(values);
+    setSavedPersonStates({
+      ...values,
+      edad: GetAge(values.fecha_nacimiento),
+    });
   };
 
   const handleVendorSubmit = (values) => {
-    setSavedVendorStates(values);
+    setSavedVendorStates({
+      ...values,
+      edad: GetAge(values.fecha_nacimiento),
+    });
   };
 
   const handleCarSubmit = (values) => {
