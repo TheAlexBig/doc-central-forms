@@ -48,7 +48,7 @@ const PersonForm = ({
     );
   }
 
-return <ConfirmDataView data={data} buttons={viewButtons} />;
+  return <ConfirmDataView data={data} buttons={viewButtons} />;
 };
 
 export default PersonForm;

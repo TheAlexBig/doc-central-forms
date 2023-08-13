@@ -12,7 +12,7 @@ const PersonSection = ({
 }) => {
   const [open, setOpen] = useState(true);
 
-const fillForm = (submittedValues) => {
+  const fillForm = (submittedValues) => {
     save(submittedValues);
     setOpen(!open);
   };

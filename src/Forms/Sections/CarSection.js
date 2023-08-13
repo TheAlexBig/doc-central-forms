@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 
 import ConfirmDataView from '../../View/ConfirmDataView';
-import {
-  viewDefaultAccept,
-  viewDefaultEdit,
-  buttonDefault,
-} from '../FormButtons';
+import { formButton, viewDefaultEdit, buttonDefault } from '../FormButtons';
 
 import CarStructure from '../Structure/CarStructure';
 
@@ -26,26 +22,8 @@ const CarSection = ({
     setOpen(!open);
     click();
   };
-  const nextStep = () => {
-    setOpen(!open);
-    click();
-  };
 
   const formButtons = [
-    {
-      ...buttonDefault,
-      variant: 'outlined',
-      type: 'button',
-      text: 'Atras',
-      buttonAction: back,
-    },
-    {
-      ...buttonDefault,
-      text: 'Verificar',
-    },
-  ];
-
- const formButtons = [
     {
       ...buttonDefault,
       variant: 'outlined',
