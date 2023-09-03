@@ -4,7 +4,7 @@ import { DataPerson } from './Data/DataPerson';
 import { DataCar } from './Data/DataCar';
 import { DataAgent } from './Data/DataAgent';
 import { DataDetails } from './Data/DataDetails';
-import Stepper from './Utils/Stepper';
+import CarSale from './Forms/CarSale';
 import Blog from './HomePage/Blog';
 import GetAge from './Functions/GetAge';
 
@@ -24,12 +24,12 @@ const App = () => {
     JSON.parse(JSON.stringify(DataCar))
   );
 
-  const [, setAgent] = useState({
+  const [, setSavedAgent] = useState({
     savedAgent: '',
   });
 
   const selectAgent = (id) => {
-    setAgent({ savedAgent: DataAgent[id] });
+    setSavedAgent({ savedAgent: DataAgent[id] });
   };
 
   const handlePersonSubmit = (values) => {
@@ -61,17 +61,21 @@ const App = () => {
           exact
           path="/compra-venta"
           element={
-            <Stepper
-              dataA={DataAgent}
-              saveA={selectAgent}
-              dataP={savedPersonStates}
-              saveP={handlePersonSubmit}
-              dataV={savedVendorStates}
-              saveV={handleVendorSubmit}
-              dataC={savedCarStates}
-              saveC={handleCarSubmit}
-              dataD={savedDetailStates}
-              saveD={handleDetailSubmit}
+            <CarSale
+              agentProps={{ data: DataAgent, save: selectAgent }}
+              personProps={{
+                data: savedPersonStates,
+                save: handlePersonSubmit,
+              }}
+              carProps={{ data: savedCarStates, save: handleCarSubmit }}
+              vendorProps={{
+                data: savedVendorStates,
+                save: handleVendorSubmit,
+              }}
+              detailProps={{
+                data: savedDetailStates,
+                save: handleDetailSubmit,
+              }}
             />
           }
         />

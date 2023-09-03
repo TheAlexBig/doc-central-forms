@@ -6,16 +6,18 @@ import { formButton, viewDefaultEdit, buttonDefault } from '../FormButtons';
 import CarStructure from '../Structure/CarStructure';
 
 const CarSection = ({
-  data = {},
+  carProps = {
+    data: {},
+    save: () => {},
+  },
   click = () => {},
   back = () => {},
-  save = () => {},
   title = '',
 }) => {
   const [open, setOpen] = useState(true);
 
   const fillForm = (submittedValues) => {
-    save(submittedValues);
+    carProps.save(submittedValues);
     setOpen(!open);
   };
   const nextStep = () => {
@@ -42,7 +44,7 @@ const CarSection = ({
   if (open) {
     return (
       <CarStructure
-        data={data}
+        data={carProps.data}
         title={title}
         buttons={formButtons}
         submitAction={fillForm}
@@ -50,7 +52,7 @@ const CarSection = ({
     );
   }
 
-  return <ConfirmDataView data={data} buttons={viewButtons} />;
+  return <ConfirmDataView data={carProps.data} buttons={viewButtons} />;
 };
 
 export default CarSection;

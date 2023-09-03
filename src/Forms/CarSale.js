@@ -7,18 +7,13 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+
 import { Grid } from '@mui/material';
-import AgentSection from '../Forms/Sections/AgentSection';
-import PersonSection from '../Forms/Sections/PersonSection';
-import CarSection from '../Forms/Sections/CarSection';
-import DetailForm from '../Forms/Sections/DetailSection';
+import { getStepContent } from './Steps/CarSaleSteps';
 import Header from '../HomePage/Header';
-import useClasses from './UseClasses';
+import useClasses from '../Utils/UseClasses';
+
+import ReturnDialog from './Dialogs/ReturnDialog';
 
 const styles = (_theme) => ({
   appBar: {
@@ -56,9 +51,6 @@ const styles = (_theme) => ({
     justifyContent: 'left',
     alignSelf: 'flex-start',
   },
-  dialog: {
-    padding: '4px',
-  },
 });
 
 const steps = [
@@ -70,48 +62,13 @@ const steps = [
 ];
 
 const CheckOut = ({
-  dataA,
-  saveA,
-  dataP,
-  saveP,
-  dataC,
-  saveC,
-  dataV,
-  saveV,
-  dataD,
-  saveD,
+  agentProps,
+  personProps,
+  carProps,
+  vendorProps,
+  detailProps,
 }) => {
   const classes = useClasses(styles);
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const dialog = (
-    <Dialog className={classes.dialog} open={open} onClose={handleClose}>
-      <DialogTitle>Ventana de confirmación</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          <Typography>
-            {' '}
-            Al regresar a Inicio perderas todos los datos que hayas ingresado
-          </Typography>
-          <Typography>¿Estas seguro de que quieres regresar?</Typography>
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color="secondary" autoFocus>
-          Cancelar
-        </Button>
-        <Button href="/">Aceptar</Button>
-      </DialogActions>
-    </Dialog>
-  );
 
   const [activeStep, setActiveStep] = React.useState(0);
   const [lastStep, setLastStep] = React.useState(0);
@@ -132,61 +89,13 @@ const CheckOut = ({
     }
   };
 
-  function getStepContent(step) {
-    switch (step) {
-      case 0:
-        return (
-          <AgentSection
-            data={dataA}
-            click={handleNext}
-            save={saveA}
-            title="Selección de agente"
-          />
-        );
-      case 1:
-        return (
-          <PersonSection
-            data={dataP}
-            save={saveP}
-            click={handleNext}
-            back={handleBack}
-            title="Datos del comprador"
-          />
-        );
-      case 2:
-        return (
-          <CarSection
-            data={dataC}
-            save={saveC}
-            click={handleNext}
-            back={handleBack}
-            title="Datos del vehiculo"
-          />
-        );
-      case 3:
-        return (
-          <PersonSection
-            data={dataV}
-            save={saveV}
-            click={handleNext}
-            back={handleBack}
-            title="Datos del vendedor"
-          />
-        );
-      case 4:
-        return (
-          <DetailForm
-            data={dataD}
-            save={saveD}
-            click={handleNext}
-            back={handleBack}
-            title="Datos adicionales"
-          />
-        );
-      default:
-        throw new Error('Unknown step');
-    }
-  }
+  const [open, setOpen] = React.useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <>
@@ -201,7 +110,7 @@ const CheckOut = ({
           >
             Volver al menú
           </Button>
-          {dialog}
+          <ReturnDialog open={open} handleClose={handleClose} />
           <Typography
             component="h1"
             variant="h4"
@@ -233,7 +142,20 @@ const CheckOut = ({
               </Button>
             </>
           ) : (
-            <>{getStepContent(activeStep)}</>
+            <>
+              {getStepContent(
+                activeStep,
+                {
+                  agentProps,
+                  personProps,
+                  carProps,
+                  vendorProps,
+                  detailProps,
+                },
+                handleNext,
+                handleBack
+              )}
+            </>
           )}
         </Paper>
       </Grid>

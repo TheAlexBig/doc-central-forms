@@ -4,16 +4,18 @@ import PersonStructure from '../Structure/PersonStructure';
 import ConfirmDataView from '../../View/ConfirmDataView';
 
 const PersonSection = ({
-  data = {},
+  personProps = {
+    data: {},
+    save: () => {},
+  },
   click = () => {},
   back = () => {},
-  save = () => {},
   title = '',
 }) => {
   const [open, setOpen] = useState(true);
 
   const fillForm = (submittedValues) => {
-    save(submittedValues);
+    personProps.save(submittedValues);
     setOpen(!open);
   };
   const nextStep = () => {
@@ -40,7 +42,7 @@ const PersonSection = ({
   if (open) {
     return (
       <PersonStructure
-        data={data}
+        data={personProps.data}
         title={title}
         buttons={formButtons}
         submitAction={fillForm}
@@ -48,7 +50,7 @@ const PersonSection = ({
     );
   }
 
-  return <ConfirmDataView data={data} buttons={viewButtons} />;
+  return <ConfirmDataView data={personProps.data} buttons={viewButtons} />;
 };
 
 export default PersonSection;

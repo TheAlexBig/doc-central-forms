@@ -4,16 +4,18 @@ import { formButton, viewDefaultEdit, buttonDefault } from '../FormButtons';
 import DetailStructure from '../Structure/DetailStructure';
 import ConfirmDataView from '../../View/ConfirmDataView';
 
-const PersonForm = ({
-  data = {},
+const DetailSection = ({
+  detailProps = {
+    data: {},
+    save: () => {},
+  },
   click = () => {},
   back = () => {},
-  save = () => {},
   title = '',
 }) => {
   const [open, setOpen] = useState(true);
   const fillForm = (submittedValues) => {
-    save(submittedValues);
+    detailProps.save(submittedValues);
     setOpen(!open);
   };
   const nextStep = () => {
@@ -40,7 +42,7 @@ const PersonForm = ({
   if (open) {
     return (
       <DetailStructure
-        data={data}
+        data={detailProps.data}
         title={title}
         buttons={formButtons}
         submitAction={fillForm}
@@ -48,7 +50,7 @@ const PersonForm = ({
     );
   }
 
-  return <ConfirmDataView data={data} buttons={viewButtons} />;
+  return <ConfirmDataView data={detailProps.data} buttons={viewButtons} />;
 };
 
-export default PersonForm;
+export default DetailSection;

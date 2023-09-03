@@ -25,9 +25,11 @@ const styles = (_theme) => ({
 });
 
 const AgentSection = ({
-  data = [],
+  agentProps = {
+    data: [],
+    save: () => {},
+  },
   click = () => {},
-  save = () => {},
   title = '',
 }) => {
   const [open, setOpen] = useState(true);
@@ -55,7 +57,7 @@ const AgentSection = ({
       style: defaultStyle.button,
       type: 'submit',
       action: () => {
-        save(selectedIndex);
+        agentProps.save(selectedIndex);
         click();
       },
       text: 'Seleccionar',
@@ -71,7 +73,7 @@ const AgentSection = ({
           {title}
         </Typography>
       </Grid>
-      {data?.map((agent, index) => (
+      {agentProps.data?.map((agent, index) => (
         <Grid item xs={12} sm={4} key={`agentId-${agent.id}`}>
           <Card>
             <CardActionArea
@@ -92,7 +94,10 @@ const AgentSection = ({
       ))}
     </Grid>
   ) : (
-    <ConfirmDataView data={data[selectedIndex]} buttons={verifyButtons} />
+    <ConfirmDataView
+      data={agentProps.data[selectedIndex]}
+      buttons={verifyButtons}
+    />
   );
 };
 export default AgentSection;
