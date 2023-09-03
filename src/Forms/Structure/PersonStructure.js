@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import * as Yup from 'yup';
 import { DataDepMuni } from '../../Data/DataDepMuni';
 import { defaultStyle } from '../FormStyles';
-import { PersonValidationSchema } from '../ValidationSchema/PersonValidationSchema';
+import { PersonValidationSchema } from '../Validations/PersonValidationSchema';
 
 const PersonStructure = ({
   data,

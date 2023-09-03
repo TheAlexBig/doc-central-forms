@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import * as Yup from 'yup';
 import { defaultStyle } from '../FormStyles';
 
-import { CarValidationSchema } from '../ValidationSchema/CarValidationSchema';
+import { CarValidationSchema } from '../Validations/CarValidationSchema';
 
 const CarStructure = ({
   data,

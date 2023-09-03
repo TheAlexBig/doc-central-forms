@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import * as Yup from 'yup';
 import React, { useState } from 'react';
 import { DataDepMuni } from '../../Data/DataDepMuni';
-import { DetailValidationSchema } from '../ValidationSchema/DetailValidationSchema';
+import { DetailValidationSchema } from '../Validations/DetailValidationSchema';
 import { defaultStyle } from '../FormStyles';
 
 const DetailStructure = ({
