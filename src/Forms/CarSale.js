@@ -61,7 +61,7 @@ const steps = [
   'Detalles adicionales',
 ];
 
-const CheckOut = ({
+const CarSale = ({
   agentProps,
   personProps,
   carProps,
@@ -163,4 +163,4 @@ const CheckOut = ({
   );
 };
 
-export default CheckOut;
+export default CarSale;

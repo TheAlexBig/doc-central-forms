@@ -8,50 +8,56 @@ import CarSale from './Forms/CarSale';
 import Blog from './HomePage/Blog';
 import GetAge from './Functions/GetAge';
 
+const initialState = {
+  detailStates: JSON.parse(JSON.stringify(DataDetails)),
+  vendorStates: JSON.parse(JSON.stringify(DataPerson)),
+  personStates: JSON.parse(JSON.stringify(DataPerson)),
+  carStates: JSON.parse(JSON.stringify(DataCar)),
+  agentStates: '',
+};
+
 const App = () => {
-  const [savedDetailStates, setSavedDetailStates] = useState(
-    JSON.parse(JSON.stringify(DataDetails))
-  );
-  const [savedVendorStates, setSavedVendorStates] = useState(
-    JSON.parse(JSON.stringify(DataPerson))
-  );
-
-  const [savedPersonStates, setSavedPersonStates] = useState(
-    JSON.parse(JSON.stringify(DataPerson))
-  );
-
-  const [savedCarStates, setSavedCarStates] = useState(
-    JSON.parse(JSON.stringify(DataCar))
-  );
-
-  const [, setSavedAgent] = useState({
-    savedAgent: '',
-  });
+  const [state, setState] = useState(initialState);
 
   const selectAgent = (id) => {
-    setSavedAgent({ savedAgent: DataAgent[id] });
-  };
-
-  const handlePersonSubmit = (values) => {
-    setSavedPersonStates({
-      ...values,
-      edad: GetAge(values.fecha_nacimiento),
+    setState({
+      ...state,
+      agentStates: DataAgent[id],
     });
   };
 
-  const handleVendorSubmit = (values) => {
-    setSavedVendorStates({
-      ...values,
-      edad: GetAge(values.fecha_nacimiento),
+  const personSubmit = (values) => {
+    setState({
+      ...state,
+      personStates: {
+        ...values,
+        edad: GetAge(values.fecha_nacimiento),
+      },
     });
   };
 
-  const handleCarSubmit = (values) => {
-    setSavedCarStates(values);
+  const vendorSubmit = (values) => {
+    setState({
+      ...state,
+      vendorStates: {
+        ...values,
+        edad: GetAge(values.fecha_nacimiento),
+      },
+    });
   };
 
-  const handleDetailSubmit = (values) => {
-    setSavedDetailStates(values);
+  const carSubmit = (values) => {
+    setState({
+      ...state,
+      carStates: values,
+    });
+  };
+
+  const detailSubmit = (values) => {
+    setState({
+      ...state,
+      detailStates: values,
+    });
   };
 
   return (
@@ -64,17 +70,17 @@ const App = () => {
             <CarSale
               agentProps={{ data: DataAgent, save: selectAgent }}
               personProps={{
-                data: savedPersonStates,
-                save: handlePersonSubmit,
+                data: state.personStates,
+                save: personSubmit,
               }}
-              carProps={{ data: savedCarStates, save: handleCarSubmit }}
+              carProps={{ data: state.carStates, save: carSubmit }}
               vendorProps={{
-                data: savedVendorStates,
-                save: handleVendorSubmit,
+                data: state.vendorStates,
+                save: vendorSubmit,
               }}
               detailProps={{
-                data: savedDetailStates,
-                save: handleDetailSubmit,
+                data: state.detailStates,
+                save: detailSubmit,
               }}
             />
           }
