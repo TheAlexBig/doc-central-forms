@@ -1,67 +1,62 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
-import escritorioImage from '../Images/escritorio3.jpg';
-import UseClasses from '../Utils/UseClasses';
 
-const styles = (_theme) => ({
-  mainFeaturedPost: {
-    position: 'relative',
-    marginBottom: '4px',
-    backgroundImage: escritorioImage,
-    backgroundSize: 'cover',
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'center',
-  },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    right: 0,
-    left: 0,
-  },
-  mainFeaturedPostContent: {
-    position: 'relative',
-    padding: '6px',
-  },
-});
-
-const MainFeaturedPost = (props) => {
-  const classes = UseClasses(styles);
-  const { post } = props;
-
-  return (
-    <Paper
-      className={classes.mainFeaturedPost}
-      style={{ backgroundImage: `url(${post.image})` }}
+const MainFeaturedPost = ({ post }) => (
+  <Box
+    component="section"
+    sx={{
+      borderBottom: '1px solid',
+      borderColor: 'divider',
+      pb: { xs: 6, md: 9 },
+      pt: { xs: 2, md: 3 },
+    }}
+  >
+    <Typography
+      color="primary.main"
+      fontWeight={700}
+      sx={{ letterSpacing: '0.16em', mb: 3 }}
+      variant="overline"
     >
-      <img style={{ display: 'none' }} src={post.image} alt={post.imageText} />
-      <div className={classes.overlay} />
-      <Grid container>
-        <Grid item md={6}>
-          <div className={classes.mainFeaturedPostContent}>
-            <Typography
-              component="h1"
-              variant="h3"
-              color="inherit"
-              gutterBottom
-            >
-              {post.title}
-            </Typography>
-            <Typography variant="h5" color="inherit" paragraph>
-              {post.description}
-            </Typography>
-          </div>
-        </Grid>
-      </Grid>
-    </Paper>
-  );
-};
+      Central Docs
+    </Typography>
+    <Typography
+      component="h1"
+      variant="h1"
+      sx={{
+        fontSize: { xs: '3rem', sm: '4.25rem', md: '5.2rem' },
+        lineHeight: 1.02,
+        maxWidth: 780,
+        mb: 3,
+      }}
+    >
+      {post.title}
+    </Typography>
+    <Typography
+      color="text.secondary"
+      variant="h6"
+      sx={{ fontWeight: 400, lineHeight: 1.7, maxWidth: 570, mb: 5 }}
+    >
+      {post.description}
+    </Typography>
+    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+      <Button component="a" href="#plantillas" size="large" variant="contained">
+        Explorar plantillas
+      </Button>
+      <Button component="a" href="#proceso" size="large" variant="text">
+        Conocer el proceso
+      </Button>
+    </Stack>
+  </Box>
+);
 
 MainFeaturedPost.propTypes = {
-  post: PropTypes.object,
+  post: PropTypes.shape({
+    description: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default MainFeaturedPost;

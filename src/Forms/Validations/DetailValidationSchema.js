@@ -5,6 +5,7 @@ export const DetailValidationSchema = {
     .required('Campo requerido')
     .positive('Solo se permiten números positivos'),
   departamento: Yup.string().required('Campo requerido'),
+  municipio: Yup.string().required('Campo requerido'),
   domicilio: Yup.string().required('Campo requerido'),
   fecha_firma: Yup.date()
     .required('Campo requerido')

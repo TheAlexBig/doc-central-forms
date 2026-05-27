@@ -2,6 +2,7 @@ export const DataDetails = {
   id: '',
   precio: '',
   departamento: '',
+  municipio: '',
   domicilio: '',
   fecha_firma: '',
   hora_firma: '',

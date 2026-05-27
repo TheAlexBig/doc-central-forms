@@ -1,149 +1,103 @@
 import React from 'react';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
-import InputMask from 'react-input-mask';
 import Grid from '@mui/material/Grid';
+import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
+import InputMask from 'react-input-mask';
 import { Formik } from 'formik';
-import Typography from '@mui/material/Typography';
 import * as Yup from 'yup';
-import { DataDepMuni } from '../../Data/DataDepMuni';
-import { defaultStyle } from '../FormStyles';
+import { DataTerritorialDivision } from '../../Data/DataTerritorialDivision';
 import { PersonValidationSchema } from '../Validations/PersonValidationSchema';
+import { FieldGroup, FormActions, FormHeading } from './FormScaffold';
 
-const PersonStructure = ({
-  data,
-  title = 'No title',
-  buttons = [],
-  submitAction = () => {},
-}) => (
+const fieldProps = (name, values, touched, errors) => ({
+  error: Boolean(touched[name] && errors[name]),
+  helperText: touched[name] && errors[name],
+  name,
+  value: values[name],
+  fullWidth: true,
+});
+
+const PersonStructure = ({ data, title, buttons, submitAction }) => (
   <Formik
+    enableReinitialize
     initialValues={data}
     onSubmit={submitAction}
     validationSchema={Yup.object().shape(PersonValidationSchema)}
   >
-    {(props) => {
-      const {
-        values,
-        touched,
-        errors,
-        handleChange,
-        handleBlur,
-        handleSubmit,
-      } = props;
-      return (
-        <form onSubmit={handleSubmit}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Typography variant="h5" style={defaultStyle.title}>
-                {title}
-              </Typography>
-            </Grid>
+    {({
+      values,
+      touched,
+      errors,
+      handleChange,
+      handleBlur,
+      handleSubmit,
+      setFieldValue,
+    }) => (
+      <form onSubmit={handleSubmit} noValidate>
+        <FormHeading
+          title={title}
+          description="Ingrese la información tal como aparece en los documentos de identidad."
+        />
+        <FieldGroup title="Identidad personal">
+          <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
-                style={defaultStyle.wide}
-                error={errors.nombre && touched.nombre && errors.nombre}
-                label="Nombre:"
-                name="nombre"
-                value={values.nombre}
-                onChange={handleChange}
+                {...fieldProps('nombre', values, touched, errors)}
+                label="Nombres"
                 onBlur={handleBlur}
-                helperText={errors.nombre && touched.nombre && errors.nombre}
-                margin="normal"
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                style={defaultStyle.wide}
-                error={errors.apellido && touched.apellido && errors.apellido}
-                label="Apellido:"
-                name="apellido"
-                value={values.apellido}
-                onChange={handleChange}
+                {...fieldProps('apellido', values, touched, errors)}
+                label="Apellidos"
                 onBlur={handleBlur}
-                helperText={
-                  errors.apellido && touched.apellido && errors.apellido
-                }
-                margin="normal"
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                style={defaultStyle.wide}
-                error={
-                  errors.departamento &&
-                  touched.departamento &&
-                  errors.departamento
-                }
-                select
-                label="Departamento:"
-                name="departamento"
-                value={values.departamento}
-                onChange={handleChange}
+                {...fieldProps('fecha_nacimiento', values, touched, errors)}
+                InputLabelProps={{ shrink: true }}
+                label="Fecha de nacimiento"
                 onBlur={handleBlur}
-                helperText={
-                  errors.departamento &&
-                  touched.departamento &&
-                  errors.departamento
-                }
-                margin="normal"
-              >
-                {Object.keys(DataDepMuni).map((opt, index) => (
-                  <MenuItem value={opt} key={`Departamento-${index}`}>
-                    {opt}
-                  </MenuItem>
-                ))}
-              </TextField>
+                onChange={handleChange}
+                type="date"
+              />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                style={defaultStyle.wide}
-                error={
-                  errors.domicilio && touched.domicilio && errors.domicilio
-                }
-                select
-                label="Municipio:"
-                name="domicilio"
-                value={values.domicilio}
-                onChange={handleChange}
+                {...fieldProps('genero', values, touched, errors)}
+                label="Género"
                 onBlur={handleBlur}
-                disabled={values.departamento.length === 0}
-                helperText={
-                  errors.domicilio && touched.domicilio && errors.domicilio
-                }
-                margin="normal"
+                onChange={handleChange}
+                select
               >
-                {values.departamento.length === 0 ? (
-                  <MenuItem value="0">0</MenuItem>
-                ) : (
-                  DataDepMuni[values.departamento].map((opt, index) => (
-                    <MenuItem value={opt} key={`Municipio-${index}`}>
-                      {opt}
-                    </MenuItem>
-                  ))
-                )}
+                <MenuItem value="Femenino">Femenino</MenuItem>
+                <MenuItem value="Masculino">Masculino</MenuItem>
               </TextField>
             </Grid>
+          </Grid>
+        </FieldGroup>
+        <FieldGroup
+          title="Documentos y domicilio"
+          description="El DUI, NIT y la división territorial vigente se incorporarán al contrato."
+        >
+          <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <InputMask
                 mask="99999999-9"
-                onChange={handleChange}
                 maskChar=""
                 onBlur={handleBlur}
+                onChange={handleChange}
                 value={values.documento}
               >
                 {() => (
                   <TextField
-                    style={defaultStyle.wide}
-                    error={
-                      errors.documento && touched.documento && errors.documento
-                    }
-                    helperText={
-                      errors.documento && touched.documento && errors.documento
-                    }
-                    label="DUI:"
-                    name="documento"
-                    margin="normal"
+                    {...fieldProps('documento', values, touched, errors)}
+                    label="DUI"
+                    placeholder="00000000-0"
                   />
                 )}
               </InputMask>
@@ -151,89 +105,93 @@ const PersonStructure = ({
             <Grid item xs={12} sm={6}>
               <InputMask
                 mask="9999-999999-999-9"
-                onChange={handleChange}
                 maskChar=""
                 onBlur={handleBlur}
+                onChange={handleChange}
                 value={values.nit}
               >
                 {() => (
                   <TextField
-                    style={defaultStyle.wide}
-                    error={errors.nit && touched.nit && errors.nit}
-                    helperText={errors.nit && touched.nit && errors.nit}
-                    label="NIT:"
-                    name="nit"
-                    margin="normal"
+                    {...fieldProps('nit', values, touched, errors)}
+                    label="NIT"
+                    placeholder="0000-000000-000-0"
                   />
                 )}
               </InputMask>
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                style={defaultStyle.wide}
-                error={
-                  errors.fecha_nacimiento &&
-                  touched.fecha_nacimiento &&
-                  errors.fecha_nacimiento
-                }
-                label="Fecha de nacimiento:"
-                name="fecha_nacimiento"
-                value={values.fecha_nacimiento}
-                onChange={handleChange}
+                {...fieldProps('departamento', values, touched, errors)}
+                label="Departamento"
                 onBlur={handleBlur}
-                helperText={
-                  errors.fecha_nacimiento &&
-                  touched.fecha_nacimiento &&
-                  errors.fecha_nacimiento
-                }
-                type="date"
-                margin="normal"
-                InputLabelProps={{
-                  shrink: true,
+                onChange={(event) => {
+                  handleChange(event);
+                  setFieldValue('municipio', '');
+                  setFieldValue('domicilio', '');
                 }}
-              />
+                select
+              >
+                {Object.keys(DataTerritorialDivision).map((option) => (
+                  <MenuItem value={option} key={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                style={defaultStyle.wide}
-                error={errors.genero && touched.genero && errors.genero}
-                select
-                label="Genero:"
-                name="genero"
-                value={values.genero}
-                onChange={handleChange}
+                {...fieldProps('municipio', values, touched, errors)}
+                disabled={!values.departamento}
+                label="Municipio"
                 onBlur={handleBlur}
-                helperText={errors.genero && touched.genero && errors.genero}
-                margin="normal"
+                onChange={(event) => {
+                  handleChange(event);
+                  setFieldValue('domicilio', '');
+                }}
+                select
               >
-                <MenuItem value="Femenino">Femenino</MenuItem>
-                <MenuItem value="Masculino">Masculino</MenuItem>
+                {Object.keys(
+                  DataTerritorialDivision[values.departamento] || {}
+                ).map((option) => (
+                  <MenuItem value={option} key={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                {...fieldProps('domicilio', values, touched, errors)}
+                disabled={!values.municipio}
+                label="Distrito"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                select
+              >
+                {(
+                  DataTerritorialDivision[values.departamento]?.[
+                    values.municipio
+                  ] || []
+                ).map((option) => (
+                  <MenuItem value={option} key={option}>
+                    {option}
+                  </MenuItem>
+                ))}
               </TextField>
             </Grid>
           </Grid>
-          <Grid container style={defaultStyle.buttons}>
-            {buttons.map((buttonItem, index) => (
-              <Grid
-                item
-                xs={6}
-                key={`Grid-${title}-${buttonItem.text}:${index}`}
-              >
-                <Button
-                  key={`${title}-${buttonItem.text}:${index}`}
-                  color={buttonItem.color}
-                  variant={buttonItem.variant}
-                  style={defaultStyle.button}
-                  onClick={buttonItem.action}
-                  type={buttonItem.type}
-                >
-                  {buttonItem.text}
-                </Button>
-              </Grid>
-            ))}
-          </Grid>
-        </form>
-      );
-    }}
+        </FieldGroup>
+        <FieldGroup title="Actividad">
+          <TextField
+            {...fieldProps('oficio', values, touched, errors)}
+            label="Oficio o profesión"
+            onBlur={handleBlur}
+            onChange={handleChange}
+          />
+        </FieldGroup>
+        <FormActions buttons={buttons} />
+      </form>
+    )}
   </Formik>
 );
 

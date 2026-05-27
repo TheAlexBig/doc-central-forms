@@ -55,7 +55,7 @@ export function getStepContent(
           detailProps={detailProps}
           click={handleNext}
           back={handleBack}
-          title="Datos adicionales"
+          title="Firma y condiciones de venta"
         />
       ),
     },

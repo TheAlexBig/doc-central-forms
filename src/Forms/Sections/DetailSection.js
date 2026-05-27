@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import { formButton, viewDefaultEdit, buttonDefault } from '../FormButtons';
+import { buttonDefault } from '../FormButtons';
 import DetailStructure from '../Structure/DetailStructure';
-import ConfirmDataView from '../../View/ConfirmDataView';
 
 const DetailSection = ({
   detailProps = {
@@ -13,13 +12,8 @@ const DetailSection = ({
   back = () => {},
   title = '',
 }) => {
-  const [open, setOpen] = useState(true);
-  const fillForm = (submittedValues) => {
+  const saveAndContinue = (submittedValues) => {
     detailProps.save(submittedValues);
-    setOpen(!open);
-  };
-  const nextStep = () => {
-    setOpen(!open);
     click();
   };
 
@@ -28,29 +22,23 @@ const DetailSection = ({
       ...buttonDefault,
       variant: 'outlined',
       type: 'button',
-      text: 'Atras',
+      text: 'Atrás',
       action: back,
     },
     {
       ...buttonDefault,
-      text: 'Verificar',
+      text: 'Revisar documento',
     },
   ];
 
-  const viewButtons = [viewDefaultEdit, formButton(nextStep)];
-
-  if (open) {
-    return (
-      <DetailStructure
-        data={detailProps.data}
-        title={title}
-        buttons={formButtons}
-        submitAction={fillForm}
-      />
-    );
-  }
-
-  return <ConfirmDataView data={detailProps.data} buttons={viewButtons} />;
+  return (
+    <DetailStructure
+      data={detailProps.data}
+      title={title}
+      buttons={formButtons}
+      submitAction={saveAndContinue}
+    />
+  );
 };
 
 export default DetailSection;

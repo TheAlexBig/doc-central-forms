@@ -11,7 +11,7 @@ import Button from '@mui/material/Button';
 import useClasses from '../../Utils/UseClasses';
 
 const ReturnDialog = ({ open, handleClose }) => {
-  const styles = (_theme) => ({
+  const styles = () => ({
     dialog: {
       padding: '4px',
     },
@@ -25,13 +25,13 @@ const ReturnDialog = ({ open, handleClose }) => {
         <DialogContentText>
           <Typography>
             {' '}
-            Al regresar a Inicio perderas todos los datos que hayas ingresado
+            Al regresar al inicio perderás todos los datos que hayas ingresado.
           </Typography>
-          <Typography>¿Estas seguro de que quieres regresar?</Typography>
+          <Typography>¿Estás seguro de que quieres regresar?</Typography>
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="secondary" autoFocus>
+        <Button onClick={handleClose} color="secondary">
           Cancelar
         </Button>
         <Button href="/">Aceptar</Button>

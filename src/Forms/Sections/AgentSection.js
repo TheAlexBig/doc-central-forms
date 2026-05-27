@@ -1,28 +1,7 @@
-import React, { useState } from 'react';
-import Card from '@mui/material/Card';
-import CardActionArea from '@mui/material/CardActionArea';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
+import ButtonBase from '@mui/material/ButtonBase';
 import Grid from '@mui/material/Grid';
-import { defaultStyle } from '../FormStyles';
-import ConfirmDataView from '../../View/ConfirmDataView';
-import useClasses from '../../Utils/UseClasses';
-
-const styles = (_theme) => ({
-  title: {
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  buttons: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-  },
-  button: {
-    marginTop: 20,
-    marginLeft: 10,
-  },
-});
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 
 const AgentSection = ({
   agentProps = {
@@ -32,72 +11,70 @@ const AgentSection = ({
   click = () => {},
   title = '',
 }) => {
-  const [open, setOpen] = useState(true);
-  const [selectedIndex, setSelectedItem] = useState(-1);
-
-  const handleOpen = () => {
-    setOpen(false);
-  };
-  const handleClose = () => {
-    setOpen(true);
+  const selectAgent = (index) => {
+    agentProps.save(index);
+    click();
   };
 
-  const verifyButtons = [
-    {
-      color: 'secondary',
-      variant: 'outlined',
-      style: defaultStyle.button,
-      type: 'submit',
-      action: handleClose,
-      text: 'Cambiar',
-    },
-    {
-      color: 'primary',
-      variant: 'outlined',
-      style: defaultStyle.button,
-      type: 'submit',
-      action: () => {
-        agentProps.save(selectedIndex);
-        click();
-      },
-      text: 'Seleccionar',
-    },
-  ];
-
-  const classes = useClasses(styles);
-
-  return open ? (
-    <Grid container spacing={3}>
-      <Grid item xs={12}>
-        <Typography variant="h5" className={classes.title}>
-          {title}
-        </Typography>
-      </Grid>
-      {agentProps.data?.map((agent, index) => (
-        <Grid item xs={12} sm={4} key={`agentId-${agent.id}`}>
-          <Card>
-            <CardActionArea
-              className={classes.container}
-              onClick={() => {
-                setSelectedItem(index);
-                handleOpen();
-              }}
-            >
-              <CardContent style={{ display: 'flex', flexDirection: 'column' }}>
-                <Typography variant="h6">{agent.nombres}</Typography>
-                <Divider />
-                <Typography variant="body2">Carnet: {agent.carnet}</Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        </Grid>
-      ))}
-    </Grid>
-  ) : (
-    <ConfirmDataView
-      data={agentProps.data[selectedIndex]}
-      buttons={verifyButtons}
-    />
+  return (
+    <>
+      <Typography variant="h5" sx={{ mb: 1 }}>
+        {title}
+      </Typography>
+      <Typography color="text.secondary" sx={{ mb: 4 }}>
+        Seleccione al profesional que autenticará el documento.
+      </Typography>
+      <Stack sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
+        {agentProps.data?.map((agent, index) => (
+          <ButtonBase
+            key={`agentId-${agent.id}`}
+            onClick={() => selectAgent(index)}
+            sx={{
+              borderBottom: '1px solid',
+              borderColor: 'divider',
+              bgcolor: index % 2 ? '#f6f8fb' : 'background.paper',
+              display: 'block',
+              px: 2,
+              py: 2.5,
+              textAlign: 'left',
+              width: '100%',
+              '&:hover': { bgcolor: '#edf2ff' },
+            }}
+          >
+            <Grid container alignItems="center" spacing={2}>
+              <Grid item xs={12} sm={3}>
+                <Typography
+                  color="primary.main"
+                  fontWeight={700}
+                  variant="overline"
+                >
+                  Notario
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography fontWeight={650}>
+                  {agent.nombres} {agent.apellidos}
+                </Typography>
+                <Typography color="text.secondary" variant="body2">
+                  Carnet: {agent.carnet} | Distrito de {agent.distrito},{' '}
+                  {agent.municipio}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <Typography
+                  color="primary.main"
+                  fontWeight={650}
+                  textAlign={{ sm: 'right' }}
+                >
+                  Seleccionar
+                </Typography>
+              </Grid>
+            </Grid>
+          </ButtonBase>
+        ))}
+      </Stack>
+    </>
   );
 };
+
 export default AgentSection;

@@ -1,318 +1,182 @@
 import React, { useState } from 'react';
-
-import { Formik } from 'formik';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
-import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { defaultStyle } from '../FormStyles';
-
 import { CarValidationSchema } from '../Validations/CarValidationSchema';
+import { FieldGroup, FormActions, FormHeading } from './FormScaffold';
 
-const CarStructure = ({
-  data,
-  title = 'No title',
-  buttons = [],
-  submitAction = () => {},
-}) => {
-  const [dispone, setDispone] = useState({
-    motor: true,
-    chasis: true,
-    vin: true,
+const fieldProps = (name, values, touched, errors) => ({
+  error: Boolean(touched[name] && errors[name]),
+  helperText: touched[name] && errors[name],
+  name,
+  value: values[name],
+  fullWidth: true,
+});
+
+const CarStructure = ({ data, title, buttons, submitAction }) => {
+  const [notAvailable, setNotAvailable] = useState({
+    motor: data.num_motor === 'N/T',
+    chasis: data.num_chasis === 'N/T',
+    vin: data.num_vin === 'N/T',
   });
-  const disable = (type) => {
-    const tiene = {
-      ...dispone,
-    };
-    tiene[type] = !dispone[type];
-    setDispone(tiene);
+
+  const toggleNumber = (key, field, checked, setFieldValue) => {
+    setNotAvailable((current) => ({ ...current, [key]: checked }));
+    setFieldValue(field, checked ? 'N/T' : '');
   };
 
   return (
     <Formik
+      enableReinitialize
       initialValues={data}
       onSubmit={submitAction}
       validationSchema={Yup.object().shape(CarValidationSchema)}
     >
-      {(props) => {
-        const {
-          values,
-          touched,
-          errors,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-        } = props;
-        return (
-          <form onSubmit={handleSubmit}>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Typography variant="h5" style={defaultStyle.title}>
-                  {title}
-                </Typography>
+      {({
+        values,
+        touched,
+        errors,
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        setFieldValue,
+      }) => (
+        <form onSubmit={handleSubmit} noValidate>
+          <FormHeading
+            title={title}
+            description="Copie las características registrales del vehículo para evitar errores en el contrato."
+          />
+          <FieldGroup title="Identificación del vehículo">
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  {...fieldProps('placa', values, touched, errors)}
+                  label="Placa"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  placeholder="P-123456"
+                />
               </Grid>
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  {...fieldProps('marca', values, touched, errors)}
+                  label="Marca"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  {...fieldProps('modelo', values, touched, errors)}
+                  label="Modelo"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                />
+              </Grid>
+            </Grid>
+          </FieldGroup>
+          <FieldGroup title="Características">
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  style={defaultStyle.wide}
-                  error={errors.placa && touched.placa && errors.placa}
-                  label="Placa:"
-                  name="placa"
+                  {...fieldProps('color', values, touched, errors)}
+                  label="Color"
                   onBlur={handleBlur}
-                  value={values.placa}
                   onChange={handleChange}
-                  helperText={errors.placa && touched.placa && errors.placa}
-                  margin="normal"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  style={defaultStyle.wide}
-                  error={errors.marca && touched.marca && errors.marca}
-                  label="Marca:"
-                  name="marca"
+                  {...fieldProps('fabricado', values, touched, errors)}
+                  InputLabelProps={{ shrink: true }}
+                  label="Fecha de fabricación"
                   onBlur={handleBlur}
-                  value={values.marca}
                   onChange={handleChange}
-                  helperText={errors.marca && touched.marca && errors.marca}
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  style={defaultStyle.wide}
-                  error={errors.modelo && touched.modelo && errors.modelo}
-                  label="Modelo:"
-                  name="modelo"
-                  onBlur={handleBlur}
-                  value={values.modelo}
-                  onChange={handleChange}
-                  helperText={errors.modelo && touched.modelo && errors.modelo}
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  style={defaultStyle.wide}
-                  error={errors.color && touched.color && errors.color}
-                  label="Color:"
-                  name="color"
-                  onBlur={handleBlur}
-                  value={values.color}
-                  onChange={handleChange}
-                  helperText={errors.color && touched.color && errors.color}
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  style={defaultStyle.wide}
-                  error={
-                    errors.fabricado && touched.fabricado && errors.fabricado
-                  }
-                  label="fecha de fabricación:"
-                  name="fabricado"
-                  value={values.fabricado}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  helperText={
-                    errors.fabricado && touched.fabricado && errors.fabricado
-                  }
                   type="date"
-                  margin="normal"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <TextField
-                  style={defaultStyle.wide}
-                  error={
-                    errors.capacidad && touched.capacidad && errors.capacidad
-                  }
-                  label="Capacidad:"
-                  name="capacidad"
+                  {...fieldProps('capacidad', values, touched, errors)}
+                  label="Capacidad de personas"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
                   type="number"
-                  onBlur={handleBlur}
-                  value={values.capacidad}
-                  onChange={handleChange}
-                  helperText={
-                    errors.capacidad && touched.capacidad && errors.capacidad
-                  }
-                  margin="normal"
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <TextField
-                  style={defaultStyle.wide}
-                  error={errors.dominio && touched.dominio && errors.dominio}
-                  select
-                  label="Dominio:"
-                  name="dominio"
-                  value={values.dominio}
-                  onChange={handleChange}
+                  {...fieldProps('clase', values, touched, errors)}
+                  label="Clase"
                   onBlur={handleBlur}
-                  helperText={
-                    errors.dominio && touched.dominio && errors.dominio
-                  }
-                  margin="normal"
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  {...fieldProps('dominio', values, touched, errors)}
+                  label="Dominio"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  select
                 >
                   <MenuItem value="Propiedad">Propiedad</MenuItem>
                   <MenuItem value="Prenda">Prenda</MenuItem>
                 </TextField>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  style={defaultStyle.wide}
-                  error={errors.clase && touched.clase && errors.clase}
-                  label="Clase:"
-                  name="clase"
-                  onBlur={handleBlur}
-                  value={values.clase}
-                  onChange={handleChange}
-                  helperText={errors.clase && touched.clase && errors.clase}
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={8}>
-                <TextField
-                  style={defaultStyle.wide}
-                  error={
-                    errors.num_motor && touched.num_motor && errors.num_motor
-                  }
-                  label="Numero del motor:"
-                  name="num_motor"
-                  onBlur={handleBlur}
-                  value={values.num_motor}
-                  onChange={handleChange}
-                  disabled={!dispone.motor}
-                  helperText={
-                    errors.num_motor && touched.num_motor && errors.num_motor
-                  }
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={4} alignContent="center" justify="center">
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={dispone.motor}
-                      onClick={() => {
-                        disable('motor');
-                        props.setFieldValue(
-                          'num_motor',
-                          !dispone.motor ? '' : 'N/T'
-                        );
-                      }}
-                      value="N/T"
-                      color="primary"
-                      size="small"
-                    />
-                  }
-                  label="Dispone"
-                />
-              </Grid>
-              <Grid item xs={8}>
-                <TextField
-                  style={defaultStyle.wide}
-                  error={
-                    errors.num_chasis && touched.num_chasis && errors.num_chasis
-                  }
-                  label="Numero de chasis :"
-                  name="num_chasis"
-                  onBlur={handleBlur}
-                  value={values.num_chasis}
-                  onChange={handleChange}
-                  disabled={!dispone.chasis}
-                  helperText={
-                    errors.num_chasis && touched.num_chasis && errors.num_chasis
-                  }
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={4} alignContent="center" justify="center">
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={dispone.chasis}
-                      onClick={() => {
-                        disable('chasis');
-                        props.setFieldValue(
-                          'num_chasis',
-                          !dispone.chasis ? '' : 'N/T'
-                        );
-                      }}
-                      color="primary"
-                      size="small"
-                    />
-                  }
-                  label="Dispone"
-                />
-              </Grid>
-              <Grid item xs={8}>
-                <TextField
-                  style={defaultStyle.wide}
-                  error={errors.num_vin && touched.num_vin && errors.num_vin}
-                  label="Numero de vin :"
-                  name="num_vin"
-                  onBlur={handleBlur}
-                  value={values.num_vin}
-                  onChange={handleChange}
-                  disabled={!dispone.vin}
-                  helperText={
-                    errors.num_vin && touched.num_vin && errors.num_vin
-                  }
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={4} alignContent="center" justify="center">
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={dispone.vin}
-                      name="check-vin"
-                      onClick={() => {
-                        disable('vin');
-                        props.setFieldValue(
-                          'num_vin',
-                          !dispone.vin ? '' : 'N/T'
-                        );
-                      }}
-                      color="primary"
-                      size="small"
-                    />
-                  }
-                  label="Dispone"
-                />
-              </Grid>
             </Grid>
-            <Grid container style={defaultStyle.buttons}>
-              {buttons.map((buttonItem, index) => (
-                <Grid
-                  item
-                  xs={6}
-                  key={`Grid-${title}-${buttonItem.text}:${index}`}
-                >
-                  <Button
-                    key={`${title}-${buttonItem.text}:${index}`}
-                    color={buttonItem.color}
-                    variant={buttonItem.variant}
-                    style={defaultStyle.button}
-                    onClick={buttonItem.action}
-                    type={buttonItem.type}
-                  >
-                    {buttonItem.text}
-                  </Button>
+          </FieldGroup>
+          <FieldGroup
+            title="Números registrales"
+            description="Marque “No consta” únicamente cuando el dato no aparezca en la documentación."
+          >
+            <Grid container spacing={2}>
+              {[
+                ['motor', 'num_motor', 'Número de motor'],
+                ['chasis', 'num_chasis', 'Número de chasis'],
+                ['vin', 'num_vin', 'Número VIN'],
+              ].map(([key, field, label]) => (
+                <Grid item xs={12} key={field}>
+                  <Grid container spacing={1.5} alignItems="center">
+                    <Grid item xs={12} sm>
+                      <TextField
+                        {...fieldProps(field, values, touched, errors)}
+                        disabled={notAvailable[key]}
+                        label={label}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm="auto">
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={notAvailable[key]}
+                            onChange={(event) =>
+                              toggleNumber(
+                                key,
+                                field,
+                                event.target.checked,
+                                setFieldValue
+                              )
+                            }
+                          />
+                        }
+                        label="No consta"
+                      />
+                    </Grid>
+                  </Grid>
                 </Grid>
               ))}
             </Grid>
-          </form>
-        );
-      }}
+          </FieldGroup>
+          <FormActions buttons={buttons} />
+        </form>
+      )}
     </Formik>
   );
 };

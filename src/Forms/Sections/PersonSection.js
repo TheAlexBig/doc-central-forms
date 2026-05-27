@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { formButton, viewDefaultEdit, buttonDefault } from '../FormButtons';
+import React from 'react';
+import { buttonDefault } from '../FormButtons';
 import PersonStructure from '../Structure/PersonStructure';
-import ConfirmDataView from '../../View/ConfirmDataView';
 
 const PersonSection = ({
   personProps = {
@@ -12,14 +11,8 @@ const PersonSection = ({
   back = () => {},
   title = '',
 }) => {
-  const [open, setOpen] = useState(true);
-
-  const fillForm = (submittedValues) => {
+  const saveAndContinue = (submittedValues) => {
     personProps.save(submittedValues);
-    setOpen(!open);
-  };
-  const nextStep = () => {
-    setOpen(!open);
     click();
   };
 
@@ -28,29 +21,23 @@ const PersonSection = ({
       ...buttonDefault,
       variant: 'outlined',
       type: 'button',
-      text: 'Atras',
+      text: 'Atrás',
       action: back,
     },
     {
       ...buttonDefault,
-      text: 'Verificar',
+      text: 'Guardar y continuar',
     },
   ];
 
-  const viewButtons = [viewDefaultEdit, formButton(nextStep)];
-
-  if (open) {
-    return (
-      <PersonStructure
-        data={personProps.data}
-        title={title}
-        buttons={formButtons}
-        submitAction={fillForm}
-      />
-    );
-  }
-
-  return <ConfirmDataView data={personProps.data} buttons={viewButtons} />;
+  return (
+    <PersonStructure
+      data={personProps.data}
+      title={title}
+      buttons={formButtons}
+      submitAction={saveAndContinue}
+    />
+  );
 };
 
 export default PersonSection;

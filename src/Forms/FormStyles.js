@@ -5,13 +5,15 @@ export const defaultStyle = {
   buttons: {
     display: 'flex',
     justifyContent: 'flex-end',
+    gap: 12,
+    marginTop: 20,
   },
   button: {
-    marginTop: 20,
-    marginLeft: 10,
+    marginTop: 12,
   },
   title: {
-    display: 'flex',
-    justifyContent: 'center',
+    color: '#162d39',
+    fontWeight: 650,
+    marginBottom: 8,
   },
 };

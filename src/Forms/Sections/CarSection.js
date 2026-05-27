@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
-
-import ConfirmDataView from '../../View/ConfirmDataView';
-import { formButton, viewDefaultEdit, buttonDefault } from '../FormButtons';
+import React from 'react';
+import { buttonDefault } from '../FormButtons';
 
 import CarStructure from '../Structure/CarStructure';
 
@@ -14,14 +12,8 @@ const CarSection = ({
   back = () => {},
   title = '',
 }) => {
-  const [open, setOpen] = useState(true);
-
-  const fillForm = (submittedValues) => {
+  const saveAndContinue = (submittedValues) => {
     carProps.save(submittedValues);
-    setOpen(!open);
-  };
-  const nextStep = () => {
-    setOpen(!open);
     click();
   };
 
@@ -30,29 +22,23 @@ const CarSection = ({
       ...buttonDefault,
       variant: 'outlined',
       type: 'button',
-      text: 'Atras',
+      text: 'Atrás',
       action: back,
     },
     {
       ...buttonDefault,
-      text: 'Verificar',
+      text: 'Guardar y continuar',
     },
   ];
 
-  const viewButtons = [viewDefaultEdit, formButton(nextStep)];
-
-  if (open) {
-    return (
-      <CarStructure
-        data={carProps.data}
-        title={title}
-        buttons={formButtons}
-        submitAction={fillForm}
-      />
-    );
-  }
-
-  return <ConfirmDataView data={carProps.data} buttons={viewButtons} />;
+  return (
+    <CarStructure
+      data={carProps.data}
+      title={title}
+      buttons={formButtons}
+      submitAction={saveAndContinue}
+    />
+  );
 };
 
 export default CarSection;
