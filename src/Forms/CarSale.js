@@ -208,8 +208,10 @@ const CarSale = ({
                     </Typography>
                     <Typography color="text.secondary" sx={{ mb: 3 }}>
                       Revise cada bloque antes de generar. Central Docs no
-                      almacena la información ingresada. Los números se muestran
-                      en letras tal como se incorporarán al documento legal.
+                      almacena los datos de las partes ni del vehículo. Solo
+                      conserva en este equipo los agentes que usted registre
+                      para reutilizarlos. Los números se muestran en letras tal
+                      como se incorporarán al documento legal.
                     </Typography>
                     <CarSaleReview
                       data={documentData}
