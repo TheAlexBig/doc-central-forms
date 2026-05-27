@@ -1,6 +1,4 @@
-const apiUrl = (
-  import.meta.env.VITE_API_URL || 'http://localhost:8080'
-).replace(/\/$/, '');
+const apiUrl = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 
 const downloadFilename = (contentDisposition) => {
   const encodedName = contentDisposition?.match(/filename\*=UTF-8''([^;]+)/i);
