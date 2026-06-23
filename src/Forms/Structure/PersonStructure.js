@@ -2,7 +2,6 @@ import React from 'react';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
-import InputMask from 'react-input-mask';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { DataTerritorialDivision } from '../../Data/DataTerritorialDivision';
@@ -82,42 +81,17 @@ const PersonStructure = ({ data, title, buttons, submitAction }) => (
         </FieldGroup>
         <FieldGroup
           title="Documentos y domicilio"
-          description="El DUI, NIT y la división territorial vigente se incorporarán al contrato."
+          description="El DUI y la división territorial vigente se incorporarán al contrato."
         >
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <InputMask
-                mask="99999999-9"
-                maskChar=""
+              <TextField
+                {...fieldProps('documento', values, touched, errors)}
+                label="DUI"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.documento}
-              >
-                {() => (
-                  <TextField
-                    {...fieldProps('documento', values, touched, errors)}
-                    label="DUI"
-                    placeholder="00000000-0"
-                  />
-                )}
-              </InputMask>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <InputMask
-                mask="9999-999999-999-9"
-                maskChar=""
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.nit}
-              >
-                {() => (
-                  <TextField
-                    {...fieldProps('nit', values, touched, errors)}
-                    label="NIT"
-                    placeholder="0000-000000-000-0"
-                  />
-                )}
-              </InputMask>
+                placeholder="00000000-0"
+              />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField

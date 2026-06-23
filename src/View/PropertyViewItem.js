@@ -22,7 +22,6 @@ const labels = {
   marca: 'Marca',
   modelo: 'Modelo',
   municipio: 'Municipio',
-  nit: 'NIT',
   nombre: 'Nombre',
   nombres: 'Nombres',
   num_chasis: 'Número de chasis',

@@ -7,7 +7,6 @@ export const DataPerson = {
   domicilio: '',
   fecha_nacimiento: '',
   documento: '',
-  nit: '',
   genero: '',
   edad: '',
   oficio: '',

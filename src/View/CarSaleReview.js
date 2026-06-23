@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography';
 const personValues = (person) => [
   ['Nombre', `${person.nombre} ${person.apellido}`],
   ['DUI', person.documento],
-  ['NIT', person.nit],
   ['Domicilio', `${person.domicilio}, ${person.departamento}`],
   ['Oficio', person.oficio],
 ];

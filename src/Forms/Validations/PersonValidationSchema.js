@@ -23,9 +23,6 @@ export const PersonValidationSchema = {
   documento: Yup.string()
     .required('Campo requerido')
     .min(10, 'Son un minimo de 10 caracteres'),
-  nit: Yup.string()
-    .required('Campo requerido')
-    .min(17, 'Son un minimo de 17 caracteres'),
   genero: Yup.string().required('Campo requerido'),
   oficio: Yup.string().required('Campo requerido'),
 };

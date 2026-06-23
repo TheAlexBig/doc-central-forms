@@ -18,7 +18,6 @@ const personPayload = (person) => ({
     legalSettlement(person.domicilio, person.municipio)
   ),
   documento: toLegalIdentifier(person.documento),
-  nit: toLegalIdentifier(person.nit),
   genero: person.genero,
   edad: toLegalNumber(person.edad),
   oficio: replaceNumericSequences(person.oficio),
