@@ -24,7 +24,7 @@ export default function Footer() {
       >
         <Typography fontWeight={700}>Central Docs</Typography>
         <Typography color="text.secondary" variant="body2">
-          Generación guiada de documentos legales en formato Word.
+          Generación guiada de documentos legales en formato Word y PDF.
         </Typography>
       </Container>
     </Box>

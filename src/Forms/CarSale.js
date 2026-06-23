@@ -68,6 +68,7 @@ const CarSale = ({
   const [activeStep, setActiveStep] = React.useState(0);
   const [lastStep, setLastStep] = React.useState(0);
   const [generating, setGenerating] = React.useState(false);
+  const [generatingFormat, setGeneratingFormat] = React.useState('');
   const [generationError, setGenerationError] = React.useState('');
   const [generated, setGenerated] = React.useState(false);
   const [returnToReview, setReturnToReview] = React.useState(false);
@@ -110,16 +111,18 @@ const CarSale = ({
     setActiveStep(steps.length);
   };
 
-  const handleGenerate = async () => {
+  const handleGenerate = async (format) => {
     setGenerating(true);
+    setGeneratingFormat(format);
     setGenerationError('');
     try {
-      await generateDocument();
+      await generateDocument(format);
       setGenerated(true);
     } catch (error) {
       setGenerationError(error.message);
     } finally {
       setGenerating(false);
+      setGeneratingFormat('');
     }
   };
 
@@ -191,10 +194,16 @@ const CarSale = ({
                     Abrir borrador
                   </Button>
                   <Button
-                    onClick={() => historyProps.download(historyItem)}
+                    onClick={() => historyProps.download(historyItem, 'docx')}
                     size="small"
                   >
-                    Descargar Word
+                    Word
+                  </Button>
+                  <Button
+                    onClick={() => historyProps.download(historyItem, 'pdf')}
+                    size="small"
+                  >
+                    PDF
                   </Button>
                 </Stack>
               </Stack>
@@ -534,7 +543,8 @@ const CarSale = ({
                         }}
                       >
                         <Typography fontWeight={650} sx={{ mb: 1 }}>
-                          Generando documento Word...
+                          Generando documento{' '}
+                          {generatingFormat === 'pdf' ? 'PDF' : 'Word'}...
                         </Typography>
                         <Typography
                           color="text.secondary"
@@ -568,13 +578,23 @@ const CarSale = ({
                       </Button>
                       <Button
                         variant="contained"
-                        onClick={handleGenerate}
+                        onClick={() => handleGenerate('docx')}
                         disabled={generating}
                       >
-                        {generating && (
+                        {generating && generatingFormat === 'docx' && (
                           <CircularProgress size={18} sx={{ mr: 1 }} />
                         )}
-                        Descargar documento Word
+                        Descargar Word
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        onClick={() => handleGenerate('pdf')}
+                        disabled={generating}
+                      >
+                        {generating && generatingFormat === 'pdf' && (
+                          <CircularProgress size={18} sx={{ mr: 1 }} />
+                        )}
+                        Descargar PDF
                       </Button>
                       {generated && (
                         <Button href="/compra-venta" variant="outlined">

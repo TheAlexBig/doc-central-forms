@@ -276,10 +276,10 @@ const App = () => {
     setActiveDraft(null);
   };
 
-  const downloadHistoricalDocument = async (historyItem) => {
+  const downloadHistoricalDocument = async (historyItem, format) => {
     try {
       setHistoryError('');
-      await downloadHistoryDocument(historyItem.id);
+      await downloadHistoryDocument(historyItem.id, format);
     } catch (error) {
       setHistoryError(error.message);
     }
@@ -377,8 +377,8 @@ const App = () => {
                     save: detailSubmit,
                   }}
                   documentData={documentData}
-                  generateDocument={async () => {
-                    await downloadCarSaleDocument(documentData, state);
+                  generateDocument={async (format) => {
+                    await downloadCarSaleDocument(documentData, state, format);
                     await refreshDocumentHistory();
                   }}
                   historyProps={{

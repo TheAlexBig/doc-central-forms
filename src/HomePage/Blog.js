@@ -11,7 +11,7 @@ import FeaturedPost from './FeaturedPost';
 const mainFeaturedPost = {
   title: 'Documentos legales guiados',
   description:
-    'Seleccione una plantilla, complete los datos y genere documentos Word con historial, borradores y valores reutilizables.',
+    'Seleccione una plantilla, complete los datos y genere documentos Word o PDF con historial, borradores y valores reutilizables.',
 };
 
 const featuredPosts = [
@@ -19,7 +19,7 @@ const featuredPosts = [
     title: 'Compra venta de vehículos',
     description:
       'Contrato de compra venta de vehículo con sección de autenticación notarial para El Salvador.',
-    meta: 'Formulario guiado / Word',
+    meta: 'Formulario guiado / Word y PDF',
   },
 ];
 
@@ -30,7 +30,7 @@ const processSteps = [
     'Completa',
     'Ingresa los datos requeridos mediante un formulario guiado.',
   ],
-  ['03', 'Descarga', 'Revisa la información y genera tu documento Word.'],
+  ['03', 'Descarga', 'Revisa la información y genera tu documento Word o PDF.'],
 ];
 
 export default function Blog() {
