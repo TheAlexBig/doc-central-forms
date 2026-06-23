@@ -13,7 +13,7 @@ const personValues = (person) => [
 const CarSaleReview = ({ data, onEdit }) => {
   const sections = [
     {
-      title: 'Notario',
+      title: 'Agente',
       step: 0,
       values: [
         [

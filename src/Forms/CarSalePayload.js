@@ -31,6 +31,7 @@ const agentPayload = (agent) => ({
     legalSettlement(agent.domicilio || agent.distrito, agent.municipio)
   ),
   genero: agent.genero,
+  rol: agent.rol || 'Notario',
 });
 
 export function createCarSalePayload(state) {

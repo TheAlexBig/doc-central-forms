@@ -9,13 +9,28 @@ const downloadFilename = (contentDisposition) => {
   return name?.[1] || 'compra-venta.docx';
 };
 
-export async function downloadCarSaleDocument(payload) {
-  const response = await fetch(`${apiUrl}/api/v1/documents/car-sale`, {
+const downloadBlob = async (response) => {
+  const blob = await response.blob();
+  const objectUrl = window.URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = objectUrl;
+  link.download = downloadFilename(response.headers.get('Content-Disposition'));
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => window.URL.revokeObjectURL(objectUrl), 1000);
+};
+
+export async function downloadCarSaleDocument(payload, draft) {
+  const response = await fetch(`${apiUrl}/api/v1/documents/car-sale/history`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify({
+      documento: payload,
+      borrador: draft,
+    }),
   });
 
   if (!response.ok) {
@@ -29,13 +44,22 @@ export async function downloadCarSaleDocument(payload) {
     throw new Error(message);
   }
 
-  const blob = await response.blob();
-  const objectUrl = window.URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = objectUrl;
-  link.download = downloadFilename(response.headers.get('Content-Disposition'));
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  window.setTimeout(() => window.URL.revokeObjectURL(objectUrl), 1000);
+  await downloadBlob(response);
+  return response.headers.get('X-Document-History-Id');
+}
+
+export async function listDocumentHistory() {
+  const response = await fetch(`${apiUrl}/api/v1/documents/history`);
+  if (!response.ok) {
+    throw new Error('No se pudo cargar el historial de documentos.');
+  }
+  return response.json();
+}
+
+export async function downloadHistoryDocument(id) {
+  const response = await fetch(`${apiUrl}/api/v1/documents/history/${id}/file`);
+  if (!response.ok) {
+    throw new Error('No se pudo descargar el documento histórico.');
+  }
+  await downloadBlob(response);
 }

@@ -12,9 +12,11 @@ const CarSection = ({
   back = () => {},
   title = '',
 }) => {
-  const saveAndContinue = (submittedValues) => {
-    carProps.save(submittedValues);
-    click();
+  const saveAndContinue = async (submittedValues) => {
+    const saved = await carProps.save(submittedValues);
+    if (saved !== false) {
+      click();
+    }
   };
 
   const formButtons = [
@@ -34,6 +36,8 @@ const CarSection = ({
   return (
     <CarStructure
       data={carProps.data}
+      error={carProps.error}
+      options={carProps.options}
       title={title}
       buttons={formButtons}
       submitAction={saveAndContinue}

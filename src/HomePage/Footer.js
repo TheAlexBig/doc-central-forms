@@ -14,7 +14,7 @@ export default function Footer() {
       }}
     >
       <Container
-        maxWidth="lg"
+        maxWidth="xl"
         sx={{
           alignItems: { sm: 'center' },
           display: { sm: 'flex' },

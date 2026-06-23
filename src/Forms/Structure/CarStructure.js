@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import Alert from '@mui/material/Alert';
+import Autocomplete from '@mui/material/Autocomplete';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
@@ -17,7 +19,63 @@ const fieldProps = (name, values, touched, errors) => ({
   fullWidth: true,
 });
 
-const CarStructure = ({ data, title, buttons, submitAction }) => {
+const autocompleteField = (
+  name,
+  label,
+  options,
+  values,
+  touched,
+  errors,
+  handleBlur,
+  setFieldValue
+) => (
+  <Autocomplete
+    freeSolo
+    inputValue={values[name] || ''}
+    onChange={(event, newValue) => {
+      setFieldValue(name, newValue || '');
+    }}
+    onInputChange={(event, newInputValue) => {
+      setFieldValue(name, newInputValue);
+    }}
+    options={options}
+    renderInput={(params) => (
+      <TextField
+        {...params}
+        error={Boolean(touched[name] && errors[name])}
+        fullWidth
+        helperText={touched[name] && errors[name]}
+        label={label}
+        name={name}
+        onBlur={handleBlur}
+      />
+    )}
+  />
+);
+
+const getModelOptions = (brand, options) => {
+  const matchingBrand = Object.keys(options.modelsByBrand || {}).find(
+    (savedBrand) => savedBrand.toLocaleLowerCase() === brand.toLocaleLowerCase()
+  );
+
+  return matchingBrand
+    ? options.modelsByBrand[matchingBrand]
+    : options.models || [];
+};
+
+const CarStructure = ({
+  data,
+  title,
+  buttons,
+  submitAction,
+  error = '',
+  options = {
+    colors: [],
+    brands: [],
+    models: [],
+    modelsByBrand: {},
+  },
+}) => {
   const [notAvailable, setNotAvailable] = useState({
     motor: data.num_motor === 'N/T',
     chasis: data.num_chasis === 'N/T',
@@ -50,6 +108,11 @@ const CarStructure = ({ data, title, buttons, submitAction }) => {
             title={title}
             description="Copie las características registrales del vehículo para evitar errores en el contrato."
           />
+          {error && (
+            <Alert severity="error" sx={{ mb: 3 }}>
+              {error}
+            </Alert>
+          )}
           <FieldGroup title="Identificación del vehículo">
             <Grid container spacing={2}>
               <Grid item xs={12} sm={4}>
@@ -62,32 +125,44 @@ const CarStructure = ({ data, title, buttons, submitAction }) => {
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
-                <TextField
-                  {...fieldProps('marca', values, touched, errors)}
-                  label="Marca"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
+                {autocompleteField(
+                  'marca',
+                  'Marca',
+                  options.brands || [],
+                  values,
+                  touched,
+                  errors,
+                  handleBlur,
+                  setFieldValue
+                )}
               </Grid>
               <Grid item xs={12} sm={4}>
-                <TextField
-                  {...fieldProps('modelo', values, touched, errors)}
-                  label="Modelo"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
+                {autocompleteField(
+                  'modelo',
+                  'Modelo',
+                  getModelOptions(values.marca || '', options),
+                  values,
+                  touched,
+                  errors,
+                  handleBlur,
+                  setFieldValue
+                )}
               </Grid>
             </Grid>
           </FieldGroup>
           <FieldGroup title="Características">
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  {...fieldProps('color', values, touched, errors)}
-                  label="Color"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
+                {autocompleteField(
+                  'color',
+                  'Color',
+                  options.colors || [],
+                  values,
+                  touched,
+                  errors,
+                  handleBlur,
+                  setFieldValue
+                )}
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField

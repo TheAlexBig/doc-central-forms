@@ -10,7 +10,23 @@ import { DataCar } from './Data/DataCar';
 import { DataDetails } from './Data/DataDetails';
 import GetAge from './Functions/GetAge';
 import { createCarSalePayload } from './Forms/CarSalePayload';
-import { downloadCarSaleDocument } from './Api/DocumentsApi';
+import {
+  downloadCarSaleDocument,
+  downloadHistoryDocument,
+  listDocumentHistory,
+} from './Api/DocumentsApi';
+import {
+  deletePerson,
+  listOccupations,
+  listPeople,
+  savePerson,
+} from './Api/PeopleApi';
+import {
+  listVehicleOptions,
+  removeVehicleOption,
+  saveVehicle,
+} from './Api/VehiclesApi';
+import { normalizeDui } from './Forms/PersonMemory';
 import {
   createAgent,
   deleteAgent,
@@ -30,11 +46,31 @@ const initialState = {
   agentStates: '',
 };
 
+const moveOptionToTop = (options, nextOption) => [
+  nextOption,
+  ...options.filter(
+    (option) => option.toLocaleLowerCase() !== nextOption.toLocaleLowerCase()
+  ),
+];
+
 const App = () => {
   const [state, setState] = useState(initialState);
   const [agents, setAgents] = useState([]);
+  const [savedPeople, setSavedPeople] = useState([]);
+  const [occupationOptions, setOccupationOptions] = useState([]);
+  const [vehicleOptions, setVehicleOptions] = useState({
+    colors: [],
+    brands: [],
+    models: [],
+    modelsByBrand: {},
+  });
   const [agentsLoading, setAgentsLoading] = useState(true);
   const [agentError, setAgentError] = useState('');
+  const [peopleError, setPeopleError] = useState('');
+  const [vehicleError, setVehicleError] = useState('');
+  const [documentHistory, setDocumentHistory] = useState([]);
+  const [historyError, setHistoryError] = useState('');
+  const [activeDraft, setActiveDraft] = useState(null);
   const documentData = createCarSalePayload(state);
 
   useEffect(() => {
@@ -42,6 +78,34 @@ const App = () => {
       .then(setAgents)
       .catch((error) => setAgentError(error.message))
       .finally(() => setAgentsLoading(false));
+  }, []);
+
+  useEffect(() => {
+    Promise.all([listPeople(), listOccupations()])
+      .then(([people, occupations]) => {
+        setSavedPeople(people);
+        setOccupationOptions(occupations);
+      })
+      .catch((error) => setPeopleError(error.message));
+  }, []);
+
+  useEffect(() => {
+    listVehicleOptions()
+      .then(setVehicleOptions)
+      .catch((error) => setVehicleError(error.message));
+  }, []);
+
+  const refreshDocumentHistory = async () => {
+    try {
+      setDocumentHistory(await listDocumentHistory());
+      setHistoryError('');
+    } catch (error) {
+      setHistoryError(error.message);
+    }
+  };
+
+  useEffect(() => {
+    refreshDocumentHistory();
   }, []);
 
   const selectAgent = (agent) => {
@@ -105,7 +169,37 @@ const App = () => {
     }
   };
 
-  const personSubmit = (values) => {
+  const savePersonMemory = async (values) => {
+    setPeopleError('');
+    try {
+      const savedPerson = await savePerson(values);
+      const savedDui = normalizeDui(savedPerson.documento);
+      setSavedPeople((currentPeople) => [
+        savedPerson,
+        ...currentPeople.filter(
+          (currentPerson) => normalizeDui(currentPerson.documento) !== savedDui
+        ),
+      ]);
+      setOccupationOptions((currentOccupations) => [
+        savedPerson.oficio,
+        ...currentOccupations.filter(
+          (occupation) =>
+            occupation.toLocaleLowerCase() !==
+            savedPerson.oficio.toLocaleLowerCase()
+        ),
+      ]);
+      return true;
+    } catch (error) {
+      setPeopleError(error.message);
+      return false;
+    }
+  };
+
+  const personSubmit = async (values) => {
+    const saved = await savePersonMemory(values);
+    if (!saved) {
+      return false;
+    }
     setState({
       ...state,
       personStates: {
@@ -113,9 +207,14 @@ const App = () => {
         edad: GetAge(values.fecha_nacimiento),
       },
     });
+    return true;
   };
 
-  const vendorSubmit = (values) => {
+  const vendorSubmit = async (values) => {
+    const saved = await savePersonMemory(values);
+    if (!saved) {
+      return false;
+    }
     setState({
       ...state,
       vendorStates: {
@@ -123,13 +222,38 @@ const App = () => {
         edad: GetAge(values.fecha_nacimiento),
       },
     });
+    return true;
   };
 
-  const carSubmit = (values) => {
+  const carSubmit = async (values) => {
+    setVehicleError('');
+    try {
+      const savedVehicle = await saveVehicle(values);
+      setVehicleOptions((currentOptions) => {
+        const brandModels =
+          currentOptions.modelsByBrand[savedVehicle.marca] || [];
+        return {
+          colors: moveOptionToTop(currentOptions.colors, savedVehicle.color),
+          brands: moveOptionToTop(currentOptions.brands, savedVehicle.marca),
+          models: moveOptionToTop(currentOptions.models, savedVehicle.modelo),
+          modelsByBrand: {
+            ...currentOptions.modelsByBrand,
+            [savedVehicle.marca]: moveOptionToTop(
+              brandModels,
+              savedVehicle.modelo
+            ),
+          },
+        };
+      });
+    } catch (error) {
+      setVehicleError(error.message);
+      return false;
+    }
     setState({
       ...state,
       carStates: values,
     });
+    return true;
   };
 
   const detailSubmit = (values) => {
@@ -137,6 +261,57 @@ const App = () => {
       ...state,
       detailStates: values,
     });
+  };
+
+  const loadHistoryDraft = (historyItem) => {
+    setState({
+      ...initialState,
+      ...historyItem.draft,
+    });
+    setActiveDraft(historyItem);
+  };
+
+  const clearHistoryDraft = () => {
+    setState(initialState);
+    setActiveDraft(null);
+  };
+
+  const downloadHistoricalDocument = async (historyItem) => {
+    try {
+      setHistoryError('');
+      await downloadHistoryDocument(historyItem.id);
+    } catch (error) {
+      setHistoryError(error.message);
+    }
+  };
+
+  const removeVehicleCatalogOption = async (kind, value) => {
+    try {
+      setVehicleError('');
+      setVehicleOptions(await removeVehicleOption(kind, value));
+    } catch (error) {
+      setVehicleError(error.message);
+    }
+  };
+
+  const removeSavedPerson = async (person) => {
+    setPeopleError('');
+    try {
+      await deletePerson(person.documento);
+      setSavedPeople((currentPeople) =>
+        currentPeople.filter(
+          (currentPerson) =>
+            normalizeDui(currentPerson.documento) !==
+            normalizeDui(person.documento)
+        )
+      );
+      const people = await listPeople();
+      const occupations = await listOccupations();
+      setSavedPeople(people);
+      setOccupationOptions(occupations);
+    } catch (error) {
+      setPeopleError(error.message);
+    }
   };
 
   return (
@@ -179,11 +354,22 @@ const App = () => {
                   }}
                   personProps={{
                     data: state.personStates,
+                    error: peopleError,
+                    people: savedPeople,
+                    occupations: occupationOptions,
                     save: personSubmit,
                   }}
-                  carProps={{ data: state.carStates, save: carSubmit }}
+                  carProps={{
+                    data: state.carStates,
+                    error: vehicleError,
+                    options: vehicleOptions,
+                    save: carSubmit,
+                  }}
                   vendorProps={{
                     data: state.vendorStates,
+                    error: peopleError,
+                    people: savedPeople,
+                    occupations: occupationOptions,
                     save: vendorSubmit,
                   }}
                   detailProps={{
@@ -191,7 +377,25 @@ const App = () => {
                     save: detailSubmit,
                   }}
                   documentData={documentData}
-                  generateDocument={() => downloadCarSaleDocument(documentData)}
+                  generateDocument={async () => {
+                    await downloadCarSaleDocument(documentData, state);
+                    await refreshDocumentHistory();
+                  }}
+                  historyProps={{
+                    data: documentHistory,
+                    error: historyError,
+                    activeDraft,
+                    clearDraft: clearHistoryDraft,
+                    load: loadHistoryDraft,
+                    download: downloadHistoricalDocument,
+                  }}
+                  settingsProps={{
+                    error: vehicleError || peopleError,
+                    people: savedPeople,
+                    vehicleOptions,
+                    removePerson: removeSavedPerson,
+                    removeVehicleOption: removeVehicleCatalogOption,
+                  }}
                 />
               }
             />

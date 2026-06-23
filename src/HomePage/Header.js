@@ -18,7 +18,7 @@ export default function Header(props) {
       position="sticky"
       sx={{ borderBottom: '1px solid', borderColor: 'divider' }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <Toolbar disableGutters sx={{ minHeight: { xs: 68, md: 76 } }}>
           <Box
             component={RouterLink}

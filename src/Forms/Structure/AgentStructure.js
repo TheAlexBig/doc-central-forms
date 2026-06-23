@@ -15,6 +15,7 @@ const initialAgent = {
   distrito: '',
   carnet: '',
   genero: '',
+  rol: 'Notario',
 };
 
 const fieldProps = (name, values, touched, errors) => ({
@@ -28,7 +29,7 @@ const fieldProps = (name, values, touched, errors) => ({
 const AgentStructure = ({ agent, buttons, submitAction }) => (
   <Formik
     enableReinitialize
-    initialValues={agent || initialAgent}
+    initialValues={{ ...initialAgent, ...(agent || {}) }}
     onSubmit={submitAction}
     validationSchema={Yup.object().shape(AgentValidationSchema)}
   >
@@ -71,6 +72,18 @@ const AgentStructure = ({ agent, buttons, submitAction }) => (
                 onBlur={handleBlur}
                 onChange={handleChange}
               />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                {...fieldProps('rol', values, touched, errors)}
+                label="Rol profesional"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                select
+              >
+                <MenuItem value="Notario">Notario</MenuItem>
+                <MenuItem value="Abogado">Abogado</MenuItem>
+              </TextField>
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField

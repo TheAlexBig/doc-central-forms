@@ -28,19 +28,19 @@ const theme = createTheme({
     fontFamily: '"Inter", "Segoe UI", Arial, sans-serif',
     h1: {
       fontWeight: 700,
-      letterSpacing: '-0.045em',
+      letterSpacing: 0,
     },
     h2: {
       fontWeight: 700,
-      letterSpacing: '-0.035em',
+      letterSpacing: 0,
     },
     h3: {
       fontWeight: 700,
-      letterSpacing: '-0.025em',
+      letterSpacing: 0,
     },
     h4: {
       fontWeight: 700,
-      letterSpacing: '-0.02em',
+      letterSpacing: 0,
     },
     h5: {
       fontWeight: 650,
@@ -59,6 +59,23 @@ const theme = createTheme({
         root: {
           borderRadius: 4,
           padding: '10px 16px',
+        },
+      },
+    },
+    MuiTabs: {
+      styleOverrides: {
+        indicator: {
+          height: 3,
+        },
+      },
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          minHeight: 44,
+          paddingLeft: 18,
+          paddingRight: 18,
+          textTransform: 'none',
         },
       },
     },

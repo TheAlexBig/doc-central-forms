@@ -14,4 +14,5 @@ export const AgentValidationSchema = {
   distrito: Yup.string().required('Campo requerido'),
   carnet: Yup.string().required('Campo requerido'),
   genero: Yup.string().required('Campo requerido'),
+  rol: Yup.string().required('Campo requerido'),
 };

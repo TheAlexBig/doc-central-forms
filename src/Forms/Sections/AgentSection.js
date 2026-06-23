@@ -137,7 +137,7 @@ const AgentSection = ({
                     fontWeight={700}
                     variant="overline"
                   >
-                    Notario
+                    {agent.rol || 'Notario'}
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={6}>

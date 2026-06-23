@@ -19,20 +19,23 @@ export default function FeaturedPost({ post }) {
         component={RouterLink}
         to="/compra-venta"
         sx={{
-          borderBottom: '1px solid',
+          border: '1px solid',
           borderColor: 'divider',
-          borderTop: '1px solid',
-          bgcolor: '#f6f8fb',
+          borderRadius: 1,
+          bgcolor: '#f8fafc',
           display: 'block',
-          px: { xs: 0, sm: 3 },
-          py: { xs: 3, md: 4 },
+          px: { xs: 1.5, sm: 2 },
+          py: { xs: 2, md: 2.5 },
           textAlign: 'left',
           width: '100%',
-          '&:hover': { bgcolor: '#edf2ff' },
+          '&:hover': {
+            bgcolor: '#eef4ff',
+            borderColor: 'primary.light',
+          },
         }}
       >
         <Grid container alignItems="center" spacing={2}>
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={2}>
             <Typography
               color="secondary.main"
               fontWeight={700}
@@ -41,11 +44,16 @@ export default function FeaturedPost({ post }) {
               Disponible
             </Typography>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={7}>
             <Typography component="h3" variant="h5" sx={{ mb: 1 }}>
               {post.title}
             </Typography>
-            <Typography color="text.secondary">{post.description}</Typography>
+            <Typography color="text.secondary" variant="body2">
+              {post.description}
+            </Typography>
+            <Typography color="text.secondary" sx={{ mt: 1 }} variant="caption">
+              {post.meta}
+            </Typography>
           </Grid>
           <Grid item xs={12} sm={3}>
             <Box
@@ -71,6 +79,7 @@ export default function FeaturedPost({ post }) {
 FeaturedPost.propTypes = {
   post: PropTypes.shape({
     description: PropTypes.string.isRequired,
+    meta: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
   }).isRequired,
 };

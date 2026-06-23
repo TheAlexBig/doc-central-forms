@@ -22,7 +22,7 @@ export const PersonValidationSchema = {
     .min('1900-01-01', 'Debe ser una fecha válida'),
   documento: Yup.string()
     .required('Campo requerido')
-    .min(10, 'Son un minimo de 10 caracteres'),
+    .matches(/^\d{8}-\d$/, 'Ingrese un DUI con formato 00000000-0'),
   genero: Yup.string().required('Campo requerido'),
   oficio: Yup.string().required('Campo requerido'),
 };

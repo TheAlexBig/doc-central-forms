@@ -1,10 +1,15 @@
 import React from 'react';
+import Alert from '@mui/material/Alert';
+import Autocomplete from '@mui/material/Autocomplete';
+import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { DataTerritorialDivision } from '../../Data/DataTerritorialDivision';
+import { formatDui, normalizeDui } from '../PersonMemory';
 import { PersonValidationSchema } from '../Validations/PersonValidationSchema';
 import { FieldGroup, FormActions, FormHeading } from './FormScaffold';
 
@@ -16,7 +21,24 @@ const fieldProps = (name, values, touched, errors) => ({
   fullWidth: true,
 });
 
-const PersonStructure = ({ data, title, buttons, submitAction }) => (
+const personLabel = (person) =>
+  [
+    [person.nombre, person.apellido].filter(Boolean).join(' '),
+    person.documento,
+    person.oficio,
+  ]
+    .filter(Boolean)
+    .join(' / ');
+
+const PersonStructure = ({
+  data,
+  title,
+  buttons,
+  submitAction,
+  error = '',
+  people = [],
+  occupations = [],
+}) => (
   <Formik
     enableReinitialize
     initialValues={data}
@@ -31,12 +53,66 @@ const PersonStructure = ({ data, title, buttons, submitAction }) => (
       handleBlur,
       handleSubmit,
       setFieldValue,
+      setValues,
     }) => (
       <form onSubmit={handleSubmit} noValidate>
         <FormHeading
           title={title}
           description="Ingrese la información tal como aparece en los documentos de identidad."
         />
+        {error && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {error}
+          </Alert>
+        )}
+        {people.length > 0 && (
+          <FieldGroup
+            title="Persona guardada"
+            description="Busque por nombre, DUI u oficio para reutilizar datos anteriores."
+          >
+            <Autocomplete
+              options={people}
+              getOptionLabel={personLabel}
+              isOptionEqualToValue={(option, value) =>
+                normalizeDui(option.documento) === normalizeDui(value.documento)
+              }
+              onChange={(event, person) => {
+                if (person) {
+                  setValues({
+                    ...data,
+                    ...person,
+                    documento: formatDui(person.documento),
+                  });
+                }
+              }}
+              renderOption={(props, person) => (
+                <Box
+                  component="li"
+                  {...props}
+                  key={normalizeDui(person.documento)}
+                >
+                  <Box sx={{ minWidth: 0 }}>
+                    <Typography fontWeight={650} variant="body2">
+                      {[person.nombre, person.apellido]
+                        .filter(Boolean)
+                        .join(' ')}
+                    </Typography>
+                    <Typography color="text.secondary" variant="caption">
+                      {person.documento} / {person.oficio}
+                    </Typography>
+                  </Box>
+                </Box>
+              )}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  label="Buscar persona guardada"
+                />
+              )}
+            />
+          </FieldGroup>
+        )}
         <FieldGroup title="Identidad personal">
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -89,8 +165,14 @@ const PersonStructure = ({ data, title, buttons, submitAction }) => (
                 {...fieldProps('documento', values, touched, errors)}
                 label="DUI"
                 onBlur={handleBlur}
-                onChange={handleChange}
+                onChange={(event) => {
+                  setFieldValue('documento', formatDui(event.target.value));
+                }}
                 placeholder="00000000-0"
+                inputProps={{
+                  inputMode: 'numeric',
+                  maxLength: 10,
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -156,11 +238,27 @@ const PersonStructure = ({ data, title, buttons, submitAction }) => (
           </Grid>
         </FieldGroup>
         <FieldGroup title="Actividad">
-          <TextField
-            {...fieldProps('oficio', values, touched, errors)}
-            label="Oficio o profesión"
-            onBlur={handleBlur}
-            onChange={handleChange}
+          <Autocomplete
+            freeSolo
+            inputValue={values.oficio || ''}
+            onChange={(event, newValue) => {
+              setFieldValue('oficio', newValue || '');
+            }}
+            onInputChange={(event, newInputValue) => {
+              setFieldValue('oficio', newInputValue);
+            }}
+            options={occupations}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                error={Boolean(touched.oficio && errors.oficio)}
+                fullWidth
+                helperText={touched.oficio && errors.oficio}
+                label="Oficio o profesión"
+                name="oficio"
+                onBlur={handleBlur}
+              />
+            )}
           />
         </FieldGroup>
         <FormActions buttons={buttons} />

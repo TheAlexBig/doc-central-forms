@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Box from '@mui/material/Box';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
@@ -9,7 +10,10 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
 import Button from '@mui/material/Button';
+import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -18,8 +22,19 @@ import Header from '../HomePage/Header';
 
 import ReturnDialog from './Dialogs/ReturnDialog';
 import CarSaleReview from '../View/CarSaleReview';
+import {
+  EmptyState,
+  SectionHeader,
+  SurfaceRow,
+} from './Structure/FormScaffold';
 
-const steps = ['Notario', 'Comprador', 'Vehículo', 'Vendedor', 'Firma y venta'];
+const steps = ['Agente', 'Comprador', 'Vehículo', 'Vendedor', 'Firma y venta'];
+
+const formatDateTime = (value) =>
+  new Intl.DateTimeFormat('es-SV', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(new Date(value));
 
 const CarSale = ({
   agentProps,
@@ -29,7 +44,27 @@ const CarSale = ({
   detailProps,
   documentData,
   generateDocument,
+  historyProps = {
+    data: [],
+    error: '',
+    activeDraft: null,
+    clearDraft: () => {},
+    load: () => {},
+    download: () => {},
+  },
+  settingsProps = {
+    error: '',
+    people: [],
+    vehicleOptions: {
+      colors: [],
+      brands: [],
+      models: [],
+    },
+    removePerson: () => {},
+    removeVehicleOption: () => {},
+  },
 }) => {
+  const [view, setView] = React.useState('form');
   const [activeStep, setActiveStep] = React.useState(0);
   const [lastStep, setLastStep] = React.useState(0);
   const [generating, setGenerating] = React.useState(false);
@@ -66,6 +101,14 @@ const CarSale = ({
     setReturnToReview(true);
     setActiveStep(index);
   };
+  const handleHistoryLoad = (historyItem) => {
+    historyProps.load(historyItem);
+    setView('form');
+    setGenerated(false);
+    setGenerationError('');
+    setLastStep(steps.length);
+    setActiveStep(steps.length);
+  };
 
   const handleGenerate = async () => {
     setGenerating(true);
@@ -92,44 +135,291 @@ const CarSale = ({
       ? 100
       : Math.round(((activeStep + 1) / steps.length) * 100);
 
+  const renderHistory = () => (
+    <Box>
+      <SectionHeader
+        title="Historial"
+        description="Documentos generados y borradores disponibles."
+      />
+      {historyProps.error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {historyProps.error}
+        </Alert>
+      )}
+      {historyProps.data.length === 0 ? (
+        <EmptyState>Aún no hay documentos generados.</EmptyState>
+      ) : (
+        <Stack spacing={1.25}>
+          {historyProps.data.map((historyItem) => (
+            <SurfaceRow key={historyItem.id}>
+              <Stack
+                alignItems={{ xs: 'stretch', sm: 'center' }}
+                direction={{ xs: 'column', sm: 'row' }}
+                spacing={2}
+              >
+                <Box sx={{ flex: 1, minWidth: 0 }}>
+                  <Typography
+                    fontWeight={650}
+                    sx={{ overflowWrap: 'anywhere' }}
+                  >
+                    {historyItem.title}
+                  </Typography>
+                  <Stack
+                    direction={{ xs: 'column', md: 'row' }}
+                    spacing={{ xs: 0.25, md: 1.5 }}
+                    sx={{ mt: 0.5 }}
+                  >
+                    <Typography color="text.secondary" variant="body2">
+                      {formatDateTime(historyItem.createdAt)}
+                    </Typography>
+                    <Typography color="text.secondary" variant="body2">
+                      {historyItem.buyerName} / {historyItem.sellerName}
+                    </Typography>
+                  </Stack>
+                </Box>
+                <Stack
+                  direction={{ xs: 'column', sm: 'row' }}
+                  spacing={1}
+                  sx={{ flexShrink: 0 }}
+                >
+                  <Button
+                    disabled={!Object.keys(historyItem.draft || {}).length}
+                    onClick={() => handleHistoryLoad(historyItem)}
+                    variant="outlined"
+                    size="small"
+                  >
+                    Abrir borrador
+                  </Button>
+                  <Button
+                    onClick={() => historyProps.download(historyItem)}
+                    size="small"
+                  >
+                    Descargar Word
+                  </Button>
+                </Stack>
+              </Stack>
+            </SurfaceRow>
+          ))}
+        </Stack>
+      )}
+    </Box>
+  );
+
+  const renderOptionList = (title, kind, options) => (
+    <Box sx={{ mb: 3 }}>
+      <Typography fontWeight={650} sx={{ mb: 1.25 }}>
+        {title}
+      </Typography>
+      {options.length === 0 ? (
+        <EmptyState>No hay opciones guardadas.</EmptyState>
+      ) : (
+        <Grid container spacing={1}>
+          {options.map((option) => (
+            <Grid item xs={12} sm={6} md={4} key={`${kind}-${option}`}>
+              <SurfaceRow>
+                <Stack
+                  alignItems="center"
+                  direction="row"
+                  justifyContent="space-between"
+                  spacing={1}
+                >
+                  <Typography
+                    sx={{ overflowWrap: 'anywhere', minWidth: 0 }}
+                    variant="body2"
+                  >
+                    {option}
+                  </Typography>
+                  <Button
+                    color="error"
+                    onClick={() =>
+                      settingsProps.removeVehicleOption(kind, option)
+                    }
+                    size="small"
+                    sx={{ flexShrink: 0 }}
+                  >
+                    Remover
+                  </Button>
+                </Stack>
+              </SurfaceRow>
+            </Grid>
+          ))}
+        </Grid>
+      )}
+    </Box>
+  );
+
+  const renderPeopleSettings = () => (
+    <Box sx={{ mb: 3 }}>
+      <Typography fontWeight={650} sx={{ mb: 1 }}>
+        Personas guardadas
+      </Typography>
+      {settingsProps.people.length === 0 ? (
+        <EmptyState>No hay personas guardadas.</EmptyState>
+      ) : (
+        <Grid container spacing={1}>
+          {settingsProps.people.map((person) => (
+            <Grid item xs={12} sm={6} key={person.documento}>
+              <SurfaceRow>
+                <Stack
+                  alignItems="center"
+                  direction="row"
+                  justifyContent="space-between"
+                  spacing={1.5}
+                >
+                  <Box sx={{ minWidth: 0 }}>
+                    <Typography
+                      fontWeight={650}
+                      sx={{ overflowWrap: 'anywhere' }}
+                      variant="body2"
+                    >
+                      {[person.nombre, person.apellido]
+                        .filter(Boolean)
+                        .join(' ')}
+                    </Typography>
+                    <Typography color="text.secondary" variant="caption">
+                      {person.documento} / {person.oficio}
+                    </Typography>
+                  </Box>
+                  <Button
+                    color="error"
+                    onClick={() => settingsProps.removePerson(person)}
+                    size="small"
+                    sx={{ flexShrink: 0 }}
+                  >
+                    Remover
+                  </Button>
+                </Stack>
+              </SurfaceRow>
+            </Grid>
+          ))}
+        </Grid>
+      )}
+    </Box>
+  );
+
+  const renderSettings = () => (
+    <Box>
+      <SectionHeader
+        title="Configuración"
+        description="Limpieza de valores guardados para personas, marcas, modelos y colores."
+      />
+      {settingsProps.error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {settingsProps.error}
+        </Alert>
+      )}
+      {renderPeopleSettings()}
+      {renderOptionList(
+        'Marcas',
+        'brands',
+        settingsProps.vehicleOptions.brands
+      )}
+      {renderOptionList(
+        'Modelos',
+        'models',
+        settingsProps.vehicleOptions.models
+      )}
+      {renderOptionList(
+        'Colores',
+        'colors',
+        settingsProps.vehicleOptions.colors
+      )}
+    </Box>
+  );
+
   return (
     <>
       <Header title="Central Docs" />
-      <Box component="main" sx={{ py: { xs: 2.5, md: 4 } }}>
+      <Box
+        component="main"
+        sx={{
+          bgcolor: 'background.default',
+          minHeight: 'calc(100vh - 64px)',
+          py: { xs: 2, md: 3 },
+        }}
+      >
         <Container
-          maxWidth="lg"
+          maxWidth="xl"
           sx={{
             bgcolor: 'background.paper',
             border: { md: '1px solid' },
             borderColor: 'divider',
-            minHeight: 'calc(100vh - 116px)',
-            px: { xs: 2, sm: 3.5, md: 5 },
-            py: { xs: 2.5, md: 4 },
+            boxShadow: { md: '0 12px 36px rgba(15, 23, 42, 0.06)' },
+            minHeight: 'calc(100vh - 104px)',
+            px: { xs: 2, sm: 3, md: 4 },
+            py: { xs: 2, md: 3 },
           }}
         >
-          <Stack direction="row" justifyContent="space-between" sx={{ mb: 3 }}>
-            <Box>
-              <Typography
-                color="text.secondary"
-                variant="body2"
-                sx={{ mb: 0.75 }}
-              >
-                Documentos / Compra venta de vehículos
-              </Typography>
+          <Stack
+            alignItems={{ xs: 'stretch', md: 'flex-start' }}
+            direction={{ xs: 'column', md: 'row' }}
+            justifyContent="space-between"
+            spacing={2}
+            sx={{ mb: 2.5 }}
+          >
+            <Box sx={{ minWidth: 0 }}>
+              <Breadcrumbs sx={{ mb: 0.75 }} separator="/">
+                <Link color="inherit" href="/" underline="hover">
+                  Documentos
+                </Link>
+                <Typography color="text.secondary" variant="body2">
+                  Compra venta de vehículos
+                </Typography>
+              </Breadcrumbs>
               <Typography component="h1" variant="h4">
                 Compra venta de vehículos
               </Typography>
             </Box>
-            <Button
-              color="inherit"
-              sx={{ alignSelf: 'flex-start' }}
-              variant="outlined"
-              onClick={handleClickOpen}
+            <Stack
+              alignItems={{ xs: 'stretch', sm: 'center' }}
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={1}
             >
-              Salir
-            </Button>
+              {historyProps.activeDraft && view === 'form' && (
+                <Button
+                  color="primary"
+                  onClick={() => {
+                    historyProps.clearDraft();
+                    setGenerated(false);
+                    setGenerationError('');
+                    setLastStep(0);
+                    setActiveStep(0);
+                  }}
+                  variant="outlined"
+                >
+                  Cerrar borrador
+                </Button>
+              )}
+              <Button
+                color="inherit"
+                variant="outlined"
+                onClick={handleClickOpen}
+              >
+                Salir
+              </Button>
+            </Stack>
           </Stack>
+          <Tabs
+            value={view}
+            onChange={(event, nextView) => setView(nextView)}
+            variant="scrollable"
+            allowScrollButtonsMobile
+            sx={{
+              borderBottom: '1px solid',
+              borderColor: 'divider',
+              mb: 3,
+            }}
+          >
+            <Tab label="Formulario" value="form" />
+            <Tab label="Historial" value="history" />
+            <Tab label="Configuración" value="settings" />
+          </Tabs>
           <ReturnDialog open={open} handleClose={handleClose} />
+          {historyProps.activeDraft && view === 'form' && (
+            <Alert severity="info" sx={{ mb: 3 }}>
+              Borrador abierto: {historyProps.activeDraft.title}
+            </Alert>
+          )}
           <Grid container spacing={3}>
             <Grid item xs={12} md={3}>
               <Box
@@ -141,6 +431,16 @@ const CarSale = ({
                   top: { md: 100 },
                 }}
               >
+                <Typography
+                  color="text.secondary"
+                  fontWeight={650}
+                  sx={{ mb: 1.5 }}
+                  variant="overline"
+                >
+                  {activeStep === steps.length
+                    ? 'Revisión final'
+                    : steps[activeStep]}
+                </Typography>
                 <Stack
                   direction="row"
                   justifyContent="space-between"
@@ -156,7 +456,11 @@ const CarSale = ({
                 <LinearProgress
                   value={progress}
                   variant="determinate"
-                  sx={{ height: 4, mb: { xs: 2, md: 3 } }}
+                  sx={{
+                    borderRadius: 1,
+                    height: 6,
+                    mb: { xs: 2, md: 3 },
+                  }}
                 />
                 <Stepper
                   activeStep={activeStep}
@@ -190,8 +494,16 @@ const CarSale = ({
               </Box>
             </Grid>
             <Grid item xs={12} md={9}>
-              <Box sx={{ minHeight: 560, pl: { md: 2 }, py: { xs: 1, md: 0 } }}>
-                {activeStep === steps.length ? (
+              <Box
+                sx={{
+                  minHeight: 560,
+                  pl: { md: 2 },
+                  py: { xs: 1, md: 0 },
+                }}
+              >
+                {view === 'history' && renderHistory()}
+                {view === 'settings' && renderSettings()}
+                {view === 'form' && activeStep === steps.length ? (
                   <>
                     <Typography
                       color="primary.main"
@@ -205,13 +517,6 @@ const CarSale = ({
                     </Typography>
                     <Typography variant="h5" gutterBottom>
                       Confirme el contenido del documento
-                    </Typography>
-                    <Typography color="text.secondary" sx={{ mb: 3 }}>
-                      Revise cada bloque antes de generar. Central Docs no
-                      almacena los datos de las partes ni del vehículo. Solo
-                      conserva en este equipo los agentes que usted registre
-                      para reutilizarlos. Los números se muestran en letras tal
-                      como se incorporarán al documento legal.
                     </Typography>
                     <CarSaleReview
                       data={documentData}
@@ -278,7 +583,7 @@ const CarSale = ({
                       )}
                     </Stack>
                   </>
-                ) : (
+                ) : view === 'form' ? (
                   getStepContent(
                     activeStep,
                     {
@@ -291,7 +596,7 @@ const CarSale = ({
                     handleNext,
                     handleBack
                   )
-                )}
+                ) : null}
               </Box>
             </Grid>
           </Grid>

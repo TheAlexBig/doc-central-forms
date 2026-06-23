@@ -11,9 +11,11 @@ const PersonSection = ({
   back = () => {},
   title = '',
 }) => {
-  const saveAndContinue = (submittedValues) => {
-    personProps.save(submittedValues);
-    click();
+  const saveAndContinue = async (submittedValues) => {
+    const saved = await personProps.save(submittedValues);
+    if (saved !== false) {
+      click();
+    }
   };
 
   const formButtons = [
@@ -33,6 +35,9 @@ const PersonSection = ({
   return (
     <PersonStructure
       data={personProps.data}
+      error={personProps.error}
+      people={personProps.people}
+      occupations={personProps.occupations}
       title={title}
       buttons={formButtons}
       submitAction={saveAndContinue}

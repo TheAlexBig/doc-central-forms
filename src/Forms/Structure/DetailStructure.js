@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
@@ -36,6 +37,15 @@ const cleanCurrency = (value) => {
     return integer;
   }
   return `${integer || '0'}.${decimalParts.join('').slice(0, 2)}`;
+};
+
+const todayValue = () => new Date().toISOString().slice(0, 10);
+
+const currentTimeValue = () => {
+  const now = new Date();
+  const hours = now.getHours().toString().padStart(2, '0');
+  const minutes = now.getMinutes().toString().padStart(2, '0');
+  return `${hours}:${minutes}`;
 };
 
 const DetailStructure = ({ data, title, buttons, submitAction }) => (
@@ -160,24 +170,53 @@ const DetailStructure = ({ data, title, buttons, submitAction }) => (
               </TextField>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                {...fieldProps('fecha_firma', values, touched, errors)}
-                InputLabelProps={{ shrink: true }}
-                label="Fecha de firma"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                type="date"
-              />
+              <Grid container spacing={1}>
+                <Grid item xs>
+                  <TextField
+                    {...fieldProps('fecha_firma', values, touched, errors)}
+                    InputLabelProps={{ shrink: true }}
+                    label="Fecha de firma"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    type="date"
+                  />
+                </Grid>
+                <Grid item xs="auto">
+                  <Button
+                    onClick={() => setFieldValue('fecha_firma', todayValue())}
+                    sx={{ height: '100%' }}
+                    variant="outlined"
+                  >
+                    Hoy
+                  </Button>
+                </Grid>
+              </Grid>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                {...fieldProps('hora_firma', values, touched, errors)}
-                InputLabelProps={{ shrink: true }}
-                label="Hora de firma"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                type="time"
-              />
+              <Grid container spacing={1}>
+                <Grid item xs>
+                  <TextField
+                    {...fieldProps('hora_firma', values, touched, errors)}
+                    InputLabelProps={{ shrink: true }}
+                    inputProps={{ step: 300 }}
+                    label="Hora de firma"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    type="time"
+                  />
+                </Grid>
+                <Grid item xs="auto">
+                  <Button
+                    onClick={() =>
+                      setFieldValue('hora_firma', currentTimeValue())
+                    }
+                    sx={{ height: '100%' }}
+                    variant="outlined"
+                  >
+                    Ahora
+                  </Button>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </FieldGroup>

@@ -10,20 +10,20 @@ export const CarValidationSchema = {
   marca: Yup.string()
     .required('Campo requerido')
     .matches(
-      /^(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)+$/,
-      'Solo se aceptan letras en este campo'
+      /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s.'-]+$/,
+      'Solo se aceptan letras y signos comunes de marca'
     ),
   modelo: Yup.string()
     .required('Campo requerido')
     .matches(
-      /^(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)+$/,
-      'Solo se aceptan letras en este campo'
+      /^[a-zA-ZÀ-ÿ\u00f1\u00d10-9\s./-]+$/,
+      'Solo se aceptan letras, números y signos comunes de modelo'
     ),
   color: Yup.string()
     .required('Campo requerido')
     .matches(
-      /^(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)+$/,
-      'Solo se aceptan letras en este campo'
+      /^[a-zA-ZÀ-ÿ\u00f1\u00d10-9\s./-]+$/,
+      'Solo se aceptan letras, números y signos comunes de color'
     ),
   fabricado: Yup.date()
     .required('Campo requerido')
@@ -36,8 +36,8 @@ export const CarValidationSchema = {
   clase: Yup.string()
     .required('Campo requerido')
     .matches(
-      /^(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)+$/,
-      'Solo se aceptan letras en este campo'
+      /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s./-]+$/,
+      'Solo se aceptan letras y signos comunes de clase'
     ),
   num_motor: Yup.string()
     .required('Campo requerido')
