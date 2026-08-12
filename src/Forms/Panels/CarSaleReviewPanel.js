@@ -19,19 +19,34 @@ const CarSaleReviewPanel = ({
   onGenerate,
 }) => (
   <>
-    <Typography
-      color="primary.main"
-      fontWeight={700}
+    <Box
       sx={{
-        mb: 2,
+        alignItems: { xs: 'flex-start', md: 'center' },
+        display: 'flex',
+        flexDirection: { xs: 'column', md: 'row' },
+        justifyContent: 'space-between',
+        mb: 2.5,
+        gap: 1.5,
       }}
-      variant="overline"
     >
-      Revisión final
-    </Typography>
-    <Typography variant="h5" gutterBottom>
-      Confirme el contenido del documento
-    </Typography>
+      <Box>
+        <Typography
+          color="primary.main"
+          fontWeight={700}
+          sx={{ mb: 0.5 }}
+          variant="overline"
+        >
+          Revisión final
+        </Typography>
+        <Typography component="h2" variant="h5">
+          Confirme el contenido antes de descargar
+        </Typography>
+        <Typography color="text.secondary" sx={{ mt: 0.75 }} variant="body2">
+          Revise los datos clave y corrija cualquier sección antes de generar
+          Word o PDF.
+        </Typography>
+      </Box>
+    </Box>
     <CarSaleReview data={documentData} onEdit={onEdit} />
     {generating && (
       <Box
@@ -64,40 +79,50 @@ const CarSaleReviewPanel = ({
         El documento fue generado y descargado correctamente.
       </Alert>
     )}
-    <Divider sx={{ my: 3 }} />
+    <Divider sx={{ mt: 3, mb: 2 }} />
     <Stack
-      direction={{ xs: 'column', sm: 'row' }}
-      justifyContent="flex-end"
+      alignItems={{ xs: 'stretch', md: 'center' }}
+      direction={{ xs: 'column', md: 'row' }}
+      justifyContent="space-between"
       spacing={1.5}
     >
-      <Button disabled={generating} onClick={onBack}>
-        Volver a firma y venta
-      </Button>
-      <Button
-        variant="contained"
-        onClick={() => onGenerate('docx')}
-        disabled={generating}
+      <Typography color="text.secondary" variant="body2">
+        Al descargar, Central Docs guardará este documento en el historial.
+      </Typography>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        justifyContent="flex-end"
+        spacing={1}
       >
-        {generating && generatingFormat === 'docx' && (
-          <CircularProgress size={18} sx={{ mr: 1 }} />
-        )}
-        Descargar Word
-      </Button>
-      <Button
-        variant="outlined"
-        onClick={() => onGenerate('pdf')}
-        disabled={generating}
-      >
-        {generating && generatingFormat === 'pdf' && (
-          <CircularProgress size={18} sx={{ mr: 1 }} />
-        )}
-        Descargar PDF
-      </Button>
-      {generated && (
-        <Button href="/compra-venta" variant="outlined">
-          Crear otro
+        <Button disabled={generating} onClick={onBack}>
+          Volver
         </Button>
-      )}
+        <Button
+          variant="contained"
+          onClick={() => onGenerate('docx')}
+          disabled={generating}
+        >
+          {generating && generatingFormat === 'docx' && (
+            <CircularProgress size={18} sx={{ mr: 1 }} />
+          )}
+          Descargar Word
+        </Button>
+        <Button
+          variant="outlined"
+          onClick={() => onGenerate('pdf')}
+          disabled={generating}
+        >
+          {generating && generatingFormat === 'pdf' && (
+            <CircularProgress size={18} sx={{ mr: 1 }} />
+          )}
+          Descargar PDF
+        </Button>
+        {generated && (
+          <Button href="/compra-venta" variant="outlined">
+            Crear otro
+          </Button>
+        )}
+      </Stack>
     </Stack>
   </>
 );
