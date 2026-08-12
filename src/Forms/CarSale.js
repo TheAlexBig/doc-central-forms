@@ -3,7 +3,6 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Container from '@mui/material/Container';
-import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import LinearProgress from '@mui/material/LinearProgress';
 import Stepper from '@mui/material/Stepper';
@@ -16,25 +15,15 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
-import CircularProgress from '@mui/material/CircularProgress';
 import { getStepContent } from './Steps/CarSaleSteps';
 import Header from '../HomePage/Header';
 
 import ReturnDialog from './Dialogs/ReturnDialog';
-import CarSaleReview from '../View/CarSaleReview';
-import {
-  EmptyState,
-  SectionHeader,
-  SurfaceRow,
-} from './Structure/FormScaffold';
+import CarSaleHistoryPanel from './Panels/CarSaleHistoryPanel';
+import CarSaleReviewPanel from './Panels/CarSaleReviewPanel';
+import CarSaleSettingsPanel from './Panels/CarSaleSettingsPanel';
 
 const steps = ['Agente', 'Comprador', 'Vehículo', 'Vendedor', 'Firma y venta'];
-
-const formatDateTime = (value) =>
-  new Intl.DateTimeFormat('es-SV', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(new Date(value));
 
 const CarSale = ({
   agentProps,
@@ -62,6 +51,8 @@ const CarSale = ({
     },
     removePerson: () => {},
     removeVehicleOption: () => {},
+    diagnostics: null,
+    openLogsFolder: () => {},
   },
 }) => {
   const [view, setView] = React.useState('form');
@@ -137,204 +128,6 @@ const CarSale = ({
     activeStep === steps.length
       ? 100
       : Math.round(((activeStep + 1) / steps.length) * 100);
-
-  const renderHistory = () => (
-    <Box>
-      <SectionHeader
-        title="Historial"
-        description="Documentos generados y borradores disponibles."
-      />
-      {historyProps.error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {historyProps.error}
-        </Alert>
-      )}
-      {historyProps.data.length === 0 ? (
-        <EmptyState>Aún no hay documentos generados.</EmptyState>
-      ) : (
-        <Stack spacing={1.25}>
-          {historyProps.data.map((historyItem) => (
-            <SurfaceRow key={historyItem.id}>
-              <Stack
-                alignItems={{ xs: 'stretch', sm: 'center' }}
-                direction={{ xs: 'column', sm: 'row' }}
-                spacing={2}
-              >
-                <Box sx={{ flex: 1, minWidth: 0 }}>
-                  <Typography
-                    fontWeight={650}
-                    sx={{ overflowWrap: 'anywhere' }}
-                  >
-                    {historyItem.title}
-                  </Typography>
-                  <Stack
-                    direction={{ xs: 'column', md: 'row' }}
-                    spacing={{ xs: 0.25, md: 1.5 }}
-                    sx={{ mt: 0.5 }}
-                  >
-                    <Typography color="text.secondary" variant="body2">
-                      {formatDateTime(historyItem.createdAt)}
-                    </Typography>
-                    <Typography color="text.secondary" variant="body2">
-                      {historyItem.buyerName} / {historyItem.sellerName}
-                    </Typography>
-                  </Stack>
-                </Box>
-                <Stack
-                  direction={{ xs: 'column', sm: 'row' }}
-                  spacing={1}
-                  sx={{ flexShrink: 0 }}
-                >
-                  <Button
-                    disabled={!Object.keys(historyItem.draft || {}).length}
-                    onClick={() => handleHistoryLoad(historyItem)}
-                    variant="outlined"
-                    size="small"
-                  >
-                    Abrir borrador
-                  </Button>
-                  <Button
-                    onClick={() => historyProps.download(historyItem, 'docx')}
-                    size="small"
-                  >
-                    Word
-                  </Button>
-                  <Button
-                    onClick={() => historyProps.download(historyItem, 'pdf')}
-                    size="small"
-                  >
-                    PDF
-                  </Button>
-                </Stack>
-              </Stack>
-            </SurfaceRow>
-          ))}
-        </Stack>
-      )}
-    </Box>
-  );
-
-  const renderOptionList = (title, kind, options) => (
-    <Box sx={{ mb: 3 }}>
-      <Typography fontWeight={650} sx={{ mb: 1.25 }}>
-        {title}
-      </Typography>
-      {options.length === 0 ? (
-        <EmptyState>No hay opciones guardadas.</EmptyState>
-      ) : (
-        <Grid container spacing={1}>
-          {options.map((option) => (
-            <Grid item xs={12} sm={6} md={4} key={`${kind}-${option}`}>
-              <SurfaceRow>
-                <Stack
-                  alignItems="center"
-                  direction="row"
-                  justifyContent="space-between"
-                  spacing={1}
-                >
-                  <Typography
-                    sx={{ overflowWrap: 'anywhere', minWidth: 0 }}
-                    variant="body2"
-                  >
-                    {option}
-                  </Typography>
-                  <Button
-                    color="error"
-                    onClick={() =>
-                      settingsProps.removeVehicleOption(kind, option)
-                    }
-                    size="small"
-                    sx={{ flexShrink: 0 }}
-                  >
-                    Remover
-                  </Button>
-                </Stack>
-              </SurfaceRow>
-            </Grid>
-          ))}
-        </Grid>
-      )}
-    </Box>
-  );
-
-  const renderPeopleSettings = () => (
-    <Box sx={{ mb: 3 }}>
-      <Typography fontWeight={650} sx={{ mb: 1 }}>
-        Personas guardadas
-      </Typography>
-      {settingsProps.people.length === 0 ? (
-        <EmptyState>No hay personas guardadas.</EmptyState>
-      ) : (
-        <Grid container spacing={1}>
-          {settingsProps.people.map((person) => (
-            <Grid item xs={12} sm={6} key={person.documento}>
-              <SurfaceRow>
-                <Stack
-                  alignItems="center"
-                  direction="row"
-                  justifyContent="space-between"
-                  spacing={1.5}
-                >
-                  <Box sx={{ minWidth: 0 }}>
-                    <Typography
-                      fontWeight={650}
-                      sx={{ overflowWrap: 'anywhere' }}
-                      variant="body2"
-                    >
-                      {[person.nombre, person.apellido]
-                        .filter(Boolean)
-                        .join(' ')}
-                    </Typography>
-                    <Typography color="text.secondary" variant="caption">
-                      {person.documento} / {person.oficio}
-                    </Typography>
-                  </Box>
-                  <Button
-                    color="error"
-                    onClick={() => settingsProps.removePerson(person)}
-                    size="small"
-                    sx={{ flexShrink: 0 }}
-                  >
-                    Remover
-                  </Button>
-                </Stack>
-              </SurfaceRow>
-            </Grid>
-          ))}
-        </Grid>
-      )}
-    </Box>
-  );
-
-  const renderSettings = () => (
-    <Box>
-      <SectionHeader
-        title="Configuración"
-        description="Limpieza de valores guardados para personas, marcas, modelos y colores."
-      />
-      {settingsProps.error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {settingsProps.error}
-        </Alert>
-      )}
-      {renderPeopleSettings()}
-      {renderOptionList(
-        'Marcas',
-        'brands',
-        settingsProps.vehicleOptions.brands
-      )}
-      {renderOptionList(
-        'Modelos',
-        'models',
-        settingsProps.vehicleOptions.models
-      )}
-      {renderOptionList(
-        'Colores',
-        'colors',
-        settingsProps.vehicleOptions.colors
-      )}
-    </Box>
-  );
 
   return (
     <>
@@ -510,99 +303,26 @@ const CarSale = ({
                   py: { xs: 1, md: 0 },
                 }}
               >
-                {view === 'history' && renderHistory()}
-                {view === 'settings' && renderSettings()}
+                {view === 'history' && (
+                  <CarSaleHistoryPanel
+                    historyProps={historyProps}
+                    onLoad={handleHistoryLoad}
+                  />
+                )}
+                {view === 'settings' && (
+                  <CarSaleSettingsPanel settingsProps={settingsProps} />
+                )}
                 {view === 'form' && activeStep === steps.length ? (
-                  <>
-                    <Typography
-                      color="primary.main"
-                      fontWeight={700}
-                      sx={{
-                        mb: 2,
-                      }}
-                      variant="overline"
-                    >
-                      Revisión final
-                    </Typography>
-                    <Typography variant="h5" gutterBottom>
-                      Confirme el contenido del documento
-                    </Typography>
-                    <CarSaleReview
-                      data={documentData}
-                      onEdit={handleReviewEdit}
-                    />
-                    {generating && (
-                      <Box
-                        sx={{
-                          borderLeft: '3px solid',
-                          borderColor: 'primary.main',
-                          bgcolor: '#f8fafc',
-                          mt: 3,
-                          px: 2,
-                          py: 2,
-                        }}
-                      >
-                        <Typography fontWeight={650} sx={{ mb: 1 }}>
-                          Generando documento{' '}
-                          {generatingFormat === 'pdf' ? 'PDF' : 'Word'}...
-                        </Typography>
-                        <Typography
-                          color="text.secondary"
-                          variant="body2"
-                          sx={{ mb: 2 }}
-                        >
-                          La primera generación puede tardar unos segundos.
-                          Mantenga esta ventana abierta.
-                        </Typography>
-                        <LinearProgress />
-                      </Box>
-                    )}
-                    {generationError && (
-                      <Alert severity="error" sx={{ mt: 3 }}>
-                        {generationError}
-                      </Alert>
-                    )}
-                    {generated && (
-                      <Alert severity="success" sx={{ mt: 3 }}>
-                        El documento fue generado y descargado correctamente.
-                      </Alert>
-                    )}
-                    <Divider sx={{ my: 3 }} />
-                    <Stack
-                      direction={{ xs: 'column', sm: 'row' }}
-                      justifyContent="flex-end"
-                      spacing={1.5}
-                    >
-                      <Button disabled={generating} onClick={handleBack}>
-                        Volver a firma y venta
-                      </Button>
-                      <Button
-                        variant="contained"
-                        onClick={() => handleGenerate('docx')}
-                        disabled={generating}
-                      >
-                        {generating && generatingFormat === 'docx' && (
-                          <CircularProgress size={18} sx={{ mr: 1 }} />
-                        )}
-                        Descargar Word
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        onClick={() => handleGenerate('pdf')}
-                        disabled={generating}
-                      >
-                        {generating && generatingFormat === 'pdf' && (
-                          <CircularProgress size={18} sx={{ mr: 1 }} />
-                        )}
-                        Descargar PDF
-                      </Button>
-                      {generated && (
-                        <Button href="/compra-venta" variant="outlined">
-                          Crear otro
-                        </Button>
-                      )}
-                    </Stack>
-                  </>
+                  <CarSaleReviewPanel
+                    documentData={documentData}
+                    generating={generating}
+                    generatingFormat={generatingFormat}
+                    generationError={generationError}
+                    generated={generated}
+                    onBack={handleBack}
+                    onEdit={handleReviewEdit}
+                    onGenerate={handleGenerate}
+                  />
                 ) : view === 'form' ? (
                   getStepContent(
                     activeStep,
