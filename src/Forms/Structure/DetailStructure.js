@@ -48,6 +48,15 @@ const currentTimeValue = () => {
   return `${hours}:${minutes}`;
 };
 
+const detailSummary = (values) => [
+  {
+    label: 'Precio',
+    value: values.precio && `$${formatCurrency(values.precio)}`,
+  },
+  { label: 'Firma', value: values.fecha_firma },
+  { label: 'Lugar', value: values.domicilio || values.municipio },
+];
+
 const DetailStructure = ({ data, title, buttons, submitAction }) => (
   <Formik
     enableReinitialize
@@ -68,8 +77,10 @@ const DetailStructure = ({ data, title, buttons, submitAction }) => (
         <FormHeading
           title={title}
           description="Defina las condiciones de venta y los datos del acto notarial."
+          eyebrow="Cierre del documento"
+          summary={detailSummary(values)}
         />
-        <FieldGroup title="Condiciones de la venta">
+        <FieldGroup title="Condiciones de la venta" accent="#4f5f2f">
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -107,6 +118,7 @@ const DetailStructure = ({ data, title, buttons, submitAction }) => (
         <FieldGroup
           title="Lugar y momento de firma"
           description="Seleccione municipio y distrito según la reorganización territorial vigente."
+          accent="#285f9f"
         >
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -223,6 +235,7 @@ const DetailStructure = ({ data, title, buttons, submitAction }) => (
         <FieldGroup
           title="Identificación ante notario"
           description="Indique si el notario conoce personalmente a cada compareciente."
+          accent="#7c3f58"
         >
           <Grid container spacing={2}>
             {[

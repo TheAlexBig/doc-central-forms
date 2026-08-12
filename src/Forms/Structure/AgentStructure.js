@@ -26,6 +26,15 @@ const fieldProps = (name, values, touched, errors) => ({
   fullWidth: true,
 });
 
+const agentSummary = (values) => [
+  {
+    label: 'Agente',
+    value: [values.nombres, values.apellidos].filter(Boolean).join(' '),
+  },
+  { label: 'Rol', value: values.rol },
+  { label: 'Carnet', value: values.carnet },
+];
+
 const AgentStructure = ({ agent, buttons, submitAction }) => (
   <Formik
     enableReinitialize
@@ -44,10 +53,12 @@ const AgentStructure = ({ agent, buttons, submitAction }) => (
     }) => (
       <form onSubmit={handleSubmit} noValidate>
         <FormHeading
-          title="Nuevo agente"
+          title={agent ? 'Editar agente' : 'Nuevo agente'}
           description="Los datos se guardan solo en este equipo para utilizarlos en documentos futuros."
+          eyebrow="Profesional"
+          summary={agentSummary(values)}
         />
-        <FieldGroup title="Información del profesional">
+        <FieldGroup title="Información del profesional" accent="#1f6f5f">
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField

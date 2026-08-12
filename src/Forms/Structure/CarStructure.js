@@ -63,6 +63,15 @@ const getModelOptions = (brand, options) => {
     : options.models || [];
 };
 
+const carSummary = (values) => [
+  { label: 'Placa', value: values.placa },
+  {
+    label: 'Vehículo',
+    value: [values.marca, values.modelo].filter(Boolean).join(' '),
+  },
+  { label: 'Color', value: values.color },
+];
+
 const CarStructure = ({
   data,
   title,
@@ -107,13 +116,15 @@ const CarStructure = ({
           <FormHeading
             title={title}
             description="Copie las características registrales del vehículo para evitar errores en el contrato."
+            eyebrow="Datos del vehículo"
+            summary={carSummary(values)}
           />
           {error && (
             <Alert severity="error" sx={{ mb: 3 }}>
               {error}
             </Alert>
           )}
-          <FieldGroup title="Identificación del vehículo">
+          <FieldGroup title="Identificación del vehículo" accent="#285f9f">
             <Grid container spacing={2}>
               <Grid item xs={12} sm={4}>
                 <TextField
@@ -150,7 +161,7 @@ const CarStructure = ({
               </Grid>
             </Grid>
           </FieldGroup>
-          <FieldGroup title="Características">
+          <FieldGroup title="Características" accent="#8a5b1f">
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 {autocompleteField(
@@ -208,6 +219,7 @@ const CarStructure = ({
           <FieldGroup
             title="Números registrales"
             description="Marque “No consta” únicamente cuando el dato no aparezca en la documentación."
+            accent="#7c3f58"
           >
             <Grid container spacing={2}>
               {[

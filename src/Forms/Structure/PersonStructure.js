@@ -30,6 +30,15 @@ const personLabel = (person) =>
     .filter(Boolean)
     .join(' / ');
 
+const personSummary = (values) => [
+  {
+    label: 'Persona',
+    value: [values.nombre, values.apellido].filter(Boolean).join(' '),
+  },
+  { label: 'DUI', value: values.documento },
+  { label: 'Oficio', value: values.oficio },
+];
+
 const PersonStructure = ({
   data,
   title,
@@ -59,6 +68,8 @@ const PersonStructure = ({
         <FormHeading
           title={title}
           description="Ingrese la información tal como aparece en los documentos de identidad."
+          eyebrow="Datos personales"
+          summary={personSummary(values)}
         />
         {error && (
           <Alert severity="error" sx={{ mb: 3 }}>
@@ -69,6 +80,7 @@ const PersonStructure = ({
           <FieldGroup
             title="Persona guardada"
             description="Busque por nombre, DUI u oficio para reutilizar datos anteriores."
+            accent="#0f766e"
           >
             <Autocomplete
               options={people}
@@ -113,7 +125,7 @@ const PersonStructure = ({
             />
           </FieldGroup>
         )}
-        <FieldGroup title="Identidad personal">
+        <FieldGroup title="Identidad personal" accent="#285f9f">
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -158,6 +170,7 @@ const PersonStructure = ({
         <FieldGroup
           title="Documentos y domicilio"
           description="El DUI y la división territorial vigente se incorporarán al contrato."
+          accent="#7c3f58"
         >
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -237,7 +250,7 @@ const PersonStructure = ({
             </Grid>
           </Grid>
         </FieldGroup>
-        <FieldGroup title="Actividad">
+        <FieldGroup title="Actividad" accent="#8a5b1f">
           <Autocomplete
             freeSolo
             inputValue={values.oficio || ''}

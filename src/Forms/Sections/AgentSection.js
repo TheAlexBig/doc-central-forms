@@ -3,11 +3,16 @@ import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import ButtonBase from '@mui/material/ButtonBase';
+import Chip from '@mui/material/Chip';
 import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import AgentStructure from '../Structure/AgentStructure';
+import { FormHeading } from '../Structure/FormScaffold';
+
+const agentName = (agent) =>
+  [agent.nombres, agent.apellidos].filter(Boolean).join(' ');
 
 const AgentSection = ({
   agentProps = {
@@ -76,21 +81,38 @@ const AgentSection = ({
 
   return (
     <>
+      <FormHeading
+        title={title}
+        description="Seleccione al profesional que autenticará el documento. Los agentes registrados se guardan solamente en este equipo."
+        eyebrow="Profesional responsable"
+        summary={[
+          { label: 'Registrados', value: agentProps.data.length },
+          {
+            label: 'Notarios',
+            value: agentProps.data.filter((agent) => agent.rol !== 'Abogado')
+              .length,
+          },
+          {
+            label: 'Abogados',
+            value: agentProps.data.filter((agent) => agent.rol === 'Abogado')
+              .length,
+          },
+        ]}
+      />
       <Stack
+        alignItems={{ xs: 'stretch', sm: 'center' }}
         direction={{ xs: 'column', sm: 'row' }}
         justifyContent="space-between"
-        spacing={2}
-        sx={{ mb: 1 }}
+        spacing={1.5}
+        sx={{ mb: 2 }}
       >
-        <Typography variant="h5">{title}</Typography>
+        <Typography color="text.secondary" fontWeight={650} variant="body2">
+          Directorio de agentes
+        </Typography>
         <Button variant="outlined" onClick={() => setAdding(true)}>
           Agregar agente
         </Button>
       </Stack>
-      <Typography color="text.secondary" sx={{ mb: 4 }}>
-        Seleccione al profesional que autenticará el documento. Los agentes
-        registrados se guardan solamente en este equipo.
-      </Typography>
       {agentProps.error && (
         <Alert severity="error" sx={{ mb: 3 }}>
           {agentProps.error}
@@ -107,16 +129,19 @@ const AgentSection = ({
           No hay agentes registrados. Agregue el primer agente para continuar.
         </Alert>
       )}
-      <Stack sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
+      <Stack spacing={1.5}>
         {agentProps.data?.map((agent, index) => (
           <Box
             key={agent.id}
             sx={{
-              borderBottom: '1px solid',
+              bgcolor: index % 2 ? '#fbfdff' : 'background.paper',
+              border: '1px solid',
               borderColor: 'divider',
-              bgcolor: index % 2 ? '#f6f8fb' : 'background.paper',
+              borderRadius: 1,
               display: 'flex',
-              alignItems: 'center',
+              alignItems: { xs: 'stretch', sm: 'center' },
+              flexDirection: { xs: 'column', sm: 'row' },
+              overflow: 'hidden',
             }}
           >
             <ButtonBase
@@ -125,31 +150,48 @@ const AgentSection = ({
                 display: 'block',
                 flex: 1,
                 px: 2,
-                py: 2.5,
+                py: 2,
                 textAlign: 'left',
-                '&:hover': { bgcolor: '#edf2ff' },
+                '&:hover': { bgcolor: '#f1f5ff' },
               }}
             >
               <Grid container alignItems="center" spacing={2}>
-                <Grid item xs={12} sm={3}>
-                  <Typography
-                    color="primary.main"
-                    fontWeight={700}
-                    variant="overline"
+                <Grid item xs={12} sm="auto">
+                  <Box
+                    sx={{
+                      alignItems: 'center',
+                      bgcolor: agent.rol === 'Abogado' ? '#285f9f' : '#1f6f5f',
+                      borderRadius: 1,
+                      color: 'white',
+                      display: 'flex',
+                      fontWeight: 800,
+                      height: 36,
+                      justifyContent: 'center',
+                      width: 36,
+                    }}
                   >
-                    {agent.rol || 'Notario'}
-                  </Typography>
+                    {index + 1}
+                  </Box>
                 </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Typography fontWeight={650}>
-                    {agent.nombres} {agent.apellidos}
-                  </Typography>
+                <Grid item xs={12} sm>
+                  <Stack
+                    direction="row"
+                    flexWrap="wrap"
+                    gap={1}
+                    sx={{ mb: 0.5 }}
+                  >
+                    <Chip label={agent.rol || 'Notario'} size="small" />
+                    {agent.carnet && (
+                      <Chip label={`Carnet ${agent.carnet}`} size="small" />
+                    )}
+                  </Stack>
+                  <Typography fontWeight={700}>{agentName(agent)}</Typography>
                   <Typography color="text.secondary" variant="body2">
-                    Carnet: {agent.carnet} | Distrito de {agent.distrito},{' '}
-                    {agent.municipio}
+                    Distrito de {agent.distrito || 'No especificado'},{' '}
+                    {agent.municipio || 'No especificado'}
                   </Typography>
                 </Grid>
-                <Grid item xs={12} sm={3}>
+                <Grid item xs={12} sm="auto">
                   <Typography color="primary.main" fontWeight={650}>
                     Seleccionar
                   </Typography>
@@ -161,7 +203,7 @@ const AgentSection = ({
                 setEditing(agent);
                 setAdding(true);
               }}
-              sx={{ ml: 1 }}
+              sx={{ ml: { sm: 1 } }}
             >
               Editar
             </Button>
