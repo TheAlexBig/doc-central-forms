@@ -70,6 +70,7 @@ const vehicleTypeOptions = [
   'Pick-up',
   'Microbús',
   'Panel',
+  'Furgón',
   'Cabezal',
 ];
 
