@@ -63,6 +63,19 @@ const getModelOptions = (brand, options) => {
     : options.models || [];
 };
 
+const vehicleClassOptions = ['Automóvil', 'Camión liviano', 'Camión pesado'];
+const vehicleTypeOptions = [
+  'Sedán',
+  'Hatchback',
+  'Pick-up',
+  'Microbús',
+  'Panel',
+  'Cabezal',
+];
+
+const capacityUnitForClass = (vehicleClass) =>
+  vehicleClass.toLocaleLowerCase().startsWith('camión') ? 'TON' : 'ASS';
+
 const carSummary = (values) => [
   { label: 'Placa', value: values.placa },
   {
@@ -185,24 +198,32 @@ const CarStructure = ({
                   type="date"
                 />
               </Grid>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={3}>
                 <TextField
                   {...fieldProps('capacidad', values, touched, errors)}
-                  label="Capacidad de personas"
+                  inputProps={{ min: 0, step: '0.01' }}
+                  label="Capacidad"
                   onBlur={handleBlur}
                   onChange={handleChange}
+                  placeholder={
+                    values.unidad_capacidad === 'TON' ? '2.00' : '5.00'
+                  }
                   type="number"
                 />
               </Grid>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={3}>
                 <TextField
-                  {...fieldProps('clase', values, touched, errors)}
-                  label="Clase"
+                  {...fieldProps('unidad_capacidad', values, touched, errors)}
+                  label="Unidad"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                />
+                  select
+                >
+                  <MenuItem value="ASS">ASS (asientos)</MenuItem>
+                  <MenuItem value="TON">TON (toneladas)</MenuItem>
+                </TextField>
               </Grid>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={3}>
                 <TextField
                   {...fieldProps('dominio', values, touched, errors)}
                   label="Dominio"
@@ -213,6 +234,53 @@ const CarStructure = ({
                   <MenuItem value="Propiedad">Propiedad</MenuItem>
                   <MenuItem value="Prenda">Prenda</MenuItem>
                 </TextField>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Autocomplete
+                  freeSolo
+                  inputValue={values.clase || ''}
+                  onChange={(event, newValue) => {
+                    const vehicleClass = newValue || '';
+                    setFieldValue('clase', vehicleClass);
+                    setFieldValue(
+                      'unidad_capacidad',
+                      capacityUnitForClass(vehicleClass)
+                    );
+                  }}
+                  onInputChange={(event, newInputValue, reason) => {
+                    setFieldValue('clase', newInputValue);
+                    if (reason === 'input') {
+                      setFieldValue(
+                        'unidad_capacidad',
+                        capacityUnitForClass(newInputValue)
+                      );
+                    }
+                  }}
+                  options={vehicleClassOptions}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      error={Boolean(touched.clase && errors.clase)}
+                      helperText={touched.clase && errors.clase}
+                      label="Clase"
+                      name="clase"
+                      onBlur={handleBlur}
+                      placeholder="Automóvil"
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                {autocompleteField(
+                  'tipo',
+                  'Tipo',
+                  vehicleTypeOptions,
+                  values,
+                  touched,
+                  errors,
+                  handleBlur,
+                  setFieldValue
+                )}
               </Grid>
             </Grid>
           </FieldGroup>

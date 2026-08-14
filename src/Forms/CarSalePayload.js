@@ -44,9 +44,12 @@ export function createCarSalePayload(state) {
       modelo: replaceNumericSequences(state.carStates.modelo),
       color: replaceNumericSequences(state.carStates.color),
       fabricado: toLegalYear(state.carStates.fabricado),
-      capacidad: toLegalNumber(state.carStates.capacidad),
+      capacidad: `${toLegalNumber(state.carStates.capacidad)} ${
+        state.carStates.unidad_capacidad || 'ASS'
+      }`,
       dominio: replaceNumericSequences(state.carStates.dominio),
       clase: replaceNumericSequences(state.carStates.clase),
+      tipo: replaceNumericSequences(state.carStates.tipo),
       num_motor: toLegalIdentifier(state.carStates.num_motor),
       num_chasis: toLegalIdentifier(state.carStates.num_chasis),
       num_vin: toLegalIdentifier(state.carStates.num_vin),

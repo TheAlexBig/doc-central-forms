@@ -81,6 +81,10 @@ export function useCarSaleFormState() {
     setState({
       ...initialCarSaleState,
       ...historyItem.draft,
+      carStates: {
+        ...initialCarSaleState.carStates,
+        ...historyItem.draft.carStates,
+      },
     });
     setActiveDraft(historyItem);
   };

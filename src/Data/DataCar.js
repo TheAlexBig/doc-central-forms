@@ -6,8 +6,10 @@ export const DataCar = {
   color: '',
   fabricado: '',
   capacidad: '',
+  unidad_capacidad: 'ASS',
   dominio: '', // propieda prenda
   clase: '',
+  tipo: '',
   num_motor: '',
   num_chasis: '',
   num_vin: '',

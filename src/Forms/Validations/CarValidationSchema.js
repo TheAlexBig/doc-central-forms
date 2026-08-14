@@ -32,12 +32,21 @@ export const CarValidationSchema = {
   capacidad: Yup.number()
     .required('Campo requerido')
     .positive('Solo se permiten numeros positivos'),
+  unidad_capacidad: Yup.string()
+    .oneOf(['ASS', 'TON'], 'Seleccione ASS o TON')
+    .required('Campo requerido'),
   dominio: Yup.string().required('Campo requerido'),
   clase: Yup.string()
     .required('Campo requerido')
     .matches(
       /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s./-]+$/,
       'Solo se aceptan letras y signos comunes de clase'
+    ),
+  tipo: Yup.string()
+    .required('Campo requerido')
+    .matches(
+      /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s./-]+$/,
+      'Solo se aceptan letras y signos comunes de tipo'
     ),
   num_motor: Yup.string()
     .required('Campo requerido')

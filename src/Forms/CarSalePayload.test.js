@@ -33,8 +33,10 @@ describe('createCarSalePayload', () => {
         color: 'Azul',
         fabricado: '2020',
         capacidad: '5',
+        unidad_capacidad: 'ASS',
         dominio: 'Propiedad',
-        clase: 'Sedan',
+        clase: 'Automóvil',
+        tipo: 'Sedán',
         num_motor: 'M123',
         num_chasis: 'C456',
         num_vin: 'VIN789',
@@ -71,7 +73,9 @@ describe('createCarSalePayload', () => {
       'Residencial CINCO, Municipio de Santa Tecla'
     );
     expect(payload.vehiculo.modelo).toBe('Corolla DOS MIL VEINTE');
-    expect(payload.vehiculo.capacidad).toBe('CINCO');
+    expect(payload.vehiculo.capacidad).toBe('CINCO ASS');
+    expect(payload.vehiculo.clase).toBe('Automóvil');
+    expect(payload.vehiculo.tipo).toBe('Sedán');
     expect(payload.documento.precio).toBe('DIEZ MIL CON CINCUENTA CENTAVOS');
     expect(payload.documento.fecha_firma).toBe(
       'VEINTISÉIS DE MAYO DE DOS MIL VEINTISÉIS'
@@ -81,5 +85,20 @@ describe('createCarSalePayload', () => {
     expect(payload.agente_juridico.domicilio).toBe(
       'Distrito UNO, Municipio de Santa Tecla'
     );
+  });
+
+  it('keeps the tonnage unit for trucks', () => {
+    const payload = createCarSalePayload({
+      vendorStates: {},
+      personStates: {},
+      carStates: {
+        capacidad: '2.00',
+        unidad_capacidad: 'TON',
+      },
+      detailStates: {},
+      agentStates: {},
+    });
+
+    expect(payload.vehiculo.capacidad).toBe('DOS TON');
   });
 });

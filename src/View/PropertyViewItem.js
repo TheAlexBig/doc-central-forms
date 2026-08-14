@@ -7,6 +7,7 @@ const labels = {
   carnet: 'Carnet',
   calidad_de: 'Calidad de',
   capacidad: 'Capacidad',
+  unidad_capacidad: 'Unidad de capacidad',
   clase: 'Clase',
   color: 'Color',
   departamento: 'Departamento',
