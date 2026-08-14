@@ -25,10 +25,14 @@ export const CarValidationSchema = {
       /^[a-zA-ZÀ-ÿ\u00f1\u00d10-9\s./-]+$/,
       'Solo se aceptan letras, números y signos comunes de color'
     ),
-  fabricado: Yup.date()
+  fabricado: Yup.string()
     .required('Campo requerido')
-    .max('2030-12-31', 'Debe ser una fecha válida')
-    .min('1900-01-01', 'Debe ser una fecha válida'),
+    .matches(/^\d{4}$/, 'Ingrese un año de cuatro dígitos')
+    .test(
+      'valid-year',
+      'Ingrese un año entre 1900 y 2030',
+      (value) => !value || (Number(value) >= 1900 && Number(value) <= 2030)
+    ),
   capacidad: Yup.number()
     .required('Campo requerido')
     .positive('Solo se permiten numeros positivos'),

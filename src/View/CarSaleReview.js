@@ -125,7 +125,7 @@ const CarSaleReview = ({ data, onEdit }) => {
         ['Placa', data.vehiculo.placa],
         ['Marca y modelo', vehicleTitle],
         ['Color', data.vehiculo.color],
-        ['Fabricación', data.vehiculo.fabricado],
+        ['Año de fabricación', data.vehiculo.fabricado],
         ['Clase / tipo', `${data.vehiculo.clase} / ${data.vehiculo.tipo}`],
         ['Capacidad', data.vehiculo.capacidad],
         ['Motor', data.vehiculo.num_motor],

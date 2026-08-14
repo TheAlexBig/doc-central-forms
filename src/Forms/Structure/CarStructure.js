@@ -76,6 +76,8 @@ const vehicleTypeOptions = [
 const capacityUnitForClass = (vehicleClass) =>
   vehicleClass.toLocaleLowerCase().startsWith('camión') ? 'TON' : 'ASS';
 
+const factoryYear = (value) => String(value || '').match(/^\d{4}/)?.[0] || '';
+
 const carSummary = (values) => [
   { label: 'Placa', value: values.placa },
   {
@@ -112,7 +114,10 @@ const CarStructure = ({
   return (
     <Formik
       enableReinitialize
-      initialValues={data}
+      initialValues={{
+        ...data,
+        fabricado: factoryYear(data.fabricado),
+      }}
       onSubmit={submitAction}
       validationSchema={Yup.object().shape(CarValidationSchema)}
     >
@@ -191,11 +196,16 @@ const CarStructure = ({
               <Grid item xs={12} sm={6}>
                 <TextField
                   {...fieldProps('fabricado', values, touched, errors)}
-                  InputLabelProps={{ shrink: true }}
-                  label="Fecha de fabricación"
+                  inputProps={{ inputMode: 'numeric', maxLength: 4 }}
+                  label="Año de fabricación"
                   onBlur={handleBlur}
-                  onChange={handleChange}
-                  type="date"
+                  onChange={(event) => {
+                    setFieldValue(
+                      'fabricado',
+                      event.target.value.replace(/\D/g, '').slice(0, 4)
+                    );
+                  }}
+                  placeholder="2020"
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
