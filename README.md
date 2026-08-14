@@ -4,6 +4,10 @@ React application for generating legal documents through guided forms. The
 first template is the Salvadoran vehicle purchase-and-sale document with
 notarial authentication.
 
+Central Docs is licensed under the [Apache License 2.0](LICENSE). See the
+[privacy policy](PRIVACY.md), [security policy](SECURITY.md), and
+[code signing policy](CODE_SIGNING_POLICY.md).
+
 ## Run Locally
 
 ```bash
@@ -26,7 +30,10 @@ The `/compra-venta` wizard gathers the notary, buyer, vehicle, seller, and
 signing details. The last screen provides a review before calling
 `POST /api/v1/documents/car-sale` and downloading `compra-venta.docx`.
 
-Central Docs does not store submitted personal data in this application.
+The browser interface sends form data only to the configured Central Docs API.
+In the packaged desktop application that API runs locally and stores selected
+people, vehicles, agents, document history, and generated documents on the
+user's computer as described in the privacy policy.
 
 ## Desktop Distribution
 
