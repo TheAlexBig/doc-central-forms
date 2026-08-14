@@ -10,6 +10,12 @@ export const DataCar = {
   dominio: '', // propieda prenda
   clase: '',
   tipo: '',
+  ejes: '',
+  tara: '',
+  tipo_capacidad: '',
+  cap_carga: '',
+  cap_maxima: '',
+  traccion: '',
   num_motor: '',
   num_chasis: '',
   num_vin: '',

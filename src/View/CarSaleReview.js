@@ -98,6 +98,17 @@ const CarSaleReview = ({ data, onEdit }) => {
     [data.vehiculo.marca, data.vehiculo.modelo].filter(Boolean).join(' ') ||
     emptyValue;
 
+  const heavyTruckValues =
+    data.vehiculo.clase?.toLocaleLowerCase() === 'camión pesado'
+      ? [
+          ['Ejes', data.vehiculo.ejes],
+          ['Tara', data.vehiculo.tara],
+          ['Tipo de capacidad', data.vehiculo.tipo_capacidad],
+          ['Capacidad de carga', data.vehiculo.cap_carga],
+          ['Capacidad máxima', data.vehiculo.cap_maxima],
+          ['Tracción', data.vehiculo.traccion],
+        ]
+      : [];
   const sections = [
     {
       title: 'Agente',
@@ -127,7 +138,10 @@ const CarSaleReview = ({ data, onEdit }) => {
         ['Color', data.vehiculo.color],
         ['Año de fabricación', data.vehiculo.fabricado],
         ['Clase / tipo', `${data.vehiculo.clase} / ${data.vehiculo.tipo}`],
-        ['Capacidad', data.vehiculo.capacidad],
+        ...(heavyTruckValues.length
+          ? []
+          : [['Capacidad', data.vehiculo.capacidad]]),
+        ...heavyTruckValues,
         ['Motor', data.vehiculo.num_motor],
         ['Chasis', data.vehiculo.num_chasis],
         ['VIN', data.vehiculo.num_vin],

@@ -34,11 +34,23 @@ export const CarValidationSchema = {
       (value) => !value || (Number(value) >= 1900 && Number(value) <= 2030)
     ),
   capacidad: Yup.number()
-    .required('Campo requerido')
-    .positive('Solo se permiten numeros positivos'),
-  unidad_capacidad: Yup.string()
-    .oneOf(['ASS', 'TON'], 'Seleccione ASS o TON')
-    .required('Campo requerido'),
+    .transform((value, originalValue) =>
+      originalValue === '' ? undefined : value
+    )
+    .when('clase', {
+      is: (value) => value?.toLocaleLowerCase() !== 'camión pesado',
+      then: (schema) =>
+        schema
+          .required('Campo requerido')
+          .positive('Solo se permiten numeros positivos'),
+    }),
+  unidad_capacidad: Yup.string().when('clase', {
+    is: (value) => value?.toLocaleLowerCase() !== 'camión pesado',
+    then: (schema) =>
+      schema
+        .oneOf(['ASS', 'TON'], 'Seleccione ASS o TON')
+        .required('Campo requerido'),
+  }),
   dominio: Yup.string().required('Campo requerido'),
   clase: Yup.string()
     .required('Campo requerido')
@@ -52,6 +64,30 @@ export const CarValidationSchema = {
       /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s./-]+$/,
       'Solo se aceptan letras y signos comunes de tipo'
     ),
+  ejes: Yup.string().when('clase', {
+    is: (value) => value?.toLocaleLowerCase() === 'camión pesado',
+    then: (schema) => schema.required('Campo requerido'),
+  }),
+  tara: Yup.string().when('clase', {
+    is: (value) => value?.toLocaleLowerCase() === 'camión pesado',
+    then: (schema) => schema.required('Campo requerido'),
+  }),
+  tipo_capacidad: Yup.string().when('clase', {
+    is: (value) => value?.toLocaleLowerCase() === 'camión pesado',
+    then: (schema) => schema.required('Campo requerido'),
+  }),
+  cap_carga: Yup.string().when('clase', {
+    is: (value) => value?.toLocaleLowerCase() === 'camión pesado',
+    then: (schema) => schema.required('Campo requerido'),
+  }),
+  cap_maxima: Yup.string().when('clase', {
+    is: (value) => value?.toLocaleLowerCase() === 'camión pesado',
+    then: (schema) => schema.required('Campo requerido'),
+  }),
+  traccion: Yup.string().when('clase', {
+    is: (value) => value?.toLocaleLowerCase() === 'camión pesado',
+    then: (schema) => schema.required('Campo requerido'),
+  }),
   num_motor: Yup.string()
     .required('Campo requerido')
     .matches(

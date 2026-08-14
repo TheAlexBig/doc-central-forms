@@ -76,6 +76,9 @@ const vehicleTypeOptions = [
 const capacityUnitForClass = (vehicleClass) =>
   vehicleClass.toLocaleLowerCase().startsWith('camión') ? 'TON' : 'ASS';
 
+const isHeavyTruck = (vehicleClass) =>
+  vehicleClass?.toLocaleLowerCase() === 'camión pesado';
+
 const factoryYear = (value) => String(value || '').match(/^\d{4}/)?.[0] || '';
 
 const carSummary = (values) => [
@@ -208,31 +211,35 @@ const CarStructure = ({
                   placeholder="2020"
                 />
               </Grid>
-              <Grid item xs={12} sm={3}>
-                <TextField
-                  {...fieldProps('capacidad', values, touched, errors)}
-                  inputProps={{ min: 0, step: '0.01' }}
-                  label="Capacidad"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  placeholder={
-                    values.unidad_capacidad === 'TON' ? '2.00' : '5.00'
-                  }
-                  type="number"
-                />
-              </Grid>
-              <Grid item xs={12} sm={3}>
-                <TextField
-                  {...fieldProps('unidad_capacidad', values, touched, errors)}
-                  label="Unidad"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  select
-                >
-                  <MenuItem value="ASS">ASS (asientos)</MenuItem>
-                  <MenuItem value="TON">TON (toneladas)</MenuItem>
-                </TextField>
-              </Grid>
+              {!isHeavyTruck(values.clase) && (
+                <Grid item xs={12} sm={3}>
+                  <TextField
+                    {...fieldProps('capacidad', values, touched, errors)}
+                    inputProps={{ min: 0, step: '0.01' }}
+                    label="Capacidad"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    placeholder={
+                      values.unidad_capacidad === 'TON' ? '2.00' : '5.00'
+                    }
+                    type="number"
+                  />
+                </Grid>
+              )}
+              {!isHeavyTruck(values.clase) && (
+                <Grid item xs={12} sm={3}>
+                  <TextField
+                    {...fieldProps('unidad_capacidad', values, touched, errors)}
+                    label="Unidad"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    select
+                  >
+                    <MenuItem value="ASS">ASS (asientos)</MenuItem>
+                    <MenuItem value="TON">TON (toneladas)</MenuItem>
+                  </TextField>
+                </Grid>
+              )}
               <Grid item xs={12} sm={3}>
                 <TextField
                   {...fieldProps('dominio', values, touched, errors)}
@@ -292,6 +299,29 @@ const CarStructure = ({
                   setFieldValue
                 )}
               </Grid>
+              {isHeavyTruck(values.clase) && (
+                <>
+                  {[
+                    ['ejes', 'Ejes', 'number'],
+                    ['tara', 'Tara', 'number'],
+                    ['tipo_capacidad', 'Tipo de capacidad', 'text'],
+                    ['cap_carga', 'Capacidad de carga', 'number'],
+                    ['cap_maxima', 'Capacidad máxima', 'number'],
+                    ['traccion', 'Tracción', 'text'],
+                  ].map(([field, label, type]) => (
+                    <Grid item xs={12} sm={4} key={field}>
+                      <TextField
+                        {...fieldProps(field, values, touched, errors)}
+                        inputProps={type === 'number' ? { min: 0 } : undefined}
+                        label={label}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        type={type}
+                      />
+                    </Grid>
+                  ))}
+                </>
+              )}
             </Grid>
           </FieldGroup>
           <FieldGroup

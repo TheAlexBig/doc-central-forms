@@ -29,7 +29,7 @@ describe('createCarSalePayload', () => {
       carStates: {
         placa: 'P123456',
         marca: 'Toyota',
-        modelo: 'Corolla 2020',
+        modelo: 'K3000S',
         color: 'Azul',
         fabricado: '2020',
         capacidad: '5',
@@ -72,7 +72,7 @@ describe('createCarSalePayload', () => {
     expect(payload.comprador.domicilio).toBe(
       'Residencial CINCO, Municipio de Santa Tecla'
     );
-    expect(payload.vehiculo.modelo).toBe('Corolla DOS MIL VEINTE');
+    expect(payload.vehiculo.modelo).toBe('K TRES MIL S');
     expect(payload.vehiculo.capacidad).toBe('CINCO ASS');
     expect(payload.vehiculo.clase).toBe('Automóvil');
     expect(payload.vehiculo.tipo).toBe('Sedán');
@@ -100,5 +100,30 @@ describe('createCarSalePayload', () => {
     });
 
     expect(payload.vehiculo.capacidad).toBe('DOS TON');
+  });
+
+  it('includes the exclusive heavy truck specifications', () => {
+    const payload = createCarSalePayload({
+      vendorStates: {},
+      personStates: {},
+      carStates: {
+        clase: 'Camión pesado',
+        tipo_capacidad: 'Carga seca',
+        ejes: '3',
+        tara: '8500',
+        cap_carga: '12000',
+        cap_maxima: '20500',
+        traccion: '6x4',
+      },
+      detailStates: {},
+      agentStates: {},
+    });
+
+    expect(payload.vehiculo.capacidad).toBe('Carga seca');
+    expect(payload.vehiculo.ejes).toBe('TRES');
+    expect(payload.vehiculo.tara).toBe('OCHO MIL QUINIENTOS');
+    expect(payload.vehiculo.cap_carga).toBe('DOCE MIL');
+    expect(payload.vehiculo.cap_maxima).toBe('VEINTE MIL QUINIENTOS');
+    expect(payload.vehiculo.traccion).toBe('SEIS x CUATRO');
   });
 });

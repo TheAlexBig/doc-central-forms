@@ -145,9 +145,11 @@ export const toLegalNumber = (value) => {
 };
 
 export const replaceNumericSequences = (value) =>
-  String(value ?? '').replace(/\d+/g, (digits) =>
-    integerToWords(BigInt(digits))
-  );
+  String(value ?? '')
+    .replace(/\d+/g, (digits) => ` ${integerToWords(BigInt(digits))} `)
+    .replace(/\s+/g, ' ')
+    .replace(/\s+([,.;:])/g, '$1')
+    .trim();
 
 export const toLegalIdentifier = (value) =>
   String(value ?? '')
