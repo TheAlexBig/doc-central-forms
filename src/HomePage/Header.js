@@ -7,6 +7,7 @@ import Link from '@mui/material/Link';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { Link as RouterLink } from 'react-router-dom';
+import packageInfo from '../../package.json';
 
 export default function Header(props) {
   const { title } = props;
@@ -42,13 +43,19 @@ export default function Header(props) {
               C
             </Box>
             <Box>
-              <Typography
-                component="span"
-                variant="h6"
-                sx={{ display: 'block' }}
-              >
-                {title}
-              </Typography>
+              <Box sx={{ alignItems: 'baseline', display: 'flex', gap: 0.75 }}>
+                <Typography component="span" variant="h6">
+                  {title}
+                </Typography>
+                <Typography
+                  aria-label={`Versión ${packageInfo.version}`}
+                  color="text.secondary"
+                  component="span"
+                  sx={{ fontSize: 11, fontWeight: 650 }}
+                >
+                  v{packageInfo.version}
+                </Typography>
+              </Box>
               <Typography
                 color="text.secondary"
                 component="span"
