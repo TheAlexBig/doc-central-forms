@@ -6,6 +6,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider } from '@mui/material/styles';
 import { createCarSalePayload } from './Forms/CarSalePayload';
+import { createCarSaleReviewData } from './Forms/CarSaleReviewData';
 import { downloadCarSaleDocument } from './Api/DocumentsApi';
 import { useAgents } from './Hooks/useAgents';
 import { useCarSaleFormState } from './Hooks/useCarSaleFormState';
@@ -30,6 +31,7 @@ const App = () => {
   });
   const { state } = form;
   const documentData = createCarSalePayload(state);
+  const reviewData = createCarSaleReviewData(state);
 
   const personSubmit = async (values) => {
     const saved = await peopleMemory.savePersonMemory(values);
@@ -124,7 +126,7 @@ const App = () => {
                     data: state.detailStates,
                     save: detailSubmit,
                   }}
-                  documentData={documentData}
+                  reviewData={reviewData}
                   generateDocument={async (format) => {
                     await downloadCarSaleDocument(documentData, state, format);
                     await history.refreshDocumentHistory();

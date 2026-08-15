@@ -158,102 +158,6 @@ const CarStructure = ({
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
-                {autocompleteField(
-                  'marca',
-                  'Marca',
-                  options.brands || [],
-                  values,
-                  touched,
-                  errors,
-                  handleBlur,
-                  setFieldValue
-                )}
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                {autocompleteField(
-                  'modelo',
-                  'Modelo',
-                  getModelOptions(values.marca || '', options),
-                  values,
-                  touched,
-                  errors,
-                  handleBlur,
-                  setFieldValue
-                )}
-              </Grid>
-            </Grid>
-          </FieldGroup>
-          <FieldGroup title="Características" accent="#8a5b1f">
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                {autocompleteField(
-                  'color',
-                  'Color',
-                  options.colors || [],
-                  values,
-                  touched,
-                  errors,
-                  handleBlur,
-                  setFieldValue
-                )}
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  {...fieldProps('fabricado', values, touched, errors)}
-                  inputProps={{ inputMode: 'numeric', maxLength: 4 }}
-                  label="Año de fabricación"
-                  onBlur={handleBlur}
-                  onChange={(event) => {
-                    setFieldValue(
-                      'fabricado',
-                      event.target.value.replace(/\D/g, '').slice(0, 4)
-                    );
-                  }}
-                  placeholder="2020"
-                />
-              </Grid>
-              {!isHeavyTruck(values.clase) && (
-                <Grid item xs={12} sm={3}>
-                  <TextField
-                    {...fieldProps('capacidad', values, touched, errors)}
-                    inputProps={{ min: 0, step: '0.01' }}
-                    label="Capacidad"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder={
-                      values.unidad_capacidad === 'TON' ? '2.00' : '5.00'
-                    }
-                    type="number"
-                  />
-                </Grid>
-              )}
-              {!isHeavyTruck(values.clase) && (
-                <Grid item xs={12} sm={3}>
-                  <TextField
-                    {...fieldProps('unidad_capacidad', values, touched, errors)}
-                    label="Unidad"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    select
-                  >
-                    <MenuItem value="ASS">ASS (asientos)</MenuItem>
-                    <MenuItem value="TON">TON (toneladas)</MenuItem>
-                  </TextField>
-                </Grid>
-              )}
-              <Grid item xs={12} sm={3}>
-                <TextField
-                  {...fieldProps('dominio', values, touched, errors)}
-                  label="Dominio"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  select
-                >
-                  <MenuItem value="Propiedad">Propiedad</MenuItem>
-                  <MenuItem value="Prenda">Prenda</MenuItem>
-                </TextField>
-              </Grid>
-              <Grid item xs={12} sm={6}>
                 <Autocomplete
                   freeSolo
                   inputValue={values.clase || ''}
@@ -288,7 +192,7 @@ const CarStructure = ({
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 {autocompleteField(
                   'tipo',
                   'Tipo',
@@ -300,6 +204,102 @@ const CarStructure = ({
                   setFieldValue
                 )}
               </Grid>
+            </Grid>
+          </FieldGroup>
+          <FieldGroup title="Características" accent="#8a5b1f">
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                {autocompleteField(
+                  'marca',
+                  'Marca',
+                  options.brands || [],
+                  values,
+                  touched,
+                  errors,
+                  handleBlur,
+                  setFieldValue
+                )}
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                {autocompleteField(
+                  'modelo',
+                  'Modelo',
+                  getModelOptions(values.marca || '', options),
+                  values,
+                  touched,
+                  errors,
+                  handleBlur,
+                  setFieldValue
+                )}
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  {...fieldProps('fabricado', values, touched, errors)}
+                  inputProps={{ inputMode: 'numeric', maxLength: 4 }}
+                  label="Año de fabricación"
+                  onBlur={handleBlur}
+                  onChange={(event) => {
+                    setFieldValue(
+                      'fabricado',
+                      event.target.value.replace(/\D/g, '').slice(0, 4)
+                    );
+                  }}
+                  placeholder="2020"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                {autocompleteField(
+                  'color',
+                  'Color',
+                  options.colors || [],
+                  values,
+                  touched,
+                  errors,
+                  handleBlur,
+                  setFieldValue
+                )}
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  {...fieldProps('dominio', values, touched, errors)}
+                  label="Dominio"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  select
+                >
+                  <MenuItem value="Propiedad">Propiedad</MenuItem>
+                  <MenuItem value="Prenda">Prenda</MenuItem>
+                </TextField>
+              </Grid>
+              {!isHeavyTruck(values.clase) && (
+                <Grid item xs={12} sm={3}>
+                  <TextField
+                    {...fieldProps('capacidad', values, touched, errors)}
+                    inputProps={{ min: 0, step: '0.01' }}
+                    label="Capacidad"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    placeholder={
+                      values.unidad_capacidad === 'TON' ? '2.00' : '5.00'
+                    }
+                    type="number"
+                  />
+                </Grid>
+              )}
+              {!isHeavyTruck(values.clase) && (
+                <Grid item xs={12} sm={3}>
+                  <TextField
+                    {...fieldProps('unidad_capacidad', values, touched, errors)}
+                    label="Unidad"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    select
+                  >
+                    <MenuItem value="ASS">ASS (asientos)</MenuItem>
+                    <MenuItem value="TON">TON (toneladas)</MenuItem>
+                  </TextField>
+                </Grid>
+              )}
               {isHeavyTruck(values.clase) && (
                 <>
                   {[

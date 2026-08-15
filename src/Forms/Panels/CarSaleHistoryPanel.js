@@ -15,6 +15,22 @@ const formatDateTime = (value) =>
     timeStyle: 'short',
   }).format(new Date(value));
 
+const draftSection = (historyItem, section) =>
+  historyItem.draft?.[section] || {};
+
+const historyTitle = (historyItem) => {
+  const vehicle = draftSection(historyItem, 'carStates');
+  const description = [vehicle.marca, vehicle.modelo, vehicle.placa]
+    .filter(Boolean)
+    .join(' ');
+  return description ? `Compra venta - ${description}` : historyItem.title;
+};
+
+const historyPersonName = (historyItem, section, fallback) => {
+  const person = draftSection(historyItem, section);
+  return [person.nombre, person.apellido].filter(Boolean).join(' ') || fallback;
+};
+
 const CarSaleHistoryPanel = ({ historyProps, onLoad }) => (
   <Box>
     <SectionHeader
@@ -39,7 +55,7 @@ const CarSaleHistoryPanel = ({ historyProps, onLoad }) => (
             >
               <Box sx={{ flex: 1, minWidth: 0 }}>
                 <Typography fontWeight={650} sx={{ overflowWrap: 'anywhere' }}>
-                  {historyItem.title}
+                  {historyTitle(historyItem)}
                 </Typography>
                 <Stack
                   direction={{ xs: 'column', md: 'row' }}
@@ -50,7 +66,17 @@ const CarSaleHistoryPanel = ({ historyProps, onLoad }) => (
                     {formatDateTime(historyItem.createdAt)}
                   </Typography>
                   <Typography color="text.secondary" variant="body2">
-                    {historyItem.buyerName} / {historyItem.sellerName}
+                    {historyPersonName(
+                      historyItem,
+                      'personStates',
+                      historyItem.buyerName
+                    )}{' '}
+                    /{' '}
+                    {historyPersonName(
+                      historyItem,
+                      'vendorStates',
+                      historyItem.sellerName
+                    )}
                   </Typography>
                 </Stack>
               </Box>

@@ -31,7 +31,7 @@ const CarSale = ({
   carProps,
   vendorProps,
   detailProps,
-  documentData,
+  reviewData,
   generateDocument,
   historyProps = {
     data: [],
@@ -314,7 +314,7 @@ const CarSale = ({
                 )}
                 {view === 'form' && activeStep === steps.length ? (
                   <CarSaleReviewPanel
-                    documentData={documentData}
+                    documentData={reviewData}
                     generating={generating}
                     generatingFormat={generatingFormat}
                     generationError={generationError}
