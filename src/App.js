@@ -14,6 +14,8 @@ import { useDesktopDiagnostics } from './Hooks/useDesktopDiagnostics';
 import { useDocumentHistory } from './Hooks/useDocumentHistory';
 import { usePeopleMemory } from './Hooks/usePeopleMemory';
 import { useVehicleMemory } from './Hooks/useVehicleMemory';
+import { useLicense } from './Hooks/useLicense';
+import LicenseActivation from './License/LicenseActivation';
 import theme from './Theme';
 
 const Blog = lazy(() => import('./HomePage/Blog'));
@@ -25,6 +27,7 @@ const App = () => {
   const vehicleMemory = useVehicleMemory();
   const history = useDocumentHistory();
   const desktopDiagnostics = useDesktopDiagnostics();
+  const license = useLicense();
   const agentsMemory = useAgents({
     clearSelectedAgent: form.clearSelectedAgent,
     updateSelectedAgent: form.updateSelectedAgent,
@@ -67,98 +70,117 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
-        <Suspense
-          fallback={
-            <Box
-              sx={{
-                alignItems: 'center',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 2,
-                minHeight: '60vh',
-                justifyContent: 'center',
-              }}
-            >
-              <CircularProgress size={32} />
-              <Typography color="text.secondary">
-                Preparando Central Docs...
-              </Typography>
-            </Box>
-          }
+      {license.loading && !license.status ? (
+        <Box
+          sx={{
+            alignItems: 'center',
+            display: 'flex',
+            minHeight: '100vh',
+            justifyContent: 'center',
+          }}
         >
-          <Routes>
-            <Route
-              exact
-              path="/compra-venta"
-              element={
-                <CarSale
-                  agentProps={{
-                    data: agentsMemory.agents,
-                    loading: agentsMemory.agentsLoading,
-                    error: agentsMemory.agentError,
-                    save: form.selectAgent,
-                    create: agentsMemory.saveAgent,
-                    update: agentsMemory.editAgent,
-                    remove: agentsMemory.removeAgent,
-                  }}
-                  personProps={{
-                    data: state.personStates,
-                    error: peopleMemory.peopleError,
-                    people: peopleMemory.savedPeople,
-                    occupations: peopleMemory.occupationOptions,
-                    save: personSubmit,
-                  }}
-                  carProps={{
-                    data: state.carStates,
-                    error: vehicleMemory.vehicleError,
-                    options: vehicleMemory.vehicleOptions,
-                    save: carSubmit,
-                  }}
-                  vendorProps={{
-                    data: state.vendorStates,
-                    error: peopleMemory.peopleError,
-                    people: peopleMemory.savedPeople,
-                    occupations: peopleMemory.occupationOptions,
-                    save: vendorSubmit,
-                  }}
-                  detailProps={{
-                    data: state.detailStates,
-                    save: detailSubmit,
-                  }}
-                  reviewData={reviewData}
-                  generateDocument={async (format) => {
-                    await downloadCarSaleDocument(documentData, state, format);
-                    await history.refreshDocumentHistory();
-                  }}
-                  historyProps={{
-                    data: history.documentHistory,
-                    error: history.historyError,
-                    activeDraft: form.activeDraft,
-                    clearDraft: form.clearHistoryDraft,
-                    load: form.loadHistoryDraft,
-                    download: history.downloadHistoricalDocument,
-                  }}
-                  settingsProps={{
-                    error:
-                      vehicleMemory.vehicleError ||
-                      peopleMemory.peopleError ||
-                      desktopDiagnostics.diagnosticsError,
-                    people: peopleMemory.savedPeople,
-                    vehicleOptions: vehicleMemory.vehicleOptions,
-                    removePerson: peopleMemory.removeSavedPerson,
-                    removeVehicleOption:
-                      vehicleMemory.removeVehicleCatalogOption,
-                    diagnostics: desktopDiagnostics.diagnostics,
-                    openLogsFolder: desktopDiagnostics.openDiagnosticsLogs,
-                  }}
-                />
-              }
-            />
-            <Route exact path="/" element={<Blog />} />
-          </Routes>
-        </Suspense>
-      </Router>
+          <CircularProgress size={32} />
+        </Box>
+      ) : !license.status?.active ? (
+        <LicenseActivation {...license} />
+      ) : (
+        <Router>
+          <Suspense
+            fallback={
+              <Box
+                sx={{
+                  alignItems: 'center',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                  minHeight: '60vh',
+                  justifyContent: 'center',
+                }}
+              >
+                <CircularProgress size={32} />
+                <Typography color="text.secondary">
+                  Preparando Central Docs...
+                </Typography>
+              </Box>
+            }
+          >
+            <Routes>
+              <Route
+                exact
+                path="/compra-venta"
+                element={
+                  <CarSale
+                    agentProps={{
+                      data: agentsMemory.agents,
+                      loading: agentsMemory.agentsLoading,
+                      error: agentsMemory.agentError,
+                      save: form.selectAgent,
+                      create: agentsMemory.saveAgent,
+                      update: agentsMemory.editAgent,
+                      remove: agentsMemory.removeAgent,
+                    }}
+                    personProps={{
+                      data: state.personStates,
+                      error: peopleMemory.peopleError,
+                      people: peopleMemory.savedPeople,
+                      occupations: peopleMemory.occupationOptions,
+                      save: personSubmit,
+                    }}
+                    carProps={{
+                      data: state.carStates,
+                      error: vehicleMemory.vehicleError,
+                      options: vehicleMemory.vehicleOptions,
+                      save: carSubmit,
+                    }}
+                    vendorProps={{
+                      data: state.vendorStates,
+                      error: peopleMemory.peopleError,
+                      people: peopleMemory.savedPeople,
+                      occupations: peopleMemory.occupationOptions,
+                      save: vendorSubmit,
+                    }}
+                    detailProps={{
+                      data: state.detailStates,
+                      save: detailSubmit,
+                    }}
+                    reviewData={reviewData}
+                    generateDocument={async (format) => {
+                      await downloadCarSaleDocument(
+                        documentData,
+                        state,
+                        format
+                      );
+                      await history.refreshDocumentHistory();
+                    }}
+                    historyProps={{
+                      data: history.documentHistory,
+                      error: history.historyError,
+                      activeDraft: form.activeDraft,
+                      clearDraft: form.clearHistoryDraft,
+                      load: form.loadHistoryDraft,
+                      download: history.downloadHistoricalDocument,
+                    }}
+                    settingsProps={{
+                      error:
+                        vehicleMemory.vehicleError ||
+                        peopleMemory.peopleError ||
+                        desktopDiagnostics.diagnosticsError,
+                      people: peopleMemory.savedPeople,
+                      vehicleOptions: vehicleMemory.vehicleOptions,
+                      removePerson: peopleMemory.removeSavedPerson,
+                      removeVehicleOption:
+                        vehicleMemory.removeVehicleCatalogOption,
+                      diagnostics: desktopDiagnostics.diagnostics,
+                      openLogsFolder: desktopDiagnostics.openDiagnosticsLogs,
+                    }}
+                  />
+                }
+              />
+              <Route exact path="/" element={<Blog />} />
+            </Routes>
+          </Suspense>
+        </Router>
+      )}
     </ThemeProvider>
   );
 };
