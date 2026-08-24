@@ -91,3 +91,16 @@ export async function deletePerson(documento) {
     'No se pudo remover la persona guardada.'
   );
 }
+
+export async function updatePerson(currentDocumento, person) {
+  const response = await localRequest(
+    `/api/v1/people/${encodeURIComponent(currentDocumento)}`,
+    {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(person),
+    },
+    'No se pudo actualizar la persona.'
+  );
+  return response.json();
+}

@@ -11,17 +11,13 @@ import StepButton from '@mui/material/StepButton';
 import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
 import { getStepContent } from './Steps/CarSaleSteps';
 import Header from '../HomePage/Header';
 
 import ReturnDialog from './Dialogs/ReturnDialog';
-import CarSaleHistoryPanel from './Panels/CarSaleHistoryPanel';
 import CarSaleReviewPanel from './Panels/CarSaleReviewPanel';
-import CarSaleSettingsPanel from './Panels/CarSaleSettingsPanel';
 
 const steps = ['Agente', 'Comprador', 'Vehículo', 'Vendedor', 'Firma y venta'];
 
@@ -32,32 +28,20 @@ const CarSale = ({
   vendorProps,
   detailProps,
   reviewData,
+  autosave = { savedAt: null, recovered: false, saving: false },
+  discardAutosavedDraft = () => {},
   generateDocument,
   historyProps = {
-    data: [],
-    error: '',
     activeDraft: null,
     clearDraft: () => {},
-    load: () => {},
-    download: () => {},
-  },
-  settingsProps = {
-    error: '',
-    people: [],
-    vehicleOptions: {
-      colors: [],
-      brands: [],
-      models: [],
-    },
-    removePerson: () => {},
-    removeVehicleOption: () => {},
-    diagnostics: null,
-    openLogsFolder: () => {},
   },
 }) => {
-  const [view, setView] = React.useState('form');
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [lastStep, setLastStep] = React.useState(0);
+  const [activeStep, setActiveStep] = React.useState(
+    historyProps.activeDraft ? steps.length : 0
+  );
+  const [lastStep, setLastStep] = React.useState(
+    historyProps.activeDraft ? steps.length : 0
+  );
   const [generating, setGenerating] = React.useState(false);
   const [generatingFormat, setGeneratingFormat] = React.useState('');
   const [generationError, setGenerationError] = React.useState('');
@@ -93,15 +77,6 @@ const CarSale = ({
     setReturnToReview(true);
     setActiveStep(index);
   };
-  const handleHistoryLoad = (historyItem) => {
-    historyProps.load(historyItem);
-    setView('form');
-    setGenerated(false);
-    setGenerationError('');
-    setLastStep(steps.length);
-    setActiveStep(steps.length);
-  };
-
   const handleGenerate = async (format) => {
     setGenerating(true);
     setGeneratingFormat(format);
@@ -177,7 +152,7 @@ const CarSale = ({
               direction={{ xs: 'column', sm: 'row' }}
               spacing={1}
             >
-              {historyProps.activeDraft && view === 'form' && (
+              {historyProps.activeDraft && (
                 <Button
                   color="primary"
                   onClick={() => {
@@ -201,26 +176,35 @@ const CarSale = ({
               </Button>
             </Stack>
           </Stack>
-          <Tabs
-            value={view}
-            onChange={(event, nextView) => setView(nextView)}
-            variant="scrollable"
-            allowScrollButtonsMobile
-            sx={{
-              borderBottom: '1px solid',
-              borderColor: 'divider',
-              mb: 3,
-            }}
-          >
-            <Tab label="Formulario" value="form" />
-            <Tab label="Historial" value="history" />
-            <Tab label="Configuración" value="settings" />
-          </Tabs>
           <ReturnDialog open={open} handleClose={handleClose} />
-          {historyProps.activeDraft && view === 'form' && (
+          {historyProps.activeDraft && (
             <Alert severity="info" sx={{ mb: 3 }}>
               Borrador abierto: {historyProps.activeDraft.title}
             </Alert>
+          )}
+          {autosave.recovered && (
+            <Alert
+              action={
+                <Button
+                  color="inherit"
+                  onClick={discardAutosavedDraft}
+                  size="small"
+                >
+                  Descartar
+                </Button>
+              }
+              severity="info"
+              sx={{ mb: 3 }}
+            >
+              Se recuperó el borrador guardado automáticamente.
+            </Alert>
+          )}
+          {(autosave.saving || autosave.savedAt) && (
+            <Typography color="text.secondary" sx={{ mb: 2 }} variant="caption">
+              {autosave.saving
+                ? 'Guardando borrador...'
+                : `Borrador guardado automáticamente a las ${new Intl.DateTimeFormat('es-SV', { hour: 'numeric', minute: '2-digit', second: '2-digit' }).format(new Date(autosave.savedAt))}`}
+            </Typography>
           )}
           <Grid container spacing={3}>
             <Grid item xs={12} md={3}>
@@ -303,16 +287,7 @@ const CarSale = ({
                   py: { xs: 1, md: 0 },
                 }}
               >
-                {view === 'history' && (
-                  <CarSaleHistoryPanel
-                    historyProps={historyProps}
-                    onLoad={handleHistoryLoad}
-                  />
-                )}
-                {view === 'settings' && (
-                  <CarSaleSettingsPanel settingsProps={settingsProps} />
-                )}
-                {view === 'form' && activeStep === steps.length ? (
+                {activeStep === steps.length ? (
                   <CarSaleReviewPanel
                     documentData={reviewData}
                     generating={generating}
@@ -323,7 +298,7 @@ const CarSale = ({
                     onEdit={handleReviewEdit}
                     onGenerate={handleGenerate}
                   />
-                ) : view === 'form' ? (
+                ) : (
                   getStepContent(
                     activeStep,
                     {
@@ -336,7 +311,7 @@ const CarSale = ({
                     handleNext,
                     handleBack
                   )
-                ) : null}
+                )}
               </Box>
             </Grid>
           </Grid>

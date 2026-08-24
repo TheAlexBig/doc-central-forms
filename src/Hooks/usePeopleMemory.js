@@ -4,6 +4,7 @@ import {
   listOccupations,
   listPeople,
   savePerson,
+  updatePerson,
 } from '../Api/PeopleApi';
 import { normalizeDui } from '../Forms/PersonMemory';
 
@@ -61,11 +62,25 @@ export function usePeopleMemory() {
     }
   };
 
+  const updateSavedPerson = async (currentPerson, values) => {
+    setPeopleError('');
+    try {
+      await updatePerson(currentPerson.documento, values);
+      await refreshPeopleMemory();
+      return true;
+    } catch (error) {
+      setPeopleError(error.message);
+      return false;
+    }
+  };
+
   return {
     savedPeople,
     occupationOptions,
     peopleError,
     savePersonMemory,
     removeSavedPerson,
+    updateSavedPerson,
+    refreshPeopleMemory,
   };
 }

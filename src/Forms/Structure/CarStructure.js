@@ -148,7 +148,7 @@ const CarStructure = ({
           )}
           <FieldGroup title="Identificación del vehículo" accent="#285f9f">
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   {...fieldProps('placa', values, touched, errors)}
                   label="Placa"
@@ -157,57 +157,21 @@ const CarStructure = ({
                   placeholder="P-123456"
                 />
               </Grid>
-              <Grid item xs={12} sm={4}>
-                <Autocomplete
-                  freeSolo
-                  inputValue={values.clase || ''}
-                  onChange={(event, newValue) => {
-                    const vehicleClass = newValue || '';
-                    setFieldValue('clase', vehicleClass);
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  {...fieldProps('fabricado', values, touched, errors)}
+                  inputProps={{ inputMode: 'numeric', maxLength: 4 }}
+                  label="Año de fabricación"
+                  onBlur={handleBlur}
+                  onChange={(event) => {
                     setFieldValue(
-                      'unidad_capacidad',
-                      capacityUnitForClass(vehicleClass)
+                      'fabricado',
+                      event.target.value.replace(/\D/g, '').slice(0, 4)
                     );
                   }}
-                  onInputChange={(event, newInputValue, reason) => {
-                    setFieldValue('clase', newInputValue);
-                    if (reason === 'input') {
-                      setFieldValue(
-                        'unidad_capacidad',
-                        capacityUnitForClass(newInputValue)
-                      );
-                    }
-                  }}
-                  options={vehicleClassOptions}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      error={Boolean(touched.clase && errors.clase)}
-                      helperText={touched.clase && errors.clase}
-                      label="Clase"
-                      name="clase"
-                      onBlur={handleBlur}
-                      placeholder="Automóvil"
-                    />
-                  )}
+                  placeholder="2020"
                 />
               </Grid>
-              <Grid item xs={12} sm={4}>
-                {autocompleteField(
-                  'tipo',
-                  'Tipo',
-                  vehicleTypeOptions,
-                  values,
-                  touched,
-                  errors,
-                  handleBlur,
-                  setFieldValue
-                )}
-              </Grid>
-            </Grid>
-          </FieldGroup>
-          <FieldGroup title="Características" accent="#8a5b1f">
-            <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 {autocompleteField(
                   'marca',
@@ -232,20 +196,43 @@ const CarStructure = ({
                   setFieldValue
                 )}
               </Grid>
+            </Grid>
+          </FieldGroup>
+          <FieldGroup title="Clasificación y propiedad" accent="#8a5b1f">
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  {...fieldProps('fabricado', values, touched, errors)}
-                  inputProps={{ inputMode: 'numeric', maxLength: 4 }}
-                  label="Año de fabricación"
+                  {...fieldProps('clase', values, touched, errors)}
+                  label="Clase"
                   onBlur={handleBlur}
                   onChange={(event) => {
+                    const vehicleClass = event.target.value;
+                    setFieldValue('clase', vehicleClass);
                     setFieldValue(
-                      'fabricado',
-                      event.target.value.replace(/\D/g, '').slice(0, 4)
+                      'unidad_capacidad',
+                      capacityUnitForClass(vehicleClass)
                     );
                   }}
-                  placeholder="2020"
-                />
+                  select
+                >
+                  {vehicleClassOptions.map((vehicleClass) => (
+                    <MenuItem key={vehicleClass} value={vehicleClass}>
+                      {vehicleClass}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                {autocompleteField(
+                  'tipo',
+                  'Tipo',
+                  vehicleTypeOptions,
+                  values,
+                  touched,
+                  errors,
+                  handleBlur,
+                  setFieldValue
+                )}
               </Grid>
               <Grid item xs={12} sm={6}>
                 {autocompleteField(
@@ -271,8 +258,20 @@ const CarStructure = ({
                   <MenuItem value="Prenda">Prenda</MenuItem>
                 </TextField>
               </Grid>
+            </Grid>
+          </FieldGroup>
+          <FieldGroup
+            title="Capacidad del vehículo"
+            description={
+              isHeavyTruck(values.clase)
+                ? 'Complete las capacidades y características exclusivas del camión pesado.'
+                : 'Indique la capacidad y la unidad registradas para el vehículo.'
+            }
+            accent="#536b3d"
+          >
+            <Grid container spacing={2}>
               {!isHeavyTruck(values.clase) && (
-                <Grid item xs={12} sm={3}>
+                <Grid item xs={12} sm={6}>
                   <TextField
                     {...fieldProps('capacidad', values, touched, errors)}
                     inputProps={{ min: 0, step: '0.01' }}
@@ -287,7 +286,7 @@ const CarStructure = ({
                 </Grid>
               )}
               {!isHeavyTruck(values.clase) && (
-                <Grid item xs={12} sm={3}>
+                <Grid item xs={12} sm={6}>
                   <TextField
                     {...fieldProps('unidad_capacidad', values, touched, errors)}
                     label="Unidad"

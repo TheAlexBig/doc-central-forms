@@ -54,9 +54,9 @@ export const CarValidationSchema = {
   dominio: Yup.string().required('Campo requerido'),
   clase: Yup.string()
     .required('Campo requerido')
-    .matches(
-      /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s./-]+$/,
-      'Solo se aceptan letras y signos comunes de clase'
+    .oneOf(
+      ['Automóvil', 'Camión liviano', 'Camión pesado'],
+      'Seleccione una clase admitida'
     ),
   tipo: Yup.string()
     .required('Campo requerido')

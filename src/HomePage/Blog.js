@@ -11,7 +11,7 @@ import FeaturedPost from './FeaturedPost';
 const mainFeaturedPost = {
   title: 'Documentos legales guiados',
   description:
-    'Seleccione una plantilla, complete los datos y genere documentos Word o PDF con historial, borradores y valores reutilizables.',
+    'Seleccione un documento, complete los datos y genere archivos Word o PDF con historial, borradores y valores reutilizables.',
 };
 
 const featuredPosts = [
@@ -50,12 +50,12 @@ export default function Blog() {
         }}
       >
         <MainFeaturedPost post={mainFeaturedPost} />
-        <Box id="plantillas" sx={{ mb: 2.5, scrollMarginTop: 96 }}>
+        <Box id="documentos" sx={{ mb: 2.5, scrollMarginTop: 96 }}>
           <Typography color="primary.main" fontWeight={700} variant="overline">
             Catálogo
           </Typography>
           <Typography component="h2" variant="h4">
-            Elija una plantilla
+            Elija un documento
           </Typography>
         </Box>
         <Grid container sx={{ mb: { xs: 6, md: 8 } }}>

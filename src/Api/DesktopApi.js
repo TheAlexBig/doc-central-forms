@@ -34,3 +34,18 @@ export async function openLogsFolder() {
     'No se pudo abrir la carpeta de logs.'
   );
 }
+
+export async function downloadSupportPackage() {
+  const response = await desktopRequest(
+    '/api/v1/desktop/diagnostics/support-package',
+    undefined,
+    'No se pudo crear el paquete de soporte.'
+  );
+  const blob = await response.blob();
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'central-docs-support.zip';
+  link.click();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}

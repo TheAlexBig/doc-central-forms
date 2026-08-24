@@ -15,11 +15,16 @@ import { useDocumentHistory } from './Hooks/useDocumentHistory';
 import { usePeopleMemory } from './Hooks/usePeopleMemory';
 import { useVehicleMemory } from './Hooks/useVehicleMemory';
 import { useLicense } from './Hooks/useLicense';
+import { useCarSaleTemplates } from './Hooks/useCarSaleTemplates';
+import { useMaintenanceTools } from './Hooks/useMaintenanceTools';
 import LicenseActivation from './License/LicenseActivation';
+import ScrollToTop from './View/ScrollToTop';
 import theme from './Theme';
 
 const Blog = lazy(() => import('./HomePage/Blog'));
 const CarSale = lazy(() => import('./Forms/CarSale'));
+const HistoryPage = lazy(() => import('./View/HistoryPage'));
+const SettingsPage = lazy(() => import('./View/SettingsPage'));
 
 const App = () => {
   const form = useCarSaleFormState();
@@ -28,6 +33,8 @@ const App = () => {
   const history = useDocumentHistory();
   const desktopDiagnostics = useDesktopDiagnostics();
   const license = useLicense();
+  const maintenanceTools = useMaintenanceTools();
+  const carSaleTemplates = useCarSaleTemplates();
   const agentsMemory = useAgents({
     clearSelectedAgent: form.clearSelectedAgent,
     updateSelectedAgent: form.updateSelectedAgent,
@@ -67,6 +74,37 @@ const App = () => {
     form.saveDetails(values);
   };
 
+  const historyProps = {
+    data: history.documentHistory,
+    error: history.historyError,
+    download: history.downloadHistoricalDocument,
+  };
+  const settingsProps = {
+    error:
+      vehicleMemory.vehicleError ||
+      peopleMemory.peopleError ||
+      agentsMemory.agentError ||
+      desktopDiagnostics.diagnosticsError ||
+      maintenanceTools.maintenanceError ||
+      carSaleTemplates.templatesError,
+    people: peopleMemory.savedPeople,
+    agents: agentsMemory.agents,
+    agentsLoading: agentsMemory.agentsLoading,
+    vehicleOptions: vehicleMemory.vehicleOptions,
+    removePerson: peopleMemory.removeSavedPerson,
+    updatePerson: peopleMemory.updateSavedPerson,
+    createAgent: agentsMemory.saveAgent,
+    updateAgent: agentsMemory.editAgent,
+    removeAgent: agentsMemory.removeAgent,
+    removeVehicleOption: vehicleMemory.removeVehicleCatalogOption,
+    diagnostics: desktopDiagnostics.diagnostics,
+    openLogsFolder: desktopDiagnostics.openDiagnosticsLogs,
+    downloadSupportPackage: desktopDiagnostics.downloadDiagnosticsPackage,
+    supportPackageLoading: desktopDiagnostics.supportPackageLoading,
+    ...maintenanceTools,
+    carSaleTemplates,
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -85,6 +123,7 @@ const App = () => {
         <LicenseActivation {...license} />
       ) : (
         <Router>
+          <ScrollToTop />
           <Suspense
             fallback={
               <Box
@@ -144,6 +183,8 @@ const App = () => {
                       save: detailSubmit,
                     }}
                     reviewData={reviewData}
+                    autosave={form.autosave}
+                    discardAutosavedDraft={form.discardAutosavedDraft}
                     generateDocument={async (format) => {
                       await downloadCarSaleDocument(
                         documentData,
@@ -153,28 +194,26 @@ const App = () => {
                       await history.refreshDocumentHistory();
                     }}
                     historyProps={{
-                      data: history.documentHistory,
-                      error: history.historyError,
                       activeDraft: form.activeDraft,
                       clearDraft: form.clearHistoryDraft,
-                      load: form.loadHistoryDraft,
-                      download: history.downloadHistoricalDocument,
-                    }}
-                    settingsProps={{
-                      error:
-                        vehicleMemory.vehicleError ||
-                        peopleMemory.peopleError ||
-                        desktopDiagnostics.diagnosticsError,
-                      people: peopleMemory.savedPeople,
-                      vehicleOptions: vehicleMemory.vehicleOptions,
-                      removePerson: peopleMemory.removeSavedPerson,
-                      removeVehicleOption:
-                        vehicleMemory.removeVehicleCatalogOption,
-                      diagnostics: desktopDiagnostics.diagnostics,
-                      openLogsFolder: desktopDiagnostics.openDiagnosticsLogs,
                     }}
                   />
                 }
+              />
+              <Route
+                exact
+                path="/historial"
+                element={
+                  <HistoryPage
+                    historyProps={historyProps}
+                    loadDraft={form.loadHistoryDraft}
+                  />
+                }
+              />
+              <Route
+                exact
+                path="/configuracion"
+                element={<SettingsPage settingsProps={settingsProps} />}
               />
               <Route exact path="/" element={<Blog />} />
             </Routes>

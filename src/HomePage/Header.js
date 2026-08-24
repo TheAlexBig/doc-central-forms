@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import packageInfo from '../../package.json';
 
 export default function Header(props) {
   const { title } = props;
+  const location = useLocation();
 
   return (
     <AppBar
@@ -42,7 +42,7 @@ export default function Header(props) {
             >
               C
             </Box>
-            <Box>
+            <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
               <Box sx={{ alignItems: 'baseline', display: 'flex', gap: 0.75 }}>
                 <Typography component="span" variant="h6">
                   {title}
@@ -65,13 +65,39 @@ export default function Header(props) {
               </Typography>
             </Box>
           </Box>
-          <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 4 }}>
-            <Link href="/#plantillas" underline="none">
-              Plantillas
-            </Link>
-            <Link href="/#proceso" color="text.secondary" underline="none">
-              Proceso
-            </Link>
+          <Box
+            component="nav"
+            sx={{
+              display: 'flex',
+              gap: { xs: 1.5, sm: 3 },
+              ml: 2,
+              overflowX: 'auto',
+            }}
+          >
+            {[
+              ['/', 'Documentos'],
+              ['/historial', 'Historial'],
+              ['/configuracion', 'Configuración'],
+            ].map(([to, label]) => (
+              <Box
+                component={RouterLink}
+                key={to}
+                to={to}
+                sx={{
+                  color:
+                    location.pathname === to ||
+                    (to === '/' && location.pathname === '/compra-venta')
+                      ? 'primary.main'
+                      : 'text.secondary',
+                  fontSize: { xs: 12, sm: 14 },
+                  fontWeight: 650,
+                  textDecoration: 'none',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {label}
+              </Box>
+            ))}
           </Box>
         </Toolbar>
       </Container>
