@@ -38,6 +38,7 @@ const PersonSection = ({
       error={personProps.error}
       people={personProps.people}
       occupations={personProps.occupations}
+      excludedDui={personProps.excludedDui}
       title={title}
       buttons={formButtons}
       submitAction={saveAndContinue}

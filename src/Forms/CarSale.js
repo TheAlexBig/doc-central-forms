@@ -31,6 +31,7 @@ const CarSale = ({
   autosave = { savedAt: null, recovered: false, saving: false },
   discardAutosavedDraft = () => {},
   generateDocument,
+  validateDocument = () => '',
   historyProps = {
     activeDraft: null,
     clearDraft: () => {},
@@ -78,6 +79,11 @@ const CarSale = ({
     setActiveStep(index);
   };
   const handleGenerate = async (format) => {
+    const validationError = validateDocument();
+    if (validationError) {
+      setGenerationError(validationError);
+      return;
+    }
     setGenerating(true);
     setGeneratingFormat(format);
     setGenerationError('');

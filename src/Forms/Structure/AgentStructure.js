@@ -35,7 +35,12 @@ const agentSummary = (values) => [
   { label: 'Carnet', value: values.carnet },
 ];
 
-const AgentStructure = ({ agent, buttons, submitAction }) => (
+const AgentStructure = ({
+  agent,
+  buttons,
+  submitAction,
+  allowedRoles = ['Notario', 'Abogado'],
+}) => (
   <Formik
     enableReinitialize
     initialValues={{ ...initialAgent, ...(agent || {}) }}
@@ -92,8 +97,11 @@ const AgentStructure = ({ agent, buttons, submitAction }) => (
                 onChange={handleChange}
                 select
               >
-                <MenuItem value="Notario">Notario</MenuItem>
-                <MenuItem value="Abogado">Abogado</MenuItem>
+                {allowedRoles.map((role) => (
+                  <MenuItem key={role} value={role}>
+                    {role}
+                  </MenuItem>
+                ))}
               </TextField>
             </Grid>
             <Grid item xs={12} sm={6}>

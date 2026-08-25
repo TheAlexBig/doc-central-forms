@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import { ThemeProvider } from '@mui/material/styles';
 import { createCarSalePayload } from './Forms/CarSalePayload';
 import { createCarSaleReviewData } from './Forms/CarSaleReviewData';
+import { validateCarSaleState } from './Forms/CarSaleRules';
 import { downloadCarSaleDocument } from './Api/DocumentsApi';
 import { useAgents } from './Hooks/useAgents';
 import { useCarSaleFormState } from './Hooks/useCarSaleFormState';
@@ -163,6 +164,7 @@ const App = () => {
                       error: peopleMemory.peopleError,
                       people: peopleMemory.savedPeople,
                       occupations: peopleMemory.occupationOptions,
+                      excludedDui: state.vendorStates.documento,
                       save: personSubmit,
                     }}
                     carProps={{
@@ -176,6 +178,7 @@ const App = () => {
                       error: peopleMemory.peopleError,
                       people: peopleMemory.savedPeople,
                       occupations: peopleMemory.occupationOptions,
+                      excludedDui: state.personStates.documento,
                       save: vendorSubmit,
                     }}
                     detailProps={{
@@ -193,6 +196,7 @@ const App = () => {
                       );
                       await history.refreshDocumentHistory();
                     }}
+                    validateDocument={() => validateCarSaleState(state)}
                     historyProps={{
                       activeDraft: form.activeDraft,
                       clearDraft: form.clearHistoryDraft,

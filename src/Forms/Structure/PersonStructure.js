@@ -47,12 +47,22 @@ const PersonStructure = ({
   error = '',
   people = [],
   occupations = [],
+  excludedDui = '',
 }) => (
   <Formik
     enableReinitialize
     initialValues={data}
     onSubmit={submitAction}
-    validationSchema={Yup.object().shape(PersonValidationSchema)}
+    validationSchema={Yup.object().shape({
+      ...PersonValidationSchema,
+      documento: PersonValidationSchema.documento.test(
+        'different-party-dui',
+        'El comprador y el vendedor deben tener DUI diferentes',
+        (value) =>
+          !normalizeDui(excludedDui) ||
+          normalizeDui(value) !== normalizeDui(excludedDui)
+      ),
+    })}
   >
     {({
       values,
@@ -83,7 +93,10 @@ const PersonStructure = ({
             accent="#0f766e"
           >
             <Autocomplete
-              options={people}
+              options={people.filter(
+                (person) =>
+                  normalizeDui(person.documento) !== normalizeDui(excludedDui)
+              )}
               getOptionLabel={personLabel}
               isOptionEqualToValue={(option, value) =>
                 normalizeDui(option.documento) === normalizeDui(value.documento)

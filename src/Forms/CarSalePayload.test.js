@@ -60,7 +60,7 @@ describe('createCarSalePayload', () => {
         municipio: 'Santa Tecla',
         distrito: 'Distrito 1',
         genero: 'Femenino',
-        rol: 'Abogado',
+        rol: 'Notario',
       },
     });
 
@@ -81,7 +81,7 @@ describe('createCarSalePayload', () => {
       'VEINTISÉIS DE MAYO DE DOS MIL VEINTISÉIS'
     );
     expect(payload.documento.hora_firma).toBe('DIEZ HORAS CON TREINTA MINUTOS');
-    expect(payload.agente_juridico.rol).toBe('Abogado');
+    expect(payload.agente_juridico.rol).toBe('Notario');
     expect(payload.agente_juridico.domicilio).toBe(
       'Distrito UNO, Municipio de Santa Tecla'
     );

@@ -10,6 +10,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import AgentStructure from '../Structure/AgentStructure';
 import { FormHeading } from '../Structure/FormScaffold';
+import { isNotary } from '../CarSaleRules';
 
 const agentName = (agent) =>
   [agent.nombres, agent.apellidos].filter(Boolean).join(' ');
@@ -29,6 +30,7 @@ const AgentSection = ({
 }) => {
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState(null);
+  const notaries = agentProps.data.filter(isNotary);
 
   const selectAgent = (agent) => {
     agentProps.save(agent);
@@ -54,6 +56,7 @@ const AgentSection = ({
           </Alert>
         )}
         <AgentStructure
+          allowedRoles={['Notario']}
           agent={editing}
           submitAction={saveAgent}
           buttons={[
@@ -83,21 +86,9 @@ const AgentSection = ({
     <>
       <FormHeading
         title={title}
-        description="Seleccione al profesional que autenticará el documento. Los agentes registrados se guardan solamente en este equipo."
+        description="Seleccione al notario que autenticará el documento. Los abogados permanecen disponibles en el directorio global, pero no pueden autorizar una auténtica."
         eyebrow="Profesional responsable"
-        summary={[
-          { label: 'Registrados', value: agentProps.data.length },
-          {
-            label: 'Notarios',
-            value: agentProps.data.filter((agent) => agent.rol !== 'Abogado')
-              .length,
-          },
-          {
-            label: 'Abogados',
-            value: agentProps.data.filter((agent) => agent.rol === 'Abogado')
-              .length,
-          },
-        ]}
+        summary={[{ label: 'Notarios disponibles', value: notaries.length }]}
       />
       <Stack
         alignItems={{ xs: 'stretch', sm: 'center' }}
@@ -124,13 +115,13 @@ const AgentSection = ({
           <Typography color="text.secondary">Cargando agentes...</Typography>
         </Stack>
       )}
-      {!agentProps.loading && agentProps.data.length === 0 && (
+      {!agentProps.loading && notaries.length === 0 && (
         <Alert severity="info">
-          No hay agentes registrados. Agregue el primer agente para continuar.
+          No hay notarios registrados. Agregue un notario para continuar.
         </Alert>
       )}
       <Stack spacing={1.5}>
-        {agentProps.data?.map((agent, index) => (
+        {notaries.map((agent, index) => (
           <Box
             key={agent.id}
             sx={{
@@ -160,7 +151,7 @@ const AgentSection = ({
                   <Box
                     sx={{
                       alignItems: 'center',
-                      bgcolor: agent.rol === 'Abogado' ? '#285f9f' : '#1f6f5f',
+                      bgcolor: '#1f6f5f',
                       borderRadius: 1,
                       color: 'white',
                       display: 'flex',
