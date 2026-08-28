@@ -146,7 +146,7 @@ const CarStructure = ({
               {error}
             </Alert>
           )}
-          <FieldGroup title="Identificación del vehículo" accent="#285f9f">
+          <FieldGroup title="Identificación del vehículo" accent="#2f7c70">
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -198,7 +198,7 @@ const CarStructure = ({
               </Grid>
             </Grid>
           </FieldGroup>
-          <FieldGroup title="Clasificación y propiedad" accent="#8a5b1f">
+          <FieldGroup title="Clasificación y propiedad" accent="#b37d24">
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -267,7 +267,7 @@ const CarStructure = ({
                 ? 'Complete las capacidades y características exclusivas del camión pesado.'
                 : 'Indique la capacidad y la unidad registradas para el vehículo.'
             }
-            accent="#536b3d"
+            accent="#52766e"
           >
             <Grid container spacing={2}>
               {!isHeavyTruck(values.clase) && (
@@ -307,7 +307,6 @@ const CarStructure = ({
                     ['tipo_capacidad', 'Tipo de capacidad', 'text'],
                     ['cap_carga', 'Capacidad de carga', 'number'],
                     ['cap_maxima', 'Capacidad máxima', 'number'],
-                    ['traccion', 'Tracción', 'text'],
                   ].map(([field, label, type]) => (
                     <Grid item xs={12} sm={4} key={field}>
                       <TextField
@@ -322,12 +321,28 @@ const CarStructure = ({
                   ))}
                 </>
               )}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  {...fieldProps('traccion', values, touched, errors)}
+                  helperText={
+                    touched.traccion && errors.traccion
+                      ? errors.traccion
+                      : isHeavyTruck(values.clase)
+                        ? 'Obligatorio para camión pesado.'
+                        : 'Opcional. Complételo únicamente si aparece en la tarjeta de circulación.'
+                  }
+                  label="Tracción"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  placeholder="Ej. 4x2 o 4x4"
+                />
+              </Grid>
             </Grid>
           </FieldGroup>
           <FieldGroup
             title="Números registrales"
             description="Marque “No consta” únicamente cuando el dato no aparezca en la documentación."
-            accent="#7c3f58"
+            accent="#8a6540"
           >
             <Grid container spacing={2}>
               {[

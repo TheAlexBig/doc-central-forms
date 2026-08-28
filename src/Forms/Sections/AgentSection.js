@@ -125,7 +125,7 @@ const AgentSection = ({
           <Box
             key={agent.id}
             sx={{
-              bgcolor: index % 2 ? '#fbfdff' : 'background.paper',
+              bgcolor: index % 2 ? '#f8faf7' : 'background.paper',
               border: '1px solid',
               borderColor: 'divider',
               borderRadius: 1,
@@ -143,7 +143,7 @@ const AgentSection = ({
                 px: 2,
                 py: 2,
                 textAlign: 'left',
-                '&:hover': { bgcolor: '#f1f5ff' },
+                '&:hover': { bgcolor: '#e7f3ed' },
               }}
             >
               <Grid container alignItems="center" spacing={2}>
@@ -151,7 +151,7 @@ const AgentSection = ({
                   <Box
                     sx={{
                       alignItems: 'center',
-                      bgcolor: '#1f6f5f',
+                      bgcolor: '#17695d',
                       borderRadius: 1,
                       color: 'white',
                       display: 'flex',

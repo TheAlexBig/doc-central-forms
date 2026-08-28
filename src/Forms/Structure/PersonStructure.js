@@ -90,7 +90,7 @@ const PersonStructure = ({
           <FieldGroup
             title="Persona guardada"
             description="Busque por nombre, DUI u oficio para reutilizar datos anteriores."
-            accent="#0f766e"
+            accent="#17695d"
           >
             <Autocomplete
               options={people.filter(
@@ -138,7 +138,7 @@ const PersonStructure = ({
             />
           </FieldGroup>
         )}
-        <FieldGroup title="Identidad personal" accent="#285f9f">
+        <FieldGroup title="Identidad personal" accent="#2f7c70">
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -183,7 +183,7 @@ const PersonStructure = ({
         <FieldGroup
           title="Documentos y domicilio"
           description="El DUI y la división territorial vigente se incorporarán al contrato."
-          accent="#7c3f58"
+          accent="#8a6540"
         >
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -263,7 +263,7 @@ const PersonStructure = ({
             </Grid>
           </Grid>
         </FieldGroup>
-        <FieldGroup title="Actividad" accent="#8a5b1f">
+        <FieldGroup title="Actividad" accent="#b37d24">
           <Autocomplete
             freeSolo
             inputValue={values.oficio || ''}

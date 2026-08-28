@@ -10,10 +10,10 @@ export function FormHeading({ title, description, eyebrow, summary = [] }) {
   return (
     <Box
       sx={{
-        bgcolor: '#f8fafc',
+        bgcolor: '#f4f8f5',
         border: '1px solid',
         borderColor: 'divider',
-        borderRadius: 1,
+        borderRadius: 2,
         mb: 3,
         px: { xs: 2, md: 2.5 },
         py: 2.25,
@@ -70,7 +70,7 @@ export function FieldGroup({
   title,
   description,
   children,
-  accent = '#4f46e5',
+  accent = '#17695d',
 }) {
   return (
     <Box
@@ -78,7 +78,7 @@ export function FieldGroup({
         bgcolor: 'background.paper',
         border: '1px solid',
         borderColor: 'divider',
-        borderRadius: 1,
+        borderRadius: 2,
         mb: { xs: 3, md: 3.5 },
         overflow: 'hidden',
       }}
@@ -114,7 +114,7 @@ export function FieldGroup({
       </Stack>
       <Box
         sx={{
-          bgcolor: '#fbfdff',
+          bgcolor: '#f8faf7',
           p: { xs: 1.5, sm: 2.25 },
         }}
       >
@@ -128,10 +128,10 @@ export function EmptyState({ children }) {
   return (
     <Box
       sx={{
-        bgcolor: '#f8fafc',
+        bgcolor: '#f4f8f5',
         border: '1px dashed',
         borderColor: 'divider',
-        borderRadius: 1,
+        borderRadius: 2,
         px: 2,
         py: 2.25,
       }}
@@ -145,7 +145,14 @@ export function EmptyState({ children }) {
 
 export function SectionHeader({ title, description }) {
   return (
-    <Box sx={{ mb: 2.5 }}>
+    <Box
+      sx={{
+        borderLeft: '3px solid',
+        borderLeftColor: 'secondary.main',
+        mb: 2.5,
+        pl: 1.5,
+      }}
+    >
       <Typography component="h2" variant="h5">
         {title}
       </Typography>
@@ -164,7 +171,7 @@ export function SurfaceRow({ children }) {
       sx={{
         border: '1px solid',
         borderColor: 'divider',
-        borderRadius: 1,
+        borderRadius: 2,
         px: { xs: 1.5, sm: 2 },
         py: 1.5,
       }}

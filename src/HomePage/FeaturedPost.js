@@ -21,15 +21,24 @@ export default function FeaturedPost({ post }) {
         sx={{
           border: '1px solid',
           borderColor: 'divider',
-          borderRadius: 1,
-          bgcolor: '#f8fafc',
+          borderRadius: 2,
+          bgcolor: '#f4f8f5',
           display: 'block',
           px: { xs: 1.5, sm: 2 },
           py: { xs: 2, md: 2.5 },
           textAlign: 'left',
           width: '100%',
+          position: 'relative',
+          overflow: 'hidden',
+          '&::before': {
+            bgcolor: 'secondary.main',
+            content: '""',
+            inset: '0 auto 0 0',
+            position: 'absolute',
+            width: 4,
+          },
           '&:hover': {
-            bgcolor: '#eef4ff',
+            bgcolor: '#e7f3ed',
             borderColor: 'primary.light',
           },
         }}

@@ -67,7 +67,7 @@ const CarSaleReviewPanel = (props) => {
           sx={{
             borderLeft: '3px solid',
             borderColor: 'primary.main',
-            bgcolor: '#f8fafc',
+            bgcolor: '#f4f8f5',
             mt: 3,
             px: 2,
             py: 2,

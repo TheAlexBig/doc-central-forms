@@ -7,6 +7,8 @@
     "@emotion/css": "^11.13.5",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@fontsource/dm-sans": "^5.3.0",
+    "@fontsource/libre-franklin": "^5.3.0",
     "@mui/material": "^5.18.0",
     "formik": "^2.4.9",
     "prop-types": "^15.8.1",

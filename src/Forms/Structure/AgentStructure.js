@@ -63,7 +63,7 @@ const AgentStructure = ({
           eyebrow="Profesional"
           summary={agentSummary(values)}
         />
-        <FieldGroup title="Información del profesional" accent="#1f6f5f">
+        <FieldGroup title="Información del profesional" accent="#17695d">
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField

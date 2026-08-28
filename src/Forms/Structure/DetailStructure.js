@@ -80,7 +80,7 @@ const DetailStructure = ({ data, title, buttons, submitAction }) => (
           eyebrow="Cierre del documento"
           summary={detailSummary(values)}
         />
-        <FieldGroup title="Condiciones de la venta" accent="#4f5f2f">
+        <FieldGroup title="Condiciones de la venta" accent="#52766e">
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -118,7 +118,7 @@ const DetailStructure = ({ data, title, buttons, submitAction }) => (
         <FieldGroup
           title="Lugar y momento de firma"
           description="Seleccione municipio y distrito según la reorganización territorial vigente."
-          accent="#285f9f"
+          accent="#2f7c70"
         >
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -235,7 +235,7 @@ const DetailStructure = ({ data, title, buttons, submitAction }) => (
         <FieldGroup
           title="Identificación ante notario"
           description="Indique si el notario conoce personalmente a cada compareciente."
-          accent="#7c3f58"
+          accent="#8a6540"
         >
           <Grid container spacing={2}>
             {[

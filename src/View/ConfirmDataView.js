@@ -17,7 +17,7 @@ const ConfirmDataView = ({ data = {}, buttons = [] }) => {
       </Typography>
       <Paper
         variant="outlined"
-        sx={{ bgcolor: '#fbfcfa', borderRadius: 2.5, p: 3 }}
+        sx={{ bgcolor: '#f4f8f5', borderRadius: 2.5, p: 3 }}
       >
         <Grid container spacing={2.5} alignItems="center">
           {Object.keys(data)

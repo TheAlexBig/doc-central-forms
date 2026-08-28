@@ -52,7 +52,7 @@ export default function LicenseActivation({
             </Box>
             <Box
               sx={{
-                bgcolor: '#f8fafc',
+                bgcolor: '#f4f8f5',
                 border: '1px solid',
                 borderColor: 'divider',
                 p: 2,

@@ -43,7 +43,8 @@ export default function Blog() {
           bgcolor: 'background.paper',
           border: { md: '1px solid' },
           borderColor: 'divider',
-          boxShadow: { md: '0 12px 36px rgba(15, 23, 42, 0.06)' },
+          borderRadius: { md: 2 },
+          boxShadow: { md: '0 12px 36px rgba(19, 47, 43, 0.07)' },
           minHeight: 'calc(100vh - 104px)',
           px: { xs: 2, sm: 3, md: 4 },
           py: { xs: 2, md: 3 },
@@ -76,19 +77,24 @@ export default function Blog() {
             <Grid item xs={12} md={4} key={number}>
               <Box
                 sx={{
-                  bgcolor: '#f8fafc',
+                  bgcolor: '#f4f8f5',
                   border: '1px solid',
                   borderColor: 'divider',
-                  borderRadius: 1,
+                  borderRadius: 2,
                   height: '100%',
                   px: 2,
                   py: 2.25,
                 }}
               >
                 <Typography
-                  color="primary.main"
+                  alignItems="center"
+                  bgcolor="primary.dark"
+                  borderRadius="50%"
+                  color="common.white"
+                  display="flex"
                   fontWeight={700}
-                  sx={{ mb: 1.5 }}
+                  justifyContent="center"
+                  sx={{ height: 36, mb: 1.5, width: 36 }}
                 >
                   {number}
                 </Typography>

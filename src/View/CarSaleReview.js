@@ -106,13 +106,12 @@ const CarSaleReview = ({ data, onEdit }) => {
           ['Tipo de capacidad', data.vehiculo.tipo_capacidad],
           ['Capacidad de carga', data.vehiculo.cap_carga],
           ['Capacidad máxima', data.vehiculo.cap_maxima],
-          ['Tracción', data.vehiculo.traccion],
         ]
       : [];
   const sections = [
     {
       title: 'Agente',
-      accent: '#1f6f5f',
+      accent: '#17695d',
       summary: fullName(data.agente_juridico),
       step: 0,
       values: [
@@ -122,14 +121,14 @@ const CarSaleReview = ({ data, onEdit }) => {
     },
     {
       title: 'Comprador',
-      accent: '#285f9f',
+      accent: '#2f7c70',
       summary: `${fullName(data.comprador)} / ${data.comprador.documento || emptyValue}`,
       step: 1,
       values: personValues(data.comprador),
     },
     {
       title: 'Vehículo',
-      accent: '#8a5b1f',
+      accent: '#b37d24',
       summary: `${data.vehiculo.placa || emptyValue} / ${vehicleTitle}`,
       step: 2,
       values: [
@@ -142,6 +141,9 @@ const CarSaleReview = ({ data, onEdit }) => {
           ? []
           : [['Capacidad', data.vehiculo.capacidad]]),
         ...heavyTruckValues,
+        ...(data.vehiculo.traccion
+          ? [['Tracción', data.vehiculo.traccion]]
+          : []),
         ['Motor', data.vehiculo.num_motor],
         ['Chasis', data.vehiculo.num_chasis],
         ['VIN', data.vehiculo.num_vin],
@@ -149,14 +151,14 @@ const CarSaleReview = ({ data, onEdit }) => {
     },
     {
       title: 'Vendedor',
-      accent: '#7c3f58',
+      accent: '#8a6540',
       summary: `${fullName(data.vendedor)} / ${data.vendedor.documento || emptyValue}`,
       step: 3,
       values: personValues(data.vendedor),
     },
     {
       title: 'Firma y venta',
-      accent: '#4f5f2f',
+      accent: '#52766e',
       summary: `${data.documento.precio || emptyValue} DÓLARES`,
       step: 4,
       values: [
@@ -173,7 +175,7 @@ const CarSaleReview = ({ data, onEdit }) => {
     <Box>
       <Box
         sx={{
-          bgcolor: '#f8fafc',
+          bgcolor: '#f4f8f5',
           border: '1px solid',
           borderColor: 'divider',
           borderRadius: 1,

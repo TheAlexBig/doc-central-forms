@@ -3,34 +3,48 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import desktopImage from '../Images/escritorio3.jpg';
 
 const MainFeaturedPost = ({ post }) => (
   <Box
     component="section"
     sx={{
-      alignItems: 'flex-end',
-      backgroundImage: `linear-gradient(90deg, rgba(15, 23, 42, 0.82), rgba(15, 23, 42, 0.42)), url(${desktopImage})`,
-      backgroundPosition: 'center',
-      backgroundSize: 'cover',
+      alignItems: 'center',
+      bgcolor: 'primary.dark',
+      borderRadius: { md: 2 },
       color: 'common.white',
       display: 'flex',
-      minHeight: { xs: 360, md: 420 },
+      minHeight: { xs: 310, md: 340 },
       mb: { xs: 4, md: 5 },
-      mx: { xs: -2, sm: -3, md: -4 },
-      px: { xs: 2, sm: 3, md: 4 },
-      py: { xs: 3, md: 4 },
+      overflow: 'hidden',
+      position: 'relative',
+      px: { xs: 2.5, sm: 4, md: 5 },
+      py: { xs: 4, md: 5 },
+      '&::after': {
+        border: '70px solid rgba(217, 164, 65, 0.12)',
+        borderRadius: '50%',
+        content: '""',
+        height: 300,
+        position: 'absolute',
+        right: -100,
+        top: -145,
+        width: 300,
+      },
     }}
   >
-    <Box sx={{ maxWidth: 680 }}>
-      <Typography fontWeight={700} sx={{ mb: 1 }} variant="overline">
+    <Box sx={{ maxWidth: 680, position: 'relative', zIndex: 1 }}>
+      <Typography
+        color="secondary.main"
+        fontWeight={700}
+        sx={{ mb: 1 }}
+        variant="overline"
+      >
         Central Docs
       </Typography>
       <Typography
         component="h1"
         variant="h1"
         sx={{
-          fontSize: { xs: '2.5rem', sm: '3.4rem', md: '4rem' },
+          fontSize: { xs: '2.35rem', sm: '3rem', md: '3.5rem' },
           lineHeight: 1.05,
           mb: 2,
         }}
@@ -46,7 +60,8 @@ const MainFeaturedPost = ({ post }) => (
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
         <Button
           component="a"
-          href="#plantillas"
+          color="secondary"
+          href="#documentos"
           size="large"
           variant="contained"
         >

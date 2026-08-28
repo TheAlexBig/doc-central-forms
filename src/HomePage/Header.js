@@ -30,7 +30,7 @@ export default function Header(props) {
               sx={{
                 alignItems: 'center',
                 bgcolor: 'primary.main',
-                borderRadius: 0,
+                borderRadius: 1,
                 color: 'common.white',
                 display: 'flex',
                 fontSize: 17,
@@ -84,15 +84,27 @@ export default function Header(props) {
                 key={to}
                 to={to}
                 sx={{
+                  bgcolor:
+                    location.pathname === to ||
+                    (to === '/' && location.pathname === '/compra-venta')
+                      ? 'primary.light'
+                      : 'transparent',
+                  borderRadius: 1,
                   color:
                     location.pathname === to ||
                     (to === '/' && location.pathname === '/compra-venta')
-                      ? 'primary.main'
+                      ? 'primary.dark'
                       : 'text.secondary',
                   fontSize: { xs: 12, sm: 14 },
                   fontWeight: 650,
+                  px: { xs: 0.75, sm: 1.25 },
+                  py: 0.75,
                   textDecoration: 'none',
                   whiteSpace: 'nowrap',
+                  '&:hover': {
+                    bgcolor: 'primary.light',
+                    color: 'primary.dark',
+                  },
                 }}
               >
                 {label}
