@@ -21,6 +21,10 @@ import CarSaleReviewPanel from './Panels/CarSaleReviewPanel';
 
 const steps = ['Agente', 'Comprador', 'Vehículo', 'Vendedor', 'Firma y venta'];
 
+const scrollToPageTop = () => {
+  window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+};
+
 const CarSale = ({
   agentProps,
   personProps,
@@ -53,12 +57,14 @@ const CarSale = ({
     if (returnToReview) {
       setReturnToReview(false);
       setActiveStep(steps.length);
+      scrollToPageTop();
       return;
     }
     if (activeStep + 1 > lastStep) {
       setLastStep(activeStep + 1);
     }
     setActiveStep(activeStep + 1);
+    scrollToPageTop();
   };
 
   const handleBack = () => {
