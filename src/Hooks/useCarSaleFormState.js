@@ -15,6 +15,7 @@ export const initialCarSaleState = {
   personStates: JSON.parse(JSON.stringify(DataPerson)),
   carStates: JSON.parse(JSON.stringify(DataCar)),
   agentStates: '',
+  preparedByStates: '',
 };
 
 const hasFormData = (state) =>
@@ -61,6 +62,13 @@ export function useCarSaleFormState() {
     }));
   };
 
+  const selectPreparer = (agent) => {
+    setState((currentState) => ({
+      ...currentState,
+      preparedByStates: agent || '',
+    }));
+  };
+
   const clearSelectedAgent = (agentId) => {
     setState((currentState) => ({
       ...currentState,
@@ -68,6 +76,10 @@ export function useCarSaleFormState() {
         currentState.agentStates?.id === agentId
           ? ''
           : currentState.agentStates,
+      preparedByStates:
+        currentState.preparedByStates?.id === agentId
+          ? ''
+          : currentState.preparedByStates,
     }));
   };
 
@@ -78,6 +90,10 @@ export function useCarSaleFormState() {
         currentState.agentStates?.id === agent.id
           ? agent
           : currentState.agentStates,
+      preparedByStates:
+        currentState.preparedByStates?.id === agent.id
+          ? agent
+          : currentState.preparedByStates,
     }));
   };
 
@@ -143,6 +159,7 @@ export function useCarSaleFormState() {
     state,
     activeDraft,
     selectAgent,
+    selectPreparer,
     clearSelectedAgent,
     updateSelectedAgent,
     saveBuyer,

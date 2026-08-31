@@ -32,7 +32,7 @@ export async function listAgents() {
   const response = await localRequest(
     '/api/v1/agents',
     undefined,
-    'No se pudieron cargar los agentes guardados.'
+    'No se pudieron cargar los profesionales y colaboradores guardados.'
   );
   return response.json();
 }
@@ -47,7 +47,7 @@ export async function createAgent(agent) {
       },
       body: JSON.stringify(agent),
     },
-    'No se pudo guardar el agente.'
+    'No se pudo guardar la persona.'
   );
   return response.json();
 }
@@ -62,7 +62,7 @@ export async function updateAgent(id, agent) {
       },
       body: JSON.stringify(agent),
     },
-    'No se pudieron guardar los cambios del agente.'
+    'No se pudieron guardar los cambios de la persona.'
   );
   return response.json();
 }
@@ -73,6 +73,6 @@ export async function deleteAgent(id) {
     {
       method: 'DELETE',
     },
-    'No se pudo eliminar el agente.'
+    'No se pudo eliminar la persona.'
   );
 }

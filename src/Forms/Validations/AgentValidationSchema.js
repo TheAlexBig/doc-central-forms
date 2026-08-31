@@ -12,7 +12,11 @@ export const AgentValidationSchema = {
   departamento: Yup.string().required('Campo requerido'),
   municipio: Yup.string().required('Campo requerido'),
   distrito: Yup.string().required('Campo requerido'),
-  carnet: Yup.string().required('Campo requerido'),
+  carnet: Yup.string().when('rol', {
+    is: (rol) => ['Notario', 'Abogado'].includes(rol),
+    then: (schema) => schema.required('Campo requerido para profesionales'),
+    otherwise: (schema) => schema,
+  }),
   genero: Yup.string().required('Campo requerido'),
   rol: Yup.string().required('Campo requerido'),
 };

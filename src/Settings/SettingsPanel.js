@@ -232,7 +232,7 @@ const BackupManager = ({ busy, createBackup, restoreBackup }) => {
     <Box>
       <SectionHeader
         title="Respaldo y restauración"
-        description="Guarda personas, vehículos, agentes, historial, documentos y plantillas. La licencia no se exporta."
+        description="Guarda personas, vehículos, profesionales, colaboradores, historial, documentos y plantillas. La licencia no se exporta."
       />
       <SurfaceRow>
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
@@ -673,8 +673,8 @@ const AgentManager = ({ agents, loading, onCreate, onUpdate, onRemove }) => {
   return (
     <Box>
       <DataCollectionHeader
-        title="Agentes legales"
-        description="Directorio global de notarios y abogados."
+        title="Profesionales y colaboradores"
+        description="Directorio global de quienes preparan documentos y de los notarios que los autorizan."
         count={agents.length}
         action={
           <Button
@@ -696,10 +696,12 @@ const AgentManager = ({ agents, loading, onCreate, onUpdate, onRemove }) => {
       />
       {loading ? (
         <Typography color="text.secondary" variant="body2">
-          Cargando agentes...
+          Cargando personas...
         </Typography>
       ) : filtered.length === 0 ? (
-        <EmptyState>No se encontraron agentes.</EmptyState>
+        <EmptyState>
+          No se encontraron profesionales ni colaboradores.
+        </EmptyState>
       ) : (
         <Stack spacing={1} sx={{ maxHeight: 520, overflowY: 'auto', pr: 0.5 }}>
           {filtered.map((agent) => (
@@ -721,7 +723,9 @@ const AgentManager = ({ agents, loading, onCreate, onUpdate, onRemove }) => {
         </Stack>
       )}
       <Dialog fullWidth maxWidth="md" onClose={close} open={dialogOpen}>
-        <DialogTitle>{editing ? 'Editar agente' : 'Nuevo agente'}</DialogTitle>
+        <DialogTitle>
+          {editing ? 'Editar persona' : 'Nueva persona'}
+        </DialogTitle>
         <DialogContent>
           <AgentStructure
             agent={editing}
@@ -738,7 +742,7 @@ const AgentManager = ({ agents, loading, onCreate, onUpdate, onRemove }) => {
                 color: 'primary',
                 variant: 'contained',
                 type: 'submit',
-                text: editing ? 'Guardar cambios' : 'Guardar agente',
+                text: editing ? 'Guardar cambios' : 'Guardar persona',
               },
             ]}
           />

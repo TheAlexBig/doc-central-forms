@@ -6,6 +6,7 @@ const carSalePresentation = (item) => {
   const seller = draftSection(item, 'vendorStates');
   const vehicle = draftSection(item, 'carStates');
   const agent = draftSection(item, 'agentStates');
+  const preparer = draftSection(item, 'preparedByStates');
   const vehicleDescription = [vehicle.marca, vehicle.modelo, vehicle.placa]
     .filter(Boolean)
     .join(' ');
@@ -14,6 +15,12 @@ const carSalePresentation = (item) => {
       ? `Compra venta - ${vehicleDescription}`
       : item.title,
     parties: `${[buyer.nombre, buyer.apellido].filter(Boolean).join(' ') || item.buyerName} / ${[seller.nombre, seller.apellido].filter(Boolean).join(' ') || item.sellerName}`,
+    responsible: {
+      notary: [agent.nombres, agent.apellidos].filter(Boolean).join(' '),
+      preparer: [preparer.nombres, preparer.apellidos]
+        .filter(Boolean)
+        .join(' '),
+    },
     searchable: [
       item.title,
       item.buyerName,
@@ -30,8 +37,14 @@ const carSalePresentation = (item) => {
       vehicle.placa,
       agent.nombre,
       agent.apellido,
+      agent.nombres,
+      agent.apellidos,
       agent.tipo,
       agent.role,
+      agent.rol,
+      preparer.nombres,
+      preparer.apellidos,
+      preparer.rol,
     ],
   };
 };

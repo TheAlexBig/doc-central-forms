@@ -110,13 +110,14 @@ const CarSaleReview = ({ data, onEdit }) => {
       : [];
   const sections = [
     {
-      title: 'Agente',
+      title: 'Responsables',
       accent: '#17695d',
       summary: fullName(data.agente_juridico),
       step: 0,
       values: [
-        ['Nombre', fullName(data.agente_juridico)],
-        ['Domicilio', place(data.agente_juridico), true],
+        ['Preparado por', fullName(data.preparado_por) || 'No especificado'],
+        ['Notario responsable', fullName(data.agente_juridico)],
+        ['Domicilio del notario', place(data.agente_juridico), true],
       ],
     },
     {

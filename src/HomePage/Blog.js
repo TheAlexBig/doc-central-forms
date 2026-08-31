@@ -1,18 +1,12 @@
 import React from 'react';
 import Box from '@mui/material/Box';
+import ButtonBase from '@mui/material/ButtonBase';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
+import { Link as RouterLink } from 'react-router-dom';
 import Header from './Header';
-import Footer from './Footer';
-import MainFeaturedPost from './MainFeaturedPost';
 import FeaturedPost from './FeaturedPost';
-
-const mainFeaturedPost = {
-  title: 'Documentos legales guiados',
-  description:
-    'Seleccione un documento, complete los datos y genere archivos Word o PDF con historial, borradores y valores reutilizables.',
-};
 
 const featuredPosts = [
   {
@@ -23,93 +17,123 @@ const featuredPosts = [
   },
 ];
 
-const processSteps = [
-  ['01', 'Selecciona', 'Elige el tipo de documento disponible en el catálogo.'],
-  [
-    '02',
-    'Completa',
-    'Ingresa los datos requeridos mediante un formulario guiado.',
-  ],
-  ['03', 'Descarga', 'Revisa la información y genera tu documento Word o PDF.'],
+const quickLinks = [
+  {
+    title: 'Historial de documentos',
+    description: 'Consulte, descargue o retome documentos anteriores.',
+    to: '/historial',
+  },
+  {
+    title: 'Datos y configuración',
+    description:
+      'Administre personas, vehículos, profesionales, colaboradores y plantillas.',
+    to: '/configuracion',
+  },
 ];
 
 export default function Blog() {
   return (
     <>
       <Header title="Central Docs" />
-      <Container
-        maxWidth="xl"
+      <Box
+        component="main"
         sx={{
-          bgcolor: 'background.paper',
-          border: { md: '1px solid' },
-          borderColor: 'divider',
-          borderRadius: { md: 2 },
-          boxShadow: { md: '0 12px 36px rgba(19, 47, 43, 0.07)' },
-          minHeight: 'calc(100vh - 104px)',
-          px: { xs: 2, sm: 3, md: 4 },
-          py: { xs: 2, md: 3 },
+          bgcolor: 'background.default',
+          minHeight: 'calc(100vh - 76px)',
+          py: { xs: 3, md: 5 },
         }}
       >
-        <MainFeaturedPost post={mainFeaturedPost} />
-        <Box id="documentos" sx={{ mb: 2.5, scrollMarginTop: 96 }}>
-          <Typography color="primary.main" fontWeight={700} variant="overline">
-            Catálogo
-          </Typography>
-          <Typography component="h2" variant="h4">
-            Elija un documento
-          </Typography>
-        </Box>
-        <Grid container sx={{ mb: { xs: 6, md: 8 } }}>
-          {featuredPosts.map((post) => (
-            <FeaturedPost key={post.title} post={post} />
-          ))}
-        </Grid>
-        <Box id="proceso" sx={{ mb: 3, scrollMarginTop: 96 }}>
-          <Typography color="primary.main" fontWeight={700} variant="overline">
-            Flujo simple
-          </Typography>
-          <Typography component="h2" variant="h4">
-            De formulario a documento
-          </Typography>
-        </Box>
-        <Grid container spacing={1.25} sx={{ mb: { xs: 3, md: 4 } }}>
-          {processSteps.map(([number, title, description]) => (
-            <Grid item xs={12} md={4} key={number}>
+        <Container maxWidth="lg">
+          <Box id="documentos" sx={{ mb: 3, scrollMarginTop: 96 }}>
+            <Typography
+              color="primary.main"
+              fontWeight={700}
+              variant="overline"
+            >
+              Espacio de trabajo
+            </Typography>
+            <Typography component="h1" variant="h4">
+              ¿Qué necesita hacer?
+            </Typography>
+            <Typography color="text.secondary" sx={{ mt: 0.75 }}>
+              Cree un documento nuevo o continúe con información guardada.
+            </Typography>
+          </Box>
+
+          <Grid container spacing={2} alignItems="stretch">
+            <Grid item xs={12} md={8}>
               <Box
                 sx={{
-                  bgcolor: '#f4f8f5',
+                  bgcolor: 'background.paper',
                   border: '1px solid',
                   borderColor: 'divider',
                   borderRadius: 2,
                   height: '100%',
-                  px: 2,
-                  py: 2.25,
+                  p: { xs: 2, md: 3 },
                 }}
               >
+                <Typography component="h2" variant="h6" sx={{ mb: 0.5 }}>
+                  Crear documento
+                </Typography>
                 <Typography
-                  alignItems="center"
-                  bgcolor="primary.dark"
-                  borderRadius="50%"
-                  color="common.white"
-                  display="flex"
-                  fontWeight={700}
-                  justifyContent="center"
-                  sx={{ height: 36, mb: 1.5, width: 36 }}
+                  color="text.secondary"
+                  variant="body2"
+                  sx={{ mb: 2 }}
                 >
-                  {number}
+                  Seleccione uno de los documentos disponibles.
                 </Typography>
-                <Typography component="h3" fontWeight={650} sx={{ mb: 0.75 }}>
-                  {title}
-                </Typography>
-                <Typography color="text.secondary" variant="body2">
-                  {description}
-                </Typography>
+                <Grid container>
+                  {featuredPosts.map((post) => (
+                    <FeaturedPost key={post.title} post={post} />
+                  ))}
+                </Grid>
               </Box>
             </Grid>
-          ))}
-        </Grid>
-      </Container>
-      <Footer />
+
+            <Grid item xs={12} md={4}>
+              <Box
+                sx={{
+                  bgcolor: 'background.paper',
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  borderRadius: 2,
+                  height: '100%',
+                  p: { xs: 2, md: 3 },
+                }}
+              >
+                <Typography component="h2" variant="h6" sx={{ mb: 1.5 }}>
+                  Accesos rápidos
+                </Typography>
+                {quickLinks.map((link) => (
+                  <ButtonBase
+                    component={RouterLink}
+                    key={link.to}
+                    to={link.to}
+                    sx={{
+                      borderTop: '1px solid',
+                      borderColor: 'divider',
+                      display: 'block',
+                      py: 1.75,
+                      textAlign: 'left',
+                      width: '100%',
+                      '&:hover': { color: 'primary.main' },
+                    }}
+                  >
+                    <Typography fontWeight={650}>{link.title}</Typography>
+                    <Typography
+                      color="text.secondary"
+                      variant="body2"
+                      sx={{ mt: 0.4 }}
+                    >
+                      {link.description}
+                    </Typography>
+                  </ButtonBase>
+                ))}
+              </Box>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
     </>
   );
 }

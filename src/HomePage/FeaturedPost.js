@@ -75,7 +75,7 @@ export default function FeaturedPost({ post }) {
                 justifyContent: { sm: 'flex-end' },
               }}
             >
-              Abrir plantilla
+              Crear documento
               <Arrow fontSize="small" />
             </Box>
           </Grid>

@@ -86,7 +86,7 @@ const HistoryPanel = ({ historyProps, onLoad }) => {
         <Grid item xs={12} md={5}>
           <TextField
             fullWidth
-            label="Buscar nombre, DUI, placa, vehículo o agente"
+            label="Buscar nombre, DUI, placa, responsable o vehículo"
             onChange={updateFilter(setQuery)}
             size="small"
             value={query}
@@ -156,6 +156,7 @@ const HistoryPanel = ({ historyProps, onLoad }) => {
                 <TableRow sx={{ bgcolor: 'action.hover' }}>
                   <TableCell>Documento</TableCell>
                   <TableCell>Personas</TableCell>
+                  <TableCell>Responsables</TableCell>
                   <TableCell>Tipo</TableCell>
                   <TableCell>Generado</TableCell>
                   <TableCell align="right">Acciones</TableCell>
@@ -178,6 +179,16 @@ const HistoryPanel = ({ historyProps, onLoad }) => {
                       <TableCell sx={{ minWidth: 210 }}>
                         <Typography color="text.secondary" variant="body2">
                           {presentation.parties || 'Sin información'}
+                        </Typography>
+                      </TableCell>
+                      <TableCell sx={{ minWidth: 210 }}>
+                        <Typography variant="body2">
+                          {presentation.responsible?.notary || 'Sin notario'}
+                        </Typography>
+                        <Typography color="text.secondary" variant="caption">
+                          Preparado por:{' '}
+                          {presentation.responsible?.preparer ||
+                            'No especificado'}
                         </Typography>
                       </TableCell>
                       <TableCell>

@@ -6,7 +6,9 @@ import ButtonBase from '@mui/material/ButtonBase';
 import Chip from '@mui/material/Chip';
 import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid';
+import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import AgentStructure from '../Structure/AgentStructure';
 import { FormHeading } from '../Structure/FormScaffold';
@@ -20,7 +22,10 @@ const AgentSection = ({
     data: [],
     loading: false,
     error: '',
+    selected: '',
+    preparer: '',
     save: () => {},
+    savePreparer: () => {},
     create: () => {},
     update: () => {},
     remove: () => {},
@@ -74,7 +79,7 @@ const AgentSection = ({
               color: 'primary',
               variant: 'contained',
               type: 'submit',
-              text: editing ? 'Guardar cambios' : 'Guardar agente',
+              text: editing ? 'Guardar cambios' : 'Guardar persona',
             },
           ]}
         />
@@ -86,10 +91,47 @@ const AgentSection = ({
     <>
       <FormHeading
         title={title}
-        description="Seleccione al notario que autenticará el documento. Los abogados permanecen disponibles en el directorio global, pero no pueden autorizar una auténtica."
-        eyebrow="Profesional responsable"
+        description="Identifique quién prepara el documento y seleccione al notario que lo revisará, aprobará y autorizará."
+        eyebrow="Responsabilidad del documento"
         summary={[{ label: 'Notarios disponibles', value: notaries.length }]}
       />
+      <Box
+        sx={{
+          bgcolor: '#f4f8f5',
+          border: '1px solid',
+          borderColor: 'divider',
+          borderRadius: 1,
+          mb: 3,
+          p: 2,
+        }}
+      >
+        <Typography component="h2" fontWeight={700} sx={{ mb: 0.5 }}>
+          Preparado por
+        </Typography>
+        <Typography color="text.secondary" variant="body2" sx={{ mb: 1.5 }}>
+          Dato opcional para control interno. Esta persona no autoriza la
+          auténtica ni aparece en su texto legal.
+        </Typography>
+        <TextField
+          fullWidth
+          label="Responsable de preparación"
+          onChange={(event) =>
+            agentProps.savePreparer(
+              agentProps.data.find((agent) => agent.id === event.target.value)
+            )
+          }
+          select
+          size="small"
+          value={agentProps.preparer?.id || ''}
+        >
+          <MenuItem value="">Sin especificar</MenuItem>
+          {agentProps.data.map((agent) => (
+            <MenuItem key={agent.id} value={agent.id}>
+              {agentName(agent)} — {agent.rol}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Box>
       <Stack
         alignItems={{ xs: 'stretch', sm: 'center' }}
         direction={{ xs: 'column', sm: 'row' }}
@@ -98,10 +140,10 @@ const AgentSection = ({
         sx={{ mb: 2 }}
       >
         <Typography color="text.secondary" fontWeight={650} variant="body2">
-          Directorio de agentes
+          Notario responsable
         </Typography>
         <Button variant="outlined" onClick={() => setAdding(true)}>
-          Agregar agente
+          Agregar notario
         </Button>
       </Stack>
       {agentProps.error && (
@@ -112,7 +154,9 @@ const AgentSection = ({
       {agentProps.loading && (
         <Stack direction="row" spacing={1.5} alignItems="center">
           <CircularProgress size={20} />
-          <Typography color="text.secondary">Cargando agentes...</Typography>
+          <Typography color="text.secondary">
+            Cargando responsables...
+          </Typography>
         </Stack>
       )}
       {!agentProps.loading && notaries.length === 0 && (
@@ -125,7 +169,12 @@ const AgentSection = ({
           <Box
             key={agent.id}
             sx={{
-              bgcolor: index % 2 ? '#f8faf7' : 'background.paper',
+              bgcolor:
+                agentProps.selected?.id === agent.id
+                  ? '#e7f3ed'
+                  : index % 2
+                    ? '#f8faf7'
+                    : 'background.paper',
               border: '1px solid',
               borderColor: 'divider',
               borderRadius: 1,

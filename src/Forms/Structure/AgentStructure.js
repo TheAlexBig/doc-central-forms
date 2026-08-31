@@ -28,7 +28,7 @@ const fieldProps = (name, values, touched, errors) => ({
 
 const agentSummary = (values) => [
   {
-    label: 'Agente',
+    label: 'Persona',
     value: [values.nombres, values.apellidos].filter(Boolean).join(' '),
   },
   { label: 'Rol', value: values.rol },
@@ -39,7 +39,7 @@ const AgentStructure = ({
   agent,
   buttons,
   submitAction,
-  allowedRoles = ['Notario', 'Abogado'],
+  allowedRoles = ['Notario', 'Abogado', 'Asistente', 'Escriba', 'Otro'],
 }) => (
   <Formik
     enableReinitialize
@@ -58,12 +58,12 @@ const AgentStructure = ({
     }) => (
       <form onSubmit={handleSubmit} noValidate>
         <FormHeading
-          title={agent ? 'Editar agente' : 'Nuevo agente'}
-          description="Los datos se guardan solo en este equipo para utilizarlos en documentos futuros."
-          eyebrow="Profesional"
+          title={agent ? 'Editar persona' : 'Nueva persona'}
+          description="Registre profesionales y colaboradores que participan en la preparación o autorización de documentos."
+          eyebrow="Profesional o colaborador"
           summary={agentSummary(values)}
         />
-        <FieldGroup title="Información del profesional" accent="#17695d">
+        <FieldGroup title="Información de la persona" accent="#17695d">
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -84,7 +84,11 @@ const AgentStructure = ({
             <Grid item xs={12} sm={6}>
               <TextField
                 {...fieldProps('carnet', values, touched, errors)}
-                label="Carnet"
+                label={
+                  ['Notario', 'Abogado'].includes(values.rol)
+                    ? 'Carnet'
+                    : 'Carnet (opcional)'
+                }
                 onBlur={handleBlur}
                 onChange={handleChange}
               />
@@ -92,7 +96,7 @@ const AgentStructure = ({
             <Grid item xs={12} sm={6}>
               <TextField
                 {...fieldProps('rol', values, touched, errors)}
-                label="Rol profesional"
+                label="Rol"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 select

@@ -19,7 +19,13 @@ import Header from '../HomePage/Header';
 import ReturnDialog from './Dialogs/ReturnDialog';
 import CarSaleReviewPanel from './Panels/CarSaleReviewPanel';
 
-const steps = ['Agente', 'Comprador', 'Vehículo', 'Vendedor', 'Firma y venta'];
+const steps = [
+  'Responsables',
+  'Comprador',
+  'Vehículo',
+  'Vendedor',
+  'Firma y venta',
+];
 
 const scrollToPageTop = () => {
   window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });

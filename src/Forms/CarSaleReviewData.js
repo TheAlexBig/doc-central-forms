@@ -19,6 +19,7 @@ const agentReviewData = (agent = {}) => ({
 export function createCarSaleReviewData(state) {
   return {
     agente_juridico: agentReviewData(state.agentStates),
+    preparado_por: agentReviewData(state.preparedByStates),
     comprador: personReviewData(state.personStates),
     vendedor: personReviewData(state.vendorStates),
     vehiculo: {

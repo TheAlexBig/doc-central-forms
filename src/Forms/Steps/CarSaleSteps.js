@@ -15,7 +15,7 @@ export function getStepContent(
         <AgentSection
           agentProps={agentProps}
           click={handleNext}
-          title="Selección de agente"
+          title="Preparación y autorización"
         />
       ),
     },

@@ -11,6 +11,13 @@ describe('createCarSaleReviewData', () => {
         municipio: 'Sonsonate Norte',
         departamento: 'Sonsonate',
       },
+      preparedByStates: {
+        nombres: 'Andrea',
+        apellidos: 'López',
+        distrito: 'Santa Tecla',
+        municipio: 'La Libertad Sur',
+        departamento: 'La Libertad',
+      },
       personStates: {
         nombre: 'Matias',
         apellido: 'Delgado',
@@ -37,6 +44,8 @@ describe('createCarSaleReviewData', () => {
     });
 
     expect(review.comprador.documento).toBe('12321323-2');
+    expect(review.preparado_por.nombre).toBe('Andrea');
+    expect(review.agente_juridico.nombre).toBe('Fiora');
     expect(review.vehiculo.placa).toBe('P-23233');
     expect(review.vehiculo.modelo).toBe('K3000S');
     expect(review.vehiculo.fabricado).toBe('1999');

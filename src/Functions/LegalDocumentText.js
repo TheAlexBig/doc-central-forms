@@ -126,9 +126,19 @@ const integerToWords = (number) => {
 };
 
 export const toLegalNumber = (value) => {
-  const number = String(value ?? '')
+  let number = String(value ?? '')
     .trim()
-    .replace(',', '.');
+    .replace(/[$\s]/g, '');
+  if (number.includes(',') && number.includes('.')) {
+    number =
+      number.lastIndexOf('.') > number.lastIndexOf(',')
+        ? number.replace(/,/g, '')
+        : number.replace(/\./g, '').replace(',', '.');
+  } else if (/^\d{1,3}(,\d{3})+$/.test(number)) {
+    number = number.replace(/,/g, '');
+  } else {
+    number = number.replace(',', '.');
+  }
   if (!number) {
     return '';
   }
