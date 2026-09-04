@@ -1,6 +1,6 @@
 {
   "name": "doc-central-forms",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "type": "module",
   "private": true,
   "dependencies": {
