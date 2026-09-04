@@ -63,7 +63,12 @@ const getModelOptions = (brand, options) => {
     : options.models || [];
 };
 
-const vehicleClassOptions = ['Automóvil', 'Camión liviano', 'Camión pesado'];
+const vehicleClassOptions = [
+  'Automóvil',
+  'Motocicleta',
+  'Camión liviano',
+  'Camión pesado',
+];
 const vehicleTypeOptions = [
   'Sedán',
   'Hatchback',
@@ -72,6 +77,12 @@ const vehicleTypeOptions = [
   'Panel',
   'Furgón',
   'Cabezal',
+];
+const motorcycleTypeOptions = [
+  'Urbana',
+  'Deportiva',
+  'Scooter',
+  'Todo terreno',
 ];
 
 const capacityUnitForClass = (vehicleClass) =>
@@ -226,7 +237,9 @@ const CarStructure = ({
                 {autocompleteField(
                   'tipo',
                   'Tipo',
-                  vehicleTypeOptions,
+                  values.clase === 'Motocicleta'
+                    ? motorcycleTypeOptions
+                    : vehicleTypeOptions,
                   values,
                   touched,
                   errors,

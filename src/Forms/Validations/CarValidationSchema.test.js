@@ -9,7 +9,7 @@ const tractionSchema = Yup.object().shape({
 });
 
 describe('vehicle class validation', () => {
-  it.each(['Automóvil', 'Camión liviano', 'Camión pesado'])(
+  it.each(['Automóvil', 'Camión liviano', 'Camión pesado', 'Motocicleta'])(
     'accepts the supported class %s',
     async (vehicleClass) => {
       await expect(
@@ -19,9 +19,9 @@ describe('vehicle class validation', () => {
   );
 
   it('rejects a class that is not available in the selector', async () => {
-    await expect(
-      classSchema.validate({ clase: 'Motocicleta' })
-    ).rejects.toThrow('Seleccione una clase admitida');
+    await expect(classSchema.validate({ clase: 'Autobús' })).rejects.toThrow(
+      'Seleccione una clase admitida'
+    );
   });
 
   it('requires traction for a heavy truck', async () => {
