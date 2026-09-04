@@ -17,7 +17,7 @@ export default function FeaturedPost({ post }) {
     <Grid item xs={12}>
       <ButtonBase
         component={RouterLink}
-        to="/compra-venta"
+        to={post.to}
         sx={{
           border: '1px solid',
           borderColor: 'divider',
@@ -90,5 +90,6 @@ FeaturedPost.propTypes = {
     description: PropTypes.string.isRequired,
     meta: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
+    to: PropTypes.string.isRequired,
   }).isRequired,
 };

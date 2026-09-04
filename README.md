@@ -1,8 +1,8 @@
 # Central Docs Web
 
-React application for generating legal documents through guided forms. The
-first template is the Salvadoran vehicle purchase-and-sale document with
-notarial authentication.
+React application for generating Salvadoran legal documents through guided
+forms. It supports vehicle purchase-and-sale agreements and simple mutual
+agreements with notarial authentication.
 
 Central Docs is licensed under the [Apache License 2.0](LICENSE). See the
 [privacy policy](PRIVACY.md), [security policy](SECURITY.md), and
@@ -28,7 +28,7 @@ VITE_API_URL=http://127.0.0.1:8090 npm start
 
 The `/compra-venta` wizard gathers the notary, buyer, vehicle, seller, and
 signing details. The last screen provides a review before calling
-`POST /api/v1/documents/car-sale` and downloading `compra-venta.docx`.
+`POST /api/v1/documents/car-sale/history` and downloading Word or PDF.
 
 The browser interface sends form data only to the configured Central Docs API.
 In the packaged desktop application that API runs locally and stores selected
@@ -50,6 +50,34 @@ editor represents the generated document as an ordered list of editable
 template blocks rather than a single template selector.
 The block editor provides insertable variable controls, live missing-variable
 validation, a monospaced editing surface, and a highlighted preview.
+
+## Mutual Agreement Flow
+
+The `/mutuo` wizard gathers the preparer, responsible notary, debtor, creditor,
+principal, term, installments, payment account, optional interest, optional
+bill-of-exchange guarantee, jurisdiction, signing place, and authentication
+details. Department, municipality, and district use the same dependent
+territorial selectors as the vehicle-sale workflow.
+
+The workflow prevents the same normalized DUI from being used for debtor and
+creditor. It maintains an independent local autosave, restores saved drafts,
+uses the same sectioned and editable review as vehicle sales, and generates
+Word or PDF through `POST /api/v1/documents/mutual/history`.
+
+Both document types appear in the global `/historial` table. Mutual agreements
+can be searched by party, DUI, bank, account, notary, or preparer. Opening a
+history row restores its draft at the corresponding workflow route.
+
+## Tests
+
+```bash
+npm test -- --run
+npm run lint
+npm run build
+```
+
+Payload conversion, workflow rules, history presentation, and independent
+draft storage have automated Vitest coverage.
 
 ## Desktop Distribution
 

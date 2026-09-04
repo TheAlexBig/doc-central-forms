@@ -14,6 +14,14 @@ const featuredPosts = [
     description:
       'Contrato de compra venta de vehículo con sección de autenticación notarial para El Salvador.',
     meta: 'Formulario guiado / Word y PDF',
+    to: '/compra-venta',
+  },
+  {
+    title: 'Mutuo',
+    description:
+      'Contrato de mutuo simple entre acreedor y deudor, con auténtica notarial y condiciones configurables.',
+    meta: 'Formulario guiado / Word y PDF',
+    to: '/mutuo',
   },
 ];
 

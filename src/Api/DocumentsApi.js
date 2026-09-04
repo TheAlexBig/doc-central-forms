@@ -62,6 +62,28 @@ export async function downloadCarSaleDocument(payload, draft, format = 'docx') {
   return response.headers.get('X-Document-History-Id');
 }
 
+export async function downloadMutualDocument(payload, draft, format = 'docx') {
+  const response = await fetch(
+    `${apiUrl}/api/v1/documents/mutual/history${formatQuery(format)}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ documento: payload, borrador: draft }),
+    }
+  );
+  if (!response.ok) {
+    let message = 'No se pudo generar el mutuo. Verifique los datos.';
+    try {
+      const error = await response.json();
+      message = error.message || message;
+    } catch (_error) {
+      // Keep the friendly fallback if the server did not provide JSON.
+    }
+    throw new Error(message);
+  }
+  await downloadBlob(response);
+}
+
 export async function listDocumentHistory() {
   const response = await fetch(`${apiUrl}/api/v1/documents/history`);
   if (!response.ok) {

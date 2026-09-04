@@ -11,6 +11,7 @@ import packageInfo from '../../package.json';
 export default function Header(props) {
   const { title } = props;
   const location = useLocation();
+  const documentRoutes = ['/', '/compra-venta', '/mutuo'];
 
   return (
     <AppBar
@@ -86,13 +87,13 @@ export default function Header(props) {
                 sx={{
                   bgcolor:
                     location.pathname === to ||
-                    (to === '/' && location.pathname === '/compra-venta')
+                    (to === '/' && documentRoutes.includes(location.pathname))
                       ? 'primary.light'
                       : 'transparent',
                   borderRadius: 1,
                   color:
                     location.pathname === to ||
-                    (to === '/' && location.pathname === '/compra-venta')
+                    (to === '/' && documentRoutes.includes(location.pathname))
                       ? 'primary.dark'
                       : 'text.secondary',
                   fontSize: { xs: 12, sm: 14 },

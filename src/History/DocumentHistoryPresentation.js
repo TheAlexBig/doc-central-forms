@@ -49,8 +49,52 @@ const carSalePresentation = (item) => {
   };
 };
 
+const mutualPresentation = (item) => {
+  const debtor = draftSection(item, 'debtor');
+  const creditor = draftSection(item, 'creditor');
+  const terms = draftSection(item, 'terms');
+  const agent = draftSection(item, 'agent');
+  const preparer = draftSection(item, 'preparer');
+  const debtorName =
+    [debtor.nombre, debtor.apellido].filter(Boolean).join(' ') ||
+    item.buyerName;
+  const creditorName =
+    [creditor.nombre, creditor.apellido].filter(Boolean).join(' ') ||
+    item.sellerName;
+  return {
+    title: item.title || `Mutuo - ${creditorName} / ${debtorName}`,
+    parties: `${debtorName} / ${creditorName}`,
+    responsible: {
+      notary: [agent.nombres || agent.nombre, agent.apellidos || agent.apellido]
+        .filter(Boolean)
+        .join(' '),
+      preparer: [
+        preparer.nombres || preparer.nombre,
+        preparer.apellidos || preparer.apellido,
+      ]
+        .filter(Boolean)
+        .join(' '),
+    },
+    searchable: [
+      item.title,
+      debtorName,
+      creditorName,
+      debtor.documento,
+      creditor.documento,
+      terms.amount,
+      terms.paymentBank,
+      terms.paymentAccount,
+      agent.nombres,
+      agent.apellidos,
+      preparer.nombres,
+      preparer.apellidos,
+    ],
+  };
+};
+
 const presenters = {
   'car-sale': carSalePresentation,
+  mutual: mutualPresentation,
 };
 
 export function presentDocumentHistory(item) {
@@ -72,4 +116,5 @@ export function presentDocumentHistory(item) {
 
 export const DOCUMENT_TYPE_OPTIONS = [
   { value: 'car-sale', label: 'Compraventa' },
+  { value: 'mutual', label: 'Mutuo' },
 ];

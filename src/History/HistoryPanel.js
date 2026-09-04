@@ -86,7 +86,7 @@ const HistoryPanel = ({ historyProps, onLoad }) => {
         <Grid item xs={12} md={5}>
           <TextField
             fullWidth
-            label="Buscar nombre, DUI, placa, responsable o vehículo"
+            label="Buscar documento, persona, DUI, responsable o referencia"
             onChange={updateFilter(setQuery)}
             size="small"
             value={query}

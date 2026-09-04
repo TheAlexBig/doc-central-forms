@@ -154,6 +154,22 @@ export const toLegalNumber = (value) => {
   return `${integerWords} CON ${integerToWords(BigInt(cents))} CENTAVOS`;
 };
 
+export const toLegalPercentage = (value) => {
+  const number = String(value ?? '')
+    .trim()
+    .replace(',', '.');
+  if (!number) {
+    return '';
+  }
+  if (!/^\d+(\.\d+)?$/.test(number)) {
+    return replaceNumericSequences(number);
+  }
+  const [integer, fraction] = number.split('.');
+  return fraction
+    ? `${integerToWords(BigInt(integer))} PUNTO ${integerToWords(BigInt(fraction))}`
+    : integerToWords(BigInt(integer));
+};
+
 export const replaceNumericSequences = (value) =>
   String(value ?? '')
     .replace(/\d+/g, (digits) => ` ${integerToWords(BigInt(digits))} `)
