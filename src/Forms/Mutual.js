@@ -14,9 +14,11 @@ import Stepper from '@mui/material/Stepper';
 import Typography from '@mui/material/Typography';
 import GetAge from '../Functions/GetAge';
 import { DataPerson } from '../Data/DataPerson';
+import { DataCar } from '../Data/DataCar';
 import Header from '../HomePage/Header';
 import AgentSection from './Sections/AgentSection';
 import PersonSection from './Sections/PersonSection';
+import CarSection from './Sections/CarSection';
 import MutualTermsStructure from './Structure/MutualTermsStructure';
 import { createMutualPayload } from './MutualPayload';
 import MutualReviewPanel from './Panels/MutualReviewPanel';
@@ -27,7 +29,7 @@ import {
   writeMutualDraft,
 } from './MutualDraftStorage';
 
-const steps = ['Responsables', 'Deudor', 'Acreedor', 'Condiciones', 'Revisión'];
+const baseSteps = ['Responsables', 'Deudor', 'Acreedor', 'Condiciones'];
 const emptyPerson = () => ({ ...DataPerson });
 const today = () => new Date().toISOString().slice(0, 10);
 const currentTime = () => {
@@ -37,6 +39,9 @@ const currentTime = () => {
 const initialTerms = {
   amount: '',
   term: '',
+  termMode: 'DURATION',
+  termQuantity: '12',
+  termUnit: 'MONTHS',
   dueDate: '',
   installmentCount: '1',
   installmentAmount: '',
@@ -49,6 +54,11 @@ const initialTerms = {
   guaranteeDueDate: '',
   administrativeExpenses: '',
   specialDomicile: '',
+  instrumentType: 'PRIVATE_AUTHENTICATED',
+  guaranteeType: 'NONE',
+  guaranteeDetails: '',
+  pledgeValue: '',
+  deedNumber: '',
   signingState: '',
   signingMunicipality: '',
   signingDistrict: '',
@@ -57,12 +67,22 @@ const initialTerms = {
   identifiesDebtor: 'No',
   identifiesCreditor: 'No',
 };
-const hasDraftData = ({ agent, preparer, debtor, creditor, terms }) =>
+const hasDraftData = ({
+  agent,
+  preparer,
+  debtor,
+  creditor,
+  guarantor,
+  pledgedVehicle,
+  terms,
+}) =>
   Boolean(
     agent ||
     preparer ||
     debtor.documento ||
     creditor.documento ||
+    guarantor.documento ||
+    pledgedVehicle.placa ||
     terms.amount ||
     terms.term ||
     terms.paymentAccount
@@ -71,13 +91,13 @@ const hasDraftData = ({ agent, preparer, debtor, creditor, terms }) =>
 export default function Mutual({
   agents,
   people,
+  vehicleProps,
   savePerson,
   generateDocument,
 }) {
   const [recoveredDraft] = useState(() => readMutualDraft(window.localStorage));
   const recoveredState = recoveredDraft?.state || {};
   const [activeStep, setActiveStep] = useState(0);
-  const [lastStep, setLastStep] = useState(0);
   const [exitOpen, setExitOpen] = useState(false);
   const [agent, setAgent] = useState(recoveredState.agent || '');
   const [preparer, setPreparer] = useState(recoveredState.preparer || '');
@@ -89,10 +109,36 @@ export default function Mutual({
     ...emptyPerson(),
     ...recoveredState.creditor,
   });
+  const [guarantor, setGuarantor] = useState({
+    ...emptyPerson(),
+    ...recoveredState.guarantor,
+  });
+  const [pledgedVehicle, setPledgedVehicle] = useState({
+    ...DataCar,
+    ...recoveredState.pledgedVehicle,
+  });
   const [terms, setTerms] = useState({
     ...initialTerms,
     ...recoveredState.terms,
+    ...(recoveredState.terms?.termMode
+      ? {}
+      : recoveredState.terms?.dueDate
+        ? { termMode: 'SPECIFIC_DATE' }
+        : {}),
   });
+  const hasGuarantor = terms.guaranteeType === 'PERSONAL_GUARANTOR';
+  const hasVehiclePledge = terms.guaranteeType === 'VEHICLE_PLEDGE';
+  const steps = [
+    ...baseSteps,
+    ...(hasGuarantor
+      ? ['Fiador']
+      : hasVehiclePledge
+        ? ['Vehículo en garantía']
+        : []),
+  ];
+  const reviewStep = steps.length;
+  const [lastStep, setLastStep] = useState(recoveredDraft ? reviewStep : 0);
+  const [returnToReview, setReturnToReview] = useState(false);
   const [autosave, setAutosave] = useState({
     savedAt: recoveredDraft?.savedAt || null,
     recovered: Boolean(recoveredDraft),
@@ -108,7 +154,15 @@ export default function Mutual({
       skipRecoveredInitialSave.current = false;
       return undefined;
     }
-    const state = { agent, preparer, debtor, creditor, terms };
+    const state = {
+      agent,
+      preparer,
+      debtor,
+      creditor,
+      guarantor,
+      pledgedVehicle,
+      terms,
+    };
     if (!hasDraftData(state)) {
       clearMutualDraft(window.localStorage);
       setAutosave({ savedAt: null, recovered: false, saving: false });
@@ -121,7 +175,7 @@ export default function Mutual({
       setAutosave({ savedAt, recovered: false, saving: false });
     }, 750);
     return () => window.clearTimeout(timeout);
-  }, [agent, preparer, debtor, creditor, terms]);
+  }, [agent, preparer, debtor, creditor, guarantor, pledgedVehicle, terms]);
 
   const discardDraft = () => {
     clearMutualDraft(window.localStorage);
@@ -129,6 +183,8 @@ export default function Mutual({
     setPreparer('');
     setDebtor(emptyPerson());
     setCreditor(emptyPerson());
+    setGuarantor(emptyPerson());
+    setPledgedVehicle({ ...DataCar });
     setTerms({
       ...initialTerms,
       signingDate: today(),
@@ -136,14 +192,19 @@ export default function Mutual({
     });
     setActiveStep(0);
     setLastStep(0);
+    setReturnToReview(false);
     setAutosave({ savedAt: null, recovered: false, saving: false });
   };
   const next = () => {
-    setActiveStep((value) => {
-      const nextStep = value + 1;
-      setLastStep((last) => Math.max(last, nextStep));
-      return nextStep;
-    });
+    if (returnToReview) {
+      setReturnToReview(false);
+      setActiveStep(reviewStep);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    const nextStep = activeStep + 1;
+    setLastStep((last) => Math.max(last, nextStep));
+    setActiveStep(nextStep);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   const selectStep = (step) => {
@@ -151,6 +212,10 @@ export default function Mutual({
       setActiveStep(step);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+  };
+  const editStep = (step) => {
+    setReturnToReview(true);
+    selectStep(step);
   };
   const saveParty = (setter) => async (values) => {
     const saved = await savePerson(values);
@@ -164,8 +229,23 @@ export default function Mutual({
     setMessage({ type: '', text: '' });
     try {
       await generateDocument(
-        createMutualPayload({ debtor, creditor, terms, agent }),
-        { agent, preparer, debtor, creditor, terms },
+        createMutualPayload({
+          debtor,
+          creditor,
+          guarantor,
+          pledgedVehicle,
+          terms,
+          agent,
+        }),
+        {
+          agent,
+          preparer,
+          debtor,
+          creditor,
+          guarantor,
+          pledgedVehicle,
+          terms,
+        },
         format
       );
       setMessage({
@@ -179,7 +259,10 @@ export default function Mutual({
       setGeneratingFormat('');
     }
   };
-  const progress = Math.round(((activeStep + 1) / steps.length) * 100);
+  const progress =
+    activeStep === reviewStep
+      ? 100
+      : Math.round(((activeStep + 1) / steps.length) * 100);
 
   return (
     <>
@@ -274,7 +357,7 @@ export default function Mutual({
                   sx={{ mb: 1.5 }}
                   variant="overline"
                 >
-                  {activeStep === steps.length - 1
+                  {activeStep === reviewStep
                     ? 'Revisión final'
                     : steps[activeStep]}
                 </Typography>
@@ -320,7 +403,9 @@ export default function Mutual({
                   sx={{ display: { xs: 'block', md: 'none' } }}
                   variant="body2"
                 >
-                  Paso actual: {steps[activeStep]}
+                  {activeStep === reviewStep
+                    ? 'Revisión final'
+                    : `Paso actual: ${steps[activeStep]}`}
                 </Typography>
               </Box>
             </Grid>
@@ -383,18 +468,82 @@ export default function Mutual({
                     data={terms}
                     onSubmit={(values) => {
                       setTerms(values);
-                      next();
+                      if (returnToReview) {
+                        const needsGuarantor =
+                          values.guaranteeType === 'PERSONAL_GUARANTOR' &&
+                          !guarantor.documento;
+                        const needsVehicle =
+                          values.guaranteeType === 'VEHICLE_PLEDGE' &&
+                          !pledgedVehicle.placa;
+                        const needsGuaranteeStep =
+                          needsGuarantor || needsVehicle;
+                        setReturnToReview(needsGuaranteeStep);
+                        setActiveStep(
+                          needsGuaranteeStep
+                            ? baseSteps.length
+                            : baseSteps.length +
+                                ([
+                                  'PERSONAL_GUARANTOR',
+                                  'VEHICLE_PLEDGE',
+                                ].includes(values.guaranteeType)
+                                  ? 1
+                                  : 0)
+                        );
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      } else {
+                        next();
+                      }
                     }}
                     onBack={() => setActiveStep(2)}
                   />
                 )}
-                {activeStep === 4 && (
+                {hasGuarantor && activeStep === 4 && (
+                  <PersonSection
+                    title="Datos del fiador o garante"
+                    personProps={{
+                      data: guarantor,
+                      people,
+                      occupations: [],
+                      excludedDui: [debtor.documento, creditor.documento],
+                      save: saveParty(setGuarantor),
+                    }}
+                    click={next}
+                    back={() => setActiveStep(3)}
+                  />
+                )}
+                {hasVehiclePledge && activeStep === 4 && (
+                  <CarSection
+                    title="Vehículo dado en garantía prendaria"
+                    carProps={{
+                      data: pledgedVehicle,
+                      error: vehicleProps.error,
+                      options: vehicleProps.options,
+                      save: async (values) => {
+                        const saved = await vehicleProps.save(values);
+                        if (saved !== false) setPledgedVehicle(values);
+                        return saved;
+                      },
+                    }}
+                    click={next}
+                    back={() => setActiveStep(3)}
+                  />
+                )}
+                {activeStep === reviewStep && (
                   <MutualReviewPanel
-                    data={{ agent, preparer, debtor, creditor, terms }}
+                    data={{
+                      agent,
+                      preparer,
+                      debtor,
+                      creditor,
+                      guarantor,
+                      pledgedVehicle,
+                      terms,
+                    }}
                     generating={generating}
                     generatingFormat={generatingFormat}
                     message={message}
-                    onEdit={selectStep}
+                    onBack={() => setActiveStep(reviewStep - 1)}
+                    onEdit={editStep}
                     onGenerate={generate}
                   />
                 )}

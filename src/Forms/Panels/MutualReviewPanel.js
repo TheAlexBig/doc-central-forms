@@ -22,6 +22,7 @@ export default function MutualReviewPanel({
   generating,
   generatingFormat,
   message,
+  onBack,
   onEdit,
   onGenerate,
 }) {
@@ -75,21 +76,26 @@ export default function MutualReviewPanel({
           El archivo generado también se guarda en la carpeta local de
           documentos.
         </Typography>
-        <ButtonGroup variant="contained" disabled={generating}>
-          <Button onClick={() => onGenerate(selected.format)}>
-            {generating && (
-              <CircularProgress color="inherit" size={18} sx={{ mr: 1 }} />
-            )}
-            Descargar {selected.label}
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+          <Button disabled={generating} onClick={onBack}>
+            Volver
           </Button>
-          <Button
-            aria-label="Cambiar formato de descarga"
-            onClick={(event) => setAnchor(event.currentTarget)}
-            size="small"
-          >
-            ▾
-          </Button>
-        </ButtonGroup>
+          <ButtonGroup variant="contained" disabled={generating}>
+            <Button onClick={() => onGenerate(selected.format)}>
+              {generating && (
+                <CircularProgress color="inherit" size={18} sx={{ mr: 1 }} />
+              )}
+              Descargar {selected.label}
+            </Button>
+            <Button
+              aria-label="Cambiar formato de descarga"
+              onClick={(event) => setAnchor(event.currentTarget)}
+              size="small"
+            >
+              ▾
+            </Button>
+          </ButtonGroup>
+        </Stack>
       </Stack>
       <Menu
         anchorEl={anchor}
