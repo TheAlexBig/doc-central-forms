@@ -34,36 +34,37 @@ const agentPayload = (agent) => ({
   rol: agent.rol || 'Notario',
 });
 
+export const createVehiclePayload = (vehicle) => {
+  const heavyTruck = vehicle.clase?.toLocaleLowerCase() === 'camión pesado';
+  return {
+    placa: toLegalIdentifier(vehicle.placa),
+    marca: replaceNumericSequences(vehicle.marca),
+    modelo: replaceNumericSequences(vehicle.modelo),
+    color: replaceNumericSequences(vehicle.color),
+    fabricado: toLegalYear(vehicle.fabricado),
+    capacidad: heavyTruck
+      ? replaceNumericSequences(vehicle.tipo_capacidad)
+      : `${toLegalNumber(vehicle.capacidad)} ${vehicle.unidad_capacidad || 'ASS'}`,
+    dominio: replaceNumericSequences(vehicle.dominio),
+    clase: replaceNumericSequences(vehicle.clase),
+    tipo: replaceNumericSequences(vehicle.tipo),
+    ejes: toLegalNumber(vehicle.ejes),
+    tara: toLegalNumber(vehicle.tara),
+    tipo_capacidad: replaceNumericSequences(vehicle.tipo_capacidad),
+    cap_carga: toLegalNumber(vehicle.cap_carga),
+    cap_maxima: toLegalNumber(vehicle.cap_maxima),
+    traccion: replaceNumericSequences(vehicle.traccion),
+    num_motor: toLegalIdentifier(vehicle.num_motor),
+    num_chasis: toLegalIdentifier(vehicle.num_chasis),
+    num_vin: toLegalIdentifier(vehicle.num_vin),
+  };
+};
+
 export function createCarSalePayload(state) {
-  const heavyTruck =
-    state.carStates.clase?.toLocaleLowerCase() === 'camión pesado';
   return {
     vendedor: personPayload(state.vendorStates),
     comprador: personPayload(state.personStates),
-    vehiculo: {
-      placa: toLegalIdentifier(state.carStates.placa),
-      marca: replaceNumericSequences(state.carStates.marca),
-      modelo: replaceNumericSequences(state.carStates.modelo),
-      color: replaceNumericSequences(state.carStates.color),
-      fabricado: toLegalYear(state.carStates.fabricado),
-      capacidad: heavyTruck
-        ? replaceNumericSequences(state.carStates.tipo_capacidad)
-        : `${toLegalNumber(state.carStates.capacidad)} ${
-            state.carStates.unidad_capacidad || 'ASS'
-          }`,
-      dominio: replaceNumericSequences(state.carStates.dominio),
-      clase: replaceNumericSequences(state.carStates.clase),
-      tipo: replaceNumericSequences(state.carStates.tipo),
-      ejes: toLegalNumber(state.carStates.ejes),
-      tara: toLegalNumber(state.carStates.tara),
-      tipo_capacidad: replaceNumericSequences(state.carStates.tipo_capacidad),
-      cap_carga: toLegalNumber(state.carStates.cap_carga),
-      cap_maxima: toLegalNumber(state.carStates.cap_maxima),
-      traccion: replaceNumericSequences(state.carStates.traccion),
-      num_motor: toLegalIdentifier(state.carStates.num_motor),
-      num_chasis: toLegalIdentifier(state.carStates.num_chasis),
-      num_vin: toLegalIdentifier(state.carStates.num_vin),
-    },
+    vehiculo: createVehiclePayload(state.carStates),
     documento: {
       calidad_de: replaceNumericSequences(state.detailStates.calidad_de),
       institucion: replaceNumericSequences(

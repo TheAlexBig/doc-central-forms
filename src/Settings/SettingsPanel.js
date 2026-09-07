@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -8,6 +8,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Grid from '@mui/material/Grid';
+import DocumentTemplateSettings from './DocumentTemplateSettings';
 import Stack from '@mui/material/Stack';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -258,304 +259,6 @@ const BackupManager = ({ busy, createBackup, restoreBackup }) => {
   );
 };
 
-const TEMPLATE_ORDER = [
-  'people-document.txt',
-  'car-document.txt',
-  'document.txt',
-  'first-section-end.txt',
-  'people-authentic.txt',
-  'car-authentic.txt',
-  'document-authentic.txt',
-  'second-section-end.txt',
-  'legal-authentic.txt',
-];
-
-const TemplatePreview = ({ content }) => (
-  <Box
-    sx={{
-      bgcolor: 'action.hover',
-      border: '1px solid',
-      borderColor: 'divider',
-      borderRadius: 1,
-      lineHeight: 1.8,
-      maxHeight: 180,
-      overflowY: 'auto',
-      p: 2,
-    }}
-  >
-    <Typography component="div" sx={{ whiteSpace: 'pre-wrap' }} variant="body2">
-      {content.split(/(:[A-Za-z][A-Za-z0-9]*)/g).map((part, index) =>
-        part.startsWith(':') ? (
-          <Box
-            component="span"
-            key={`${part}-${index}`}
-            sx={{
-              bgcolor: 'primary.main',
-              borderRadius: 0.75,
-              color: 'primary.contrastText',
-              fontFamily: 'monospace',
-              fontSize: '0.8em',
-              mx: 0.25,
-              px: 0.5,
-              py: 0.2,
-            }}
-          >
-            {part}
-          </Box>
-        ) : (
-          part
-        )
-      )}
-    </Typography>
-  </Box>
-);
-
-const TemplateManager = ({ templates, busy, onSave, onReset }) => {
-  const [editing, setEditing] = useState(null);
-  const [content, setContent] = useState('');
-  const editorRef = useRef(null);
-  const ordered = useMemo(
-    () =>
-      [...templates].sort(
-        (left, right) =>
-          TEMPLATE_ORDER.indexOf(left.name) - TEMPLATE_ORDER.indexOf(right.name)
-      ),
-    [templates]
-  );
-  useEffect(() => {
-    if (!editing) return;
-    const current = templates.find(
-      (template) => template.name === editing.name
-    );
-    if (current) {
-      setEditing(current);
-      setContent(current.content);
-    }
-  }, [templates, editing]);
-
-  const openEditor = (template) => {
-    setEditing(template);
-    setContent(template.content);
-  };
-  const missingVariables = editing
-    ? editing.requiredVariables.filter(
-        (variable) => !content.includes(variable)
-      )
-    : [];
-  const insertVariable = (variable) => {
-    const editor = editorRef.current;
-    const start = editor?.selectionStart ?? content.length;
-    const end = editor?.selectionEnd ?? start;
-    const nextContent = `${content.slice(0, start)}${variable}${content.slice(end)}`;
-    setContent(nextContent);
-    window.requestAnimationFrame(() => {
-      editor?.focus();
-      editor?.setSelectionRange(
-        start + variable.length,
-        start + variable.length
-      );
-    });
-  };
-
-  return (
-    <Box>
-      <SectionHeader
-        title="Bloques de la compraventa"
-        description="El documento final se construye combinando estos bloques en el orden mostrado. Abre un bloque para revisar o modificar su contenido."
-      />
-      <Stack spacing={1}>
-        {ordered.map((template, index) => {
-          const authentic = template.name.includes('authentic');
-          return (
-            <SurfaceRow key={template.name}>
-              <Stack
-                alignItems={{ xs: 'stretch', sm: 'center' }}
-                direction={{ xs: 'column', sm: 'row' }}
-                justifyContent="space-between"
-                spacing={1.5}
-              >
-                <Stack alignItems="center" direction="row" spacing={1.5}>
-                  <Box
-                    sx={{
-                      alignItems: 'center',
-                      bgcolor: authentic ? 'secondary.light' : 'primary.main',
-                      borderRadius: 1,
-                      color: authentic
-                        ? 'secondary.contrastText'
-                        : 'primary.contrastText',
-                      display: 'flex',
-                      flexShrink: 0,
-                      fontSize: 13,
-                      fontWeight: 700,
-                      height: 32,
-                      justifyContent: 'center',
-                      width: 32,
-                    }}
-                  >
-                    {index + 1}
-                  </Box>
-                  <Box sx={{ minWidth: 0 }}>
-                    <Typography fontWeight={650} variant="body2">
-                      {template.label}
-                    </Typography>
-                    <Typography color="text.secondary" variant="caption">
-                      {authentic ? 'Auténtica notarial' : 'Contrato'} ·{' '}
-                      {template.requiredVariables.length} variables ·{' '}
-                      {template.usingDefault
-                        ? 'Texto original'
-                        : 'Personalizada'}
-                    </Typography>
-                  </Box>
-                </Stack>
-                <Button
-                  onClick={() => openEditor(template)}
-                  size="small"
-                  variant="outlined"
-                >
-                  Abrir bloque
-                </Button>
-              </Stack>
-            </SurfaceRow>
-          );
-        })}
-      </Stack>
-      <Dialog
-        fullWidth
-        maxWidth="xl"
-        onClose={() => setEditing(null)}
-        open={Boolean(editing)}
-        PaperProps={{ sx: { minHeight: { md: '78vh' } } }}
-      >
-        {editing && (
-          <>
-            <DialogTitle>{editing.label}</DialogTitle>
-            <DialogContent dividers>
-              <Typography color="text.secondary" sx={{ mb: 2 }} variant="body2">
-                Este bloque forma parte del documento de compraventa. Conserva
-                las variables obligatorias para que los datos puedan insertarse
-                correctamente.
-              </Typography>
-              <Grid container spacing={2.5}>
-                <Grid item xs={12} md={3}>
-                  <Box
-                    sx={{
-                      bgcolor: 'action.hover',
-                      borderRadius: 1,
-                      p: 2,
-                      position: { md: 'sticky' },
-                      top: { md: 0 },
-                    }}
-                  >
-                    <Typography
-                      fontWeight={700}
-                      sx={{ mb: 0.5 }}
-                      variant="body2"
-                    >
-                      Variables del bloque
-                    </Typography>
-                    <Typography
-                      color="text.secondary"
-                      sx={{ mb: 1.5 }}
-                      variant="caption"
-                    >
-                      Coloca el cursor en el texto y selecciona una variable
-                      para insertarla.
-                    </Typography>
-                    <Stack alignItems="flex-start" spacing={1}>
-                      {editing.requiredVariables.length === 0 ? (
-                        <Typography color="text.secondary" variant="caption">
-                          Este bloque no utiliza variables.
-                        </Typography>
-                      ) : (
-                        editing.requiredVariables.map((variable) => {
-                          const present = content.includes(variable);
-                          return (
-                            <Chip
-                              color={present ? 'success' : 'warning'}
-                              key={variable}
-                              label={`${present ? '✓' : '+'} ${variable}`}
-                              onClick={() => insertVariable(variable)}
-                              size="small"
-                              variant={present ? 'outlined' : 'filled'}
-                            />
-                          );
-                        })
-                      )}
-                    </Stack>
-                    {missingVariables.length > 0 && (
-                      <Alert severity="warning" sx={{ mt: 2 }}>
-                        Faltan {missingVariables.length} variables.
-                      </Alert>
-                    )}
-                  </Box>
-                </Grid>
-                <Grid item xs={12} md={9}>
-                  <Typography fontWeight={700} sx={{ mb: 1 }} variant="body2">
-                    Contenido editable
-                  </Typography>
-                  <TextField
-                    error={missingVariables.length > 0}
-                    fullWidth
-                    helperText={`${content.length} caracteres · ${missingVariables.length ? `Faltan: ${missingVariables.join(', ')}` : 'Todas las variables están presentes'}`}
-                    inputRef={editorRef}
-                    minRows={14}
-                    multiline
-                    onChange={(event) => setContent(event.target.value)}
-                    value={content}
-                    InputProps={{
-                      sx: {
-                        alignItems: 'flex-start',
-                        fontFamily: 'Consolas, "Courier New", monospace',
-                        fontSize: 14,
-                        lineHeight: 1.7,
-                      },
-                    }}
-                  />
-                  <Typography
-                    fontWeight={700}
-                    sx={{ mb: 1, mt: 2.5 }}
-                    variant="body2"
-                  >
-                    Vista rápida
-                  </Typography>
-                  <TemplatePreview content={content} />
-                </Grid>
-              </Grid>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setEditing(null)}>Cerrar</Button>
-              <Button
-                disabled={busy === 'template' || editing.usingDefault}
-                onClick={async () => {
-                  const updated = await onReset(editing.name);
-                  if (updated) setContent(updated.content);
-                }}
-              >
-                Restaurar original
-              </Button>
-              <Button
-                disabled={
-                  busy === 'template' ||
-                  content === editing.content ||
-                  missingVariables.length > 0
-                }
-                onClick={async () => {
-                  if (missingVariables.length > 0) return;
-                  const updated = await onSave(editing.name, content);
-                  if (updated) setEditing(null);
-                }}
-                variant="contained"
-              >
-                Guardar bloque
-              </Button>
-            </DialogActions>
-          </>
-        )}
-      </Dialog>
-    </Box>
-  );
-};
-
 const UpdateManager = ({ info, status, busy, check }) => (
   <Box>
     <SectionHeader
@@ -784,7 +487,8 @@ const VehicleCatalogManager = ({ options, onRemove }) => (
 const VIEW_DESCRIPTION = {
   general: 'Actualizaciones, respaldos y herramientas de soporte.',
   data: 'Personas y valores reutilizables guardados en este equipo.',
-  templates: 'Textos legales utilizados para generar las compraventas.',
+  templates:
+    'Selecciona un documento para administrar sus bloques de texto legal.',
 };
 
 const SettingsPanel = ({ settingsProps }) => {
@@ -890,12 +594,7 @@ const SettingsPanel = ({ settingsProps }) => {
 
       {view === 'templates' && (
         <SettingsCard sx={{ maxWidth: 1000 }}>
-          <TemplateManager
-            templates={settingsProps.carSaleTemplates?.templates || []}
-            busy={settingsProps.carSaleTemplates?.busy}
-            onSave={settingsProps.carSaleTemplates?.saveTemplate}
-            onReset={settingsProps.carSaleTemplates?.resetTemplate}
-          />
+          <DocumentTemplateSettings />
         </SettingsCard>
       )}
     </Box>

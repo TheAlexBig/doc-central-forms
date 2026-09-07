@@ -5,6 +5,11 @@ import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import MutualPaymentPlanSummary from '../Forms/Structure/MutualPaymentPlanSummary';
+import {
+  calculateMutualPreview,
+  formatMutualMoney,
+} from '../Forms/MutualFinancialPreview';
 
 const emptyValue = 'No especificado';
 const fullName = (person = {}) =>
@@ -20,6 +25,17 @@ const partyValues = (person) => [
   ['DUI', person.documento],
   ['Domicilio', place(person), true],
   ['Oficio', person.oficio],
+];
+const vehicleValues = (vehicle = {}) => [
+  ['Placa', vehicle.placa],
+  ['Marca y modelo', [vehicle.marca, vehicle.modelo].filter(Boolean).join(' ')],
+  ['Año', vehicle.fabricado],
+  ['Clase y tipo', [vehicle.clase, vehicle.tipo].filter(Boolean).join(' / ')],
+  ['Color', vehicle.color],
+  ['Capacidad', `${vehicle.capacidad || ''} ${vehicle.unidad_capacidad || ''}`],
+  ['Motor', vehicle.num_motor],
+  ['Chasis', vehicle.num_chasis],
+  ['VIN', vehicle.num_vin],
 ];
 
 const ReviewField = ({ label, value, wide = false }) => (
@@ -44,6 +60,7 @@ const ReviewField = ({ label, value, wide = false }) => (
 );
 
 export default function MutualReview({ data, onEdit }) {
+  const preview = calculateMutualPreview(data.terms);
   const signingPlace = [
     data.terms.signingDistrict,
     data.terms.signingMunicipality,
@@ -51,6 +68,17 @@ export default function MutualReview({ data, onEdit }) {
   ]
     .filter(Boolean)
     .join(', ');
+  const instrumentLabels = {
+    PRIVATE_AUTHENTICATED: 'Documento privado autenticado',
+    PUBLIC_DEED: 'Escritura pública',
+  };
+  const guaranteeLabels = {
+    NONE: 'Sin garantía',
+    PERSONAL_GUARANTOR: 'Fiador o garante personal',
+    VEHICLE_PLEDGE: 'Prenda sin desplazamiento sobre vehículo',
+    MOVABLE: 'Garantía mobiliaria',
+    MORTGAGE: 'Garantía hipotecaria',
+  };
   const sections = [
     {
       title: 'Responsables',
@@ -102,6 +130,14 @@ export default function MutualReview({ data, onEdit }) {
           data.terms.defaultInterest && `${data.terms.defaultInterest}%`,
         ],
         ['Destino de los fondos', data.terms.fundsPurpose, true],
+        ['Instrumento', instrumentLabels[data.terms.instrumentType]],
+        ...(data.terms.instrumentType === 'PUBLIC_DEED'
+          ? [['Número de escritura', data.terms.deedNumber]]
+          : []),
+        ['Garantía', guaranteeLabels[data.terms.guaranteeType]],
+        ...(data.terms.guaranteeDetails
+          ? [['Bien dado en garantía', data.terms.guaranteeDetails, true]]
+          : []),
         [
           'Garantía con letra de cambio',
           data.terms.billOfExchangeGuarantee ? 'Sí' : 'No',
@@ -114,13 +150,53 @@ export default function MutualReview({ data, onEdit }) {
           data.terms.administrativeExpenses &&
             `${data.terms.administrativeExpenses}%`,
         ],
-        ['Domicilio especial', data.terms.specialDomicile, true],
         ['Lugar de firma', signingPlace, true],
         ['Fecha y hora', `${data.terms.signingDate} ${data.terms.signingTime}`],
         ['Conoce al deudor', data.terms.identifiesDebtor],
         ['Conoce al acreedor', data.terms.identifiesCreditor],
       ],
     },
+    ...(data.terms.guaranteeType === 'PERSONAL_GUARANTOR'
+      ? [
+          {
+            title: 'Fiador o garante',
+            accent: '#735c91',
+            summary: fullName(data.guarantor),
+            step: 4,
+            values: partyValues(data.guarantor),
+          },
+        ]
+      : []),
+    ...(data.terms.guaranteeType === 'VEHICLE_PLEDGE'
+      ? [
+          {
+            title: 'Vehículo en garantía',
+            accent: '#735c91',
+            summary: `${data.pledgedVehicle?.placa || emptyValue} / ${[
+              data.pledgedVehicle?.marca,
+              data.pledgedVehicle?.modelo,
+            ]
+              .filter(Boolean)
+              .join(' ')}`,
+            step: 4,
+            values: [
+              ['Valor convenido', `$${data.terms.pledgeValue}`],
+              ...vehicleValues(data.pledgedVehicle),
+            ],
+          },
+        ]
+      : []),
+    ...(preview
+      ? [
+          {
+            title: 'Plan de pagos',
+            accent: '#17695d',
+            summary: `${formatMutualMoney(preview.total)} · ${preview.periodicity}`,
+            step: 3,
+            content: <MutualPaymentPlanSummary preview={preview} />,
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -220,22 +296,24 @@ export default function MutualReview({ data, onEdit }) {
             </Button>
           </Stack>
           <Divider sx={{ mb: 2 }} />
-          <Grid
-            columnSpacing={{ xs: 2, md: 3 }}
-            component="dl"
-            container
-            rowSpacing={1.75}
-            sx={{ m: 0 }}
-          >
-            {section.values.map(([label, value, wide]) => (
-              <ReviewField
-                key={label}
-                label={label}
-                value={value}
-                wide={wide}
-              />
-            ))}
-          </Grid>
+          {section.content || (
+            <Grid
+              columnSpacing={{ xs: 2, md: 3 }}
+              component="dl"
+              container
+              rowSpacing={1.75}
+              sx={{ m: 0 }}
+            >
+              {section.values.map(([label, value, wide]) => (
+                <ReviewField
+                  key={label}
+                  label={label}
+                  value={value}
+                  wide={wide}
+                />
+              ))}
+            </Grid>
+          )}
         </Box>
       ))}
     </Box>

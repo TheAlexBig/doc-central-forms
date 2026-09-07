@@ -39,6 +39,12 @@ const personSummary = (values) => [
   { label: 'Oficio', value: values.oficio },
 ];
 
+const isExcludedDui = (excludedDui, value) =>
+  (Array.isArray(excludedDui) ? excludedDui : [excludedDui])
+    .map(normalizeDui)
+    .filter(Boolean)
+    .includes(normalizeDui(value));
+
 const PersonStructure = ({
   data,
   title,
@@ -57,10 +63,8 @@ const PersonStructure = ({
       ...PersonValidationSchema,
       documento: PersonValidationSchema.documento.test(
         'different-party-dui',
-        'El comprador y el vendedor deben tener DUI diferentes',
-        (value) =>
-          !normalizeDui(excludedDui) ||
-          normalizeDui(value) !== normalizeDui(excludedDui)
+        'Los comparecientes deben tener DUI diferentes',
+        (value) => !isExcludedDui(excludedDui, value)
       ),
     })}
   >
@@ -94,8 +98,7 @@ const PersonStructure = ({
           >
             <Autocomplete
               options={people.filter(
-                (person) =>
-                  normalizeDui(person.documento) !== normalizeDui(excludedDui)
+                (person) => !isExcludedDui(excludedDui, person.documento)
               )}
               getOptionLabel={personLabel}
               isOptionEqualToValue={(option, value) =>

@@ -19,7 +19,6 @@ import { useDocumentHistory } from './Hooks/useDocumentHistory';
 import { usePeopleMemory } from './Hooks/usePeopleMemory';
 import { useVehicleMemory } from './Hooks/useVehicleMemory';
 import { useLicense } from './Hooks/useLicense';
-import { useCarSaleTemplates } from './Hooks/useCarSaleTemplates';
 import { useMaintenanceTools } from './Hooks/useMaintenanceTools';
 import LicenseActivation from './License/LicenseActivation';
 import ScrollToTop from './View/ScrollToTop';
@@ -39,7 +38,6 @@ const App = () => {
   const desktopDiagnostics = useDesktopDiagnostics();
   const license = useLicense();
   const maintenanceTools = useMaintenanceTools();
-  const carSaleTemplates = useCarSaleTemplates();
   const agentsMemory = useAgents({
     clearSelectedAgent: form.clearSelectedAgent,
     updateSelectedAgent: form.updateSelectedAgent,
@@ -90,8 +88,7 @@ const App = () => {
       peopleMemory.peopleError ||
       agentsMemory.agentError ||
       desktopDiagnostics.diagnosticsError ||
-      maintenanceTools.maintenanceError ||
-      carSaleTemplates.templatesError,
+      maintenanceTools.maintenanceError,
     people: peopleMemory.savedPeople,
     agents: agentsMemory.agents,
     agentsLoading: agentsMemory.agentsLoading,
@@ -107,7 +104,6 @@ const App = () => {
     downloadSupportPackage: desktopDiagnostics.downloadDiagnosticsPackage,
     supportPackageLoading: desktopDiagnostics.supportPackageLoading,
     ...maintenanceTools,
-    carSaleTemplates,
   };
 
   return (
@@ -163,6 +159,11 @@ const App = () => {
                       remove: agentsMemory.removeAgent,
                     }}
                     people={peopleMemory.savedPeople}
+                    vehicleProps={{
+                      error: vehicleMemory.vehicleError,
+                      options: vehicleMemory.vehicleOptions,
+                      save: vehicleMemory.saveVehicleMemory,
+                    }}
                     savePerson={peopleMemory.savePersonMemory}
                     generateDocument={async (payload, draft, format) => {
                       await downloadMutualDocument(payload, draft, format);
