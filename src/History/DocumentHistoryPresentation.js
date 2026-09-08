@@ -92,9 +92,47 @@ const mutualPresentation = (item) => {
   };
 };
 
+const marriagePresentation = (item) => {
+  const one = draftSection(item, 'partyOne');
+  const two = draftSection(item, 'partyTwo');
+  const agent = draftSection(item, 'agent');
+  const preparer = draftSection(item, 'preparer');
+  const oneName =
+    [one.nombre, one.apellido].filter(Boolean).join(' ') || item.buyerName;
+  const twoName =
+    [two.nombre, two.apellido].filter(Boolean).join(' ') || item.sellerName;
+  return {
+    title: item.title || 'Matrimonio - ' + oneName + ' / ' + twoName,
+    parties: oneName + ' / ' + twoName,
+    responsible: {
+      notary: [agent.nombres || agent.nombre, agent.apellidos || agent.apellido]
+        .filter(Boolean)
+        .join(' '),
+      preparer: [
+        preparer.nombres || preparer.nombre,
+        preparer.apellidos || preparer.apellido,
+      ]
+        .filter(Boolean)
+        .join(' '),
+    },
+    searchable: [
+      item.title,
+      oneName,
+      twoName,
+      one.documento,
+      two.documento,
+      agent.nombres,
+      agent.apellidos,
+      preparer.nombres,
+      preparer.apellidos,
+    ],
+  };
+};
+
 const presenters = {
   'car-sale': carSalePresentation,
   mutual: mutualPresentation,
+  marriage: marriagePresentation,
 };
 
 export function presentDocumentHistory(item) {
@@ -117,4 +155,5 @@ export function presentDocumentHistory(item) {
 export const DOCUMENT_TYPE_OPTIONS = [
   { value: 'car-sale', label: 'Compraventa' },
   { value: 'mutual', label: 'Mutuo' },
+  { value: 'marriage', label: 'Matrimonio' },
 ];

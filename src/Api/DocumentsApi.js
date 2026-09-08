@@ -84,6 +84,54 @@ export async function downloadMutualDocument(payload, draft, format = 'docx') {
   await downloadBlob(response);
 }
 
+export async function resolveMarriageRequirements(payload) {
+  const response = await fetch(
+    apiUrl + '/api/v1/documents/marriage/requirements',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    }
+  );
+  if (!response.ok) {
+    let message = 'No se pudieron validar los requisitos matrimoniales.';
+    try {
+      const error = await response.json();
+      message = error.message || message;
+    } catch (_error) {
+      // Keep friendly fallback.
+    }
+    throw new Error(message);
+  }
+  return response.json();
+}
+
+export async function downloadMarriageDocument(
+  payload,
+  draft,
+  format = 'docx'
+) {
+  const response = await fetch(
+    apiUrl + '/api/v1/documents/marriage/history' + formatQuery(format),
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ documento: payload, borrador: draft }),
+    }
+  );
+  if (!response.ok) {
+    let message = 'No se pudo generar el expediente matrimonial.';
+    try {
+      const error = await response.json();
+      message = error.message || message;
+    } catch (_error) {
+      // Keep friendly fallback.
+    }
+    throw new Error(message);
+  }
+  await downloadBlob(response);
+}
+
 export async function listDocumentHistory() {
   const response = await fetch(`${apiUrl}/api/v1/documents/history`);
   if (!response.ok) {

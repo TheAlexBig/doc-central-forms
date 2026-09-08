@@ -7,32 +7,11 @@ import {
   toLegalYear,
 } from '../Functions/LegalDocumentText';
 
-const legalSettlement = (district, municipality) =>
-  municipality ? `${district}, Municipio de ${municipality}` : district;
-
-const personPayload = (person) => ({
-  nombre: replaceNumericSequences(person.nombre),
-  apellido: replaceNumericSequences(person.apellido),
-  departamento: replaceNumericSequences(person.departamento),
-  domicilio: replaceNumericSequences(
-    legalSettlement(person.domicilio, person.municipio)
-  ),
-  documento: toLegalIdentifier(person.documento),
-  genero: person.genero,
-  edad: toLegalNumber(person.edad),
-  oficio: replaceNumericSequences(person.oficio),
-});
-
-const agentPayload = (agent) => ({
-  nombre: replaceNumericSequences(agent.nombre || agent.nombres),
-  apellido: replaceNumericSequences(agent.apellido || agent.apellidos),
-  departamento: replaceNumericSequences(agent.departamento),
-  domicilio: replaceNumericSequences(
-    legalSettlement(agent.domicilio || agent.distrito, agent.municipio)
-  ),
-  genero: agent.genero,
-  rol: agent.rol || 'Notario',
-});
+import {
+  createAgentPayload,
+  createPersonPayload,
+  legalSettlement,
+} from './LegalPayload';
 
 export const createVehiclePayload = (vehicle) => {
   const heavyTruck = vehicle.clase?.toLocaleLowerCase() === 'camión pesado';
@@ -62,8 +41,8 @@ export const createVehiclePayload = (vehicle) => {
 
 export function createCarSalePayload(state) {
   return {
-    vendedor: personPayload(state.vendorStates),
-    comprador: personPayload(state.personStates),
+    vendedor: createPersonPayload(state.vendorStates),
+    comprador: createPersonPayload(state.personStates),
     vehiculo: createVehiclePayload(state.carStates),
     documento: {
       calidad_de: replaceNumericSequences(state.detailStates.calidad_de),
@@ -83,6 +62,6 @@ export function createCarSalePayload(state) {
       identifica_vendedor: state.detailStates.identifica_vendedor,
       identifica_comprador: state.detailStates.identifica_comprador,
     },
-    agente_juridico: agentPayload(state.agentStates),
+    agente_juridico: createAgentPayload(state.agentStates),
   };
 }

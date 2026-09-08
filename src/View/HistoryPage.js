@@ -2,10 +2,20 @@ import { useNavigate } from 'react-router-dom';
 import HistoryPanel from '../History/HistoryPanel';
 import GlobalPageLayout from './GlobalPageLayout';
 import { writeMutualDraft } from '../Forms/MutualDraftStorage';
+import { writeMarriageDraft } from '../Forms/MarriageDraftStorage';
 
 export default function HistoryPage({ historyProps, loadDraft }) {
   const navigate = useNavigate();
   const handleLoad = (historyItem) => {
+    if (historyItem.type === 'marriage') {
+      writeMarriageDraft(
+        window.localStorage,
+        historyItem.draft,
+        new Date().toISOString()
+      );
+      navigate('/matrimonio');
+      return;
+    }
     if (historyItem.type === 'mutual') {
       writeMutualDraft(
         window.localStorage,

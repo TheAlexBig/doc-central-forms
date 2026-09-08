@@ -74,6 +74,7 @@ const TemplatePreview = ({ content }) => (
 const TEMPLATE_DOCUMENTS = [
   { id: 'car-sale', label: 'Compraventa de vehículo' },
   { id: 'mutual', label: 'Mutuo' },
+  { id: 'marriage', label: 'Matrimonio' },
 ];
 
 const DocumentTemplateSettings = () => {

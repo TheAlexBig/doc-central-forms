@@ -25,4 +25,21 @@ describe('document history presentation', () => {
     expect(presentation.responsible.notary).toBe('Nora Notaria');
     expect(presentation.searchableText).toContain('banco prueba');
   });
+
+  it('presents and indexes a marriage', () => {
+    const presentation = presentDocumentHistory({
+      type: 'marriage',
+      draft: {
+        partyOne: { nombre: 'Ana', apellido: 'López', documento: '1' },
+        partyTwo: { nombre: 'Luis', apellido: 'Pérez', documento: '2' },
+        agent: { nombres: 'Nora', apellidos: 'Notaria' },
+        preparer: { nombres: 'Pedro', apellidos: 'Asistente' },
+      },
+    });
+
+    expect(presentation.title).toBe('Matrimonio - Ana López / Luis Pérez');
+    expect(presentation.parties).toBe('Ana López / Luis Pérez');
+    expect(presentation.responsible.notary).toBe('Nora Notaria');
+    expect(presentation.searchableText).toContain('ana lópez');
+  });
 });
