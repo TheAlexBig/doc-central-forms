@@ -11,7 +11,7 @@ import packageInfo from '../../package.json';
 export default function Header(props) {
   const { title } = props;
   const location = useLocation();
-  const documentRoutes = ['/', '/compra-venta', '/mutuo'];
+  const documentRoutes = ['/', '/compra-venta', '/mutuo', '/matrimonio'];
 
   return (
     <AppBar

@@ -8,22 +8,11 @@ import {
 } from '../Functions/LegalDocumentText';
 import { calculateMutualPreview } from './MutualFinancialPreview';
 import { createVehiclePayload } from './CarSalePayload';
-
-const legalSettlement = (district, municipality) =>
-  municipality ? `${district}, Municipio de ${municipality}` : district;
-
-const personPayload = (person) => ({
-  nombre: replaceNumericSequences(person.nombre),
-  apellido: replaceNumericSequences(person.apellido),
-  departamento: replaceNumericSequences(person.departamento),
-  domicilio: replaceNumericSequences(
-    legalSettlement(person.domicilio, person.municipio)
-  ),
-  documento: toLegalIdentifier(person.documento),
-  genero: person.genero,
-  edad: toLegalNumber(person.edad),
-  oficio: replaceNumericSequences(person.oficio),
-});
+import {
+  createAgentPayload,
+  createPersonPayload,
+  legalSettlement,
+} from './LegalPayload';
 
 export const createMutualPayload = ({
   debtor,
@@ -39,11 +28,11 @@ export const createMutualPayload = ({
     terms.signingMunicipality
   );
   return {
-    deudor: personPayload(debtor),
-    acreedor: personPayload(creditor),
+    deudor: createPersonPayload(debtor),
+    acreedor: createPersonPayload(creditor),
     fiador:
       terms.guaranteeType === 'PERSONAL_GUARANTOR'
-        ? personPayload(guarantor)
+        ? createPersonPayload(guarantor)
         : null,
     garantia_prendaria:
       terms.guaranteeType === 'VEHICLE_PLEDGE'
@@ -101,15 +90,6 @@ export const createMutualPayload = ({
           : '',
       detalles_garantia: replaceNumericSequences(terms.guaranteeDetails),
     },
-    agente_juridico: {
-      nombre: replaceNumericSequences(agent.nombre || agent.nombres),
-      apellido: replaceNumericSequences(agent.apellido || agent.apellidos),
-      departamento: replaceNumericSequences(agent.departamento),
-      domicilio: replaceNumericSequences(
-        legalSettlement(agent.domicilio || agent.distrito, agent.municipio)
-      ),
-      genero: agent.genero,
-      rol: agent.rol || 'Notario',
-    },
+    agente_juridico: createAgentPayload(agent),
   };
 };

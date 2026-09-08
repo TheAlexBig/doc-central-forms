@@ -23,6 +23,13 @@ const featuredPosts = [
     meta: 'Formulario guiado / Word y PDF',
     to: '/mutuo',
   },
+  {
+    title: 'Matrimonio',
+    description:
+      'Expediente prematrimonial, escritura matriz y control registral.',
+    meta: 'Formulario guiado / Word y PDF',
+    to: '/matrimonio',
+  },
 ];
 
 const quickLinks = [

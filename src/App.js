@@ -11,6 +11,7 @@ import { validateCarSaleState } from './Forms/CarSaleRules';
 import {
   downloadCarSaleDocument,
   downloadMutualDocument,
+  downloadMarriageDocument,
 } from './Api/DocumentsApi';
 import { useAgents } from './Hooks/useAgents';
 import { useCarSaleFormState } from './Hooks/useCarSaleFormState';
@@ -27,6 +28,7 @@ import theme from './Theme';
 const Blog = lazy(() => import('./HomePage/Blog'));
 const CarSale = lazy(() => import('./Forms/CarSale'));
 const Mutual = lazy(() => import('./Forms/Mutual'));
+const Marriage = lazy(() => import('./Forms/Marriage'));
 const HistoryPage = lazy(() => import('./View/HistoryPage'));
 const SettingsPage = lazy(() => import('./View/SettingsPage'));
 
@@ -145,6 +147,28 @@ const App = () => {
             }
           >
             <Routes>
+              <Route
+                exact
+                path="/matrimonio"
+                element={
+                  <Marriage
+                    agents={{
+                      data: agentsMemory.agents,
+                      loading: agentsMemory.agentsLoading,
+                      error: agentsMemory.agentError,
+                      create: agentsMemory.saveAgent,
+                      update: agentsMemory.editAgent,
+                      remove: agentsMemory.removeAgent,
+                    }}
+                    people={peopleMemory.savedPeople}
+                    savePerson={peopleMemory.savePersonMemory}
+                    generateDocument={async (payload, draft, format) => {
+                      await downloadMarriageDocument(payload, draft, format);
+                      await history.refreshDocumentHistory();
+                    }}
+                  />
+                }
+              />
               <Route
                 exact
                 path="/mutuo"
