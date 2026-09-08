@@ -54,7 +54,10 @@ export const createMutualPayload = ({
         : null,
     condiciones: {
       monto: toLegalNumber(terms.amount),
-      plazo: replaceNumericSequences(terms.term),
+      plazo:
+        terms.termMode === 'SPECIFIC_DATE'
+          ? 'QUE FINALIZA EN LA FECHA PACTADA'
+          : replaceNumericSequences(terms.term),
       fecha_vencimiento: toLegalDate(preview?.dueDate || terms.dueDate),
       numero_cuotas: toLegalNumber(terms.installmentCount),
       monto_cuota: toLegalNumber(

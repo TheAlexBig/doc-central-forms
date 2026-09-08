@@ -122,7 +122,7 @@ export default function MutualTermsStructure({ data, onSubmit, onBack }) {
           installmentAmount: String(preview.installmentAmount),
           term:
             values.termMode === 'SPECIFIC_DATE'
-              ? `hasta el ${preview.dueDate}`
+              ? 'que finaliza en la fecha pactada'
               : `${values.termQuantity} ${unit[values.termUnit]}`,
         });
       }}
