@@ -20,4 +20,19 @@ describe('marriage payload', () => {
     expect(payload.datos.regimen_patrimonial).toBe('COMMUNITY_DEFERRED');
     expect(payload.agente_juridico.rol).toBe('Notario');
   });
+
+  it('preserves a custom identification type and its unmasked number', () => {
+    const state = validMarriageState();
+    state.partyOne.identityType = 'Documento consular';
+    state.partyOne.documento = 'SV-A/2048';
+
+    const payload = createMarriagePayload(state);
+
+    expect(payload.contrayente_uno.tipo_identificacion).toBe(
+      'Documento consular'
+    );
+    expect(payload.contrayente_uno.persona.documento).toBe(
+      'SV-A/ DOS CERO CUATRO OCHO'
+    );
+  });
 });

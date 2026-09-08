@@ -6,6 +6,7 @@ import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import { DataTerritorialDivision } from '../../Data/DataTerritorialDivision';
 import GetAge from '../../Functions/GetAge';
 import { emptyMarriageWitness } from '../MarriageState';
@@ -32,6 +33,12 @@ const errorProps = (errors = {}, path) => ({
 const errorColor = (errors = {}, path) =>
   errors[path] ? { color: 'error.main' } : undefined;
 
+const IDENTITY_TYPES = [
+  'Documento Único de Identidad',
+  'Pasaporte',
+  'Carné de residente',
+];
+
 const SectionErrors = ({ errors = {}, prefixes = [] }) => {
   const messages = [
     ...new Set(
@@ -57,6 +64,7 @@ const PersonFields = ({
   setValues,
   people = [],
   identityFlexible = false,
+  partyDetails = false,
   errors = {},
   errorPrefix,
 }) => {
@@ -74,6 +82,9 @@ const PersonFields = ({
   );
   const districts =
     DataTerritorialDivision[values.departamento]?.[values.municipio] || [];
+  const knownIdentityType = IDENTITY_TYPES.includes(values.identityType);
+  const identitySelection = knownIdentityType ? values.identityType : 'OTHER';
+  const usesDui = values.identityType === 'Documento Único de Identidad';
   return (
     <>
       {people.length > 0 && (
@@ -97,9 +108,8 @@ const PersonFields = ({
       {[
         ['nombre', 'Nombres'],
         ['apellido', 'Apellidos'],
-        ['oficio', 'Profesión u oficio'],
       ].map(([name, label]) => (
-        <Grid item xs={12} sm={name === 'oficio' ? 12 : 6} key={name}>
+        <Grid item xs={12} sm={6} key={name}>
           <TextField
             fullWidth
             required
@@ -142,33 +152,159 @@ const PersonFields = ({
           <MenuItem value="Masculino">Masculino</MenuItem>
         </TextField>
       </Grid>
+      {partyDetails && (
+        <Grid item xs={12} sm={4}>
+          <TextField
+            fullWidth
+            required
+            select
+            label="Estado familiar"
+            value={values.familyStatus}
+            onChange={update(setValues, 'familyStatus')}
+            {...errorProps(errors, `${errorPrefix}.familyStatus`)}
+          >
+            <MenuItem value="SINGLE">Soltero</MenuItem>
+            <MenuItem value="DIVORCED">Divorciado</MenuItem>
+            <MenuItem value="WIDOWED">Viudo</MenuItem>
+            <MenuItem value="MARRIED">Casado con vínculo vigente</MenuItem>
+          </TextField>
+        </Grid>
+      )}
+      {partyDetails && (
+        <Grid item xs={12} sm={4}>
+          <TextField
+            fullWidth
+            required
+            label="Nacionalidad"
+            value={values.nationality}
+            onChange={update(setValues, 'nationality')}
+            {...errorProps(errors, `${errorPrefix}.nationality`)}
+          />
+        </Grid>
+      )}
       <Grid item xs={12} sm={4}>
         <TextField
           fullWidth
           required
-          label="Documento de identidad"
+          label="Profesión u oficio"
+          value={values.oficio}
+          onChange={update(setValues, 'oficio')}
+          {...errorProps(errors, `${errorPrefix}.oficio`)}
+        />
+      </Grid>
+      {partyDetails && (
+        <Grid item xs={12} sm={4}>
+          <TextField
+            fullWidth
+            required
+            label="Lugar de nacimiento"
+            value={values.birthPlace}
+            onChange={update(setValues, 'birthPlace')}
+            {...errorProps(errors, `${errorPrefix}.birthPlace`)}
+          />
+        </Grid>
+      )}
+      <Grid item xs={12}>
+        <Typography color="text.secondary" fontWeight={700} variant="body2">
+          Identificación
+        </Typography>
+      </Grid>
+      {partyDetails && (
+        <Grid item xs={12} sm={knownIdentityType ? 6 : 4}>
+          <TextField
+            fullWidth
+            required
+            select
+            label="Tipo de identificación"
+            value={identitySelection}
+            onChange={(event) =>
+              setValues((current) => ({
+                ...current,
+                identityType:
+                  event.target.value === 'OTHER' ? '' : event.target.value,
+                documento: '',
+              }))
+            }
+            {...(knownIdentityType
+              ? errorProps(errors, `${errorPrefix}.identityType`)
+              : {})}
+          >
+            {IDENTITY_TYPES.map((type) => (
+              <MenuItem key={type} value={type}>
+                {type}
+              </MenuItem>
+            ))}
+            <MenuItem value="OTHER">Otro</MenuItem>
+          </TextField>
+        </Grid>
+      )}
+      {partyDetails && !knownIdentityType && (
+        <Grid item xs={12} sm={4}>
+          <TextField
+            fullWidth
+            required
+            label="Nombre del tipo de identificación"
+            value={values.identityType}
+            onChange={update(setValues, 'identityType')}
+            {...errorProps(errors, `${errorPrefix}.identityType`)}
+          />
+        </Grid>
+      )}
+      <Grid item xs={12} sm={partyDetails && knownIdentityType ? 6 : 4}>
+        <TextField
+          fullWidth
+          required
+          label={
+            usesDui || !identityFlexible
+              ? 'DUI'
+              : `Número de ${values.identityType || 'identificación'}`
+          }
           error={Boolean(errors[`${errorPrefix}.documento`])}
           helperText={
             errors[`${errorPrefix}.documento`] ||
-            (identityFlexible
-              ? 'DUI, pasaporte u otro documento'
-              : 'Formato DUI: 00000000-0')
+            (usesDui || !identityFlexible
+              ? 'Formato DUI: 00000000-0'
+              : 'Escriba el número tal como aparece en el documento')
           }
           value={values.documento}
           onChange={(event) => {
-            const dui =
-              !identityFlexible ||
-              values.identityType
-                ?.toLocaleLowerCase()
-                .includes('documento único');
             setValues((current) => ({
               ...current,
-              documento: dui
-                ? formatDui(event.target.value)
-                : event.target.value,
+              documento:
+                usesDui || !identityFlexible
+                  ? formatDui(event.target.value)
+                  : event.target.value,
             }));
           }}
+          placeholder={usesDui || !identityFlexible ? '00000000-0' : ''}
+          inputProps={
+            usesDui || !identityFlexible
+              ? { inputMode: 'numeric', maxLength: 10 }
+              : undefined
+          }
         />
+      </Grid>
+      {partyDetails &&
+        ['DIVORCED', 'WIDOWED'].includes(values.familyStatus) && (
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              required
+              label={
+                values.familyStatus === 'DIVORCED'
+                  ? 'Certificación de divorcio o sentencia de nulidad'
+                  : 'Certificación de defunción del cónyuge anterior'
+              }
+              value={values.familyStatusDocument}
+              onChange={update(setValues, 'familyStatusDocument')}
+              {...errorProps(errors, `${errorPrefix}.familyStatusDocument`)}
+            />
+          </Grid>
+        )}
+      <Grid item xs={12}>
+        <Typography color="text.secondary" fontWeight={700} variant="body2">
+          Domicilio
+        </Typography>
       </Grid>
       <Grid item xs={12} sm={4}>
         <TextField
@@ -274,71 +410,10 @@ export function MarriagePartyStructure({
             setValues={setValues}
             people={people}
             identityFlexible
+            partyDetails
             errors={errors}
             errorPrefix={errorPrefix}
           />
-          <Grid item xs={12} sm={4}>
-            <TextField
-              fullWidth
-              required
-              select
-              label="Estado familiar"
-              value={values.familyStatus}
-              onChange={update(setValues, 'familyStatus')}
-              {...errorProps(errors, `${errorPrefix}.familyStatus`)}
-            >
-              <MenuItem value="SINGLE">Soltero</MenuItem>
-              <MenuItem value="DIVORCED">Divorciado</MenuItem>
-              <MenuItem value="WIDOWED">Viudo</MenuItem>
-              <MenuItem value="MARRIED">Casado con vínculo vigente</MenuItem>
-            </TextField>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField
-              fullWidth
-              required
-              label="Nacionalidad"
-              value={values.nationality}
-              onChange={update(setValues, 'nationality')}
-              {...errorProps(errors, `${errorPrefix}.nationality`)}
-            />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField
-              fullWidth
-              required
-              label="Lugar de nacimiento"
-              value={values.birthPlace}
-              onChange={update(setValues, 'birthPlace')}
-              {...errorProps(errors, `${errorPrefix}.birthPlace`)}
-            />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField
-              fullWidth
-              required
-              label="Tipo de identificación"
-              value={values.identityType}
-              onChange={update(setValues, 'identityType')}
-              {...errorProps(errors, `${errorPrefix}.identityType`)}
-            />
-          </Grid>
-          {['DIVORCED', 'WIDOWED'].includes(values.familyStatus) && (
-            <Grid item xs={12} sm={8}>
-              <TextField
-                fullWidth
-                required
-                label={
-                  values.familyStatus === 'DIVORCED'
-                    ? 'Certificación de divorcio o sentencia de nulidad'
-                    : 'Certificación de defunción del cónyuge anterior'
-                }
-                value={values.familyStatusDocument}
-                onChange={update(setValues, 'familyStatusDocument')}
-                {...errorProps(errors, `${errorPrefix}.familyStatusDocument`)}
-              />
-            </Grid>
-          )}
         </Grid>
       </FieldGroup>
       <FieldGroup title="Padres">
@@ -351,7 +426,7 @@ export function MarriagePartyStructure({
             ['fatherJob', 'Oficio del padre'],
             ['fatherSettlement', 'Domicilio del padre'],
           ].map(([name, label]) => (
-            <Grid item xs={12} sm={6} key={name}>
+            <Grid item xs={12} sm={4} key={name}>
               <TextField
                 fullWidth
                 required
@@ -374,12 +449,11 @@ export function MarriagePartyStructure({
             ['birthCertificateFolio', 'Folio', false],
             ['birthCertificateBook', 'Libro', false],
             ['birthCertificateRegistry', 'Registro del Estado Familiar', true],
-            ['birthCertificateIssuedBy', 'Expedida por', true],
           ].map(([name, label, required]) => (
             <Grid
               item
               xs={12}
-              sm={name.includes('Registry') || name.includes('Issued') ? 6 : 4}
+              sm={name.includes('Registry') ? 12 : 4}
               key={name}
             >
               <TextField
@@ -406,6 +480,16 @@ export function MarriagePartyStructure({
                 errors,
                 `${errorPrefix}.birthCertificateIssueDate`
               )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              required
+              label="Expedida por"
+              value={values.birthCertificateIssuedBy}
+              onChange={update(setValues, 'birthCertificateIssuedBy')}
+              {...errorProps(errors, `${errorPrefix}.birthCertificateIssuedBy`)}
             />
           </Grid>
         </Grid>
@@ -899,7 +983,13 @@ export function MarriageCelebrationStructure({
       <SectionErrors errors={errors} prefixes={['details.']} />
       <FieldGroup title="Acta prematrimonial">
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={4}>
+          <Territory
+            prefix="premarital"
+            values={values}
+            setValues={setValues}
+            errors={errors}
+          />
+          <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
               required
@@ -911,7 +1001,7 @@ export function MarriageCelebrationStructure({
               {...errorProps(errors, 'details.premaritalDate')}
             />
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
               required
@@ -923,16 +1013,16 @@ export function MarriageCelebrationStructure({
               {...errorProps(errors, 'details.premaritalTime')}
             />
           </Grid>
-          <Territory
-            prefix="premarital"
-            values={values}
-            setValues={setValues}
-            errors={errors}
-          />
         </Grid>
       </FieldGroup>
       <FieldGroup title="Celebración">
         <Grid container spacing={2}>
+          <Territory
+            prefix="celebration"
+            values={values}
+            setValues={setValues}
+            errors={errors}
+          />
           <Grid item xs={12} sm={4}>
             <TextField
               fullWidth
@@ -970,12 +1060,6 @@ export function MarriageCelebrationStructure({
               {...errorProps(errors, 'details.celebrationTime')}
             />
           </Grid>
-          <Territory
-            prefix="celebration"
-            values={values}
-            setValues={setValues}
-            errors={errors}
-          />
         </Grid>
       </FieldGroup>
       <FormActions buttons={actions(onBack)} />
