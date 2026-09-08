@@ -21,7 +21,7 @@ import {
   emptyMarriageWitness,
   initialMarriageDetails,
 } from './MarriageState';
-import { validateMarriageState } from './MarriageRules';
+import { marriageErrorsForStep, validateMarriageState } from './MarriageRules';
 import { resolveMarriageRequirements } from '../Api/DocumentsApi';
 
 const steps = [
@@ -83,6 +83,7 @@ export default function Marriage({
   const [generatingFormat, setGeneratingFormat] = useState('');
   const [message, setMessage] = useState({ type: '', text: '' });
   const [issues, setIssues] = useState([]);
+  const [validatedSteps, setValidatedSteps] = useState([]);
   const skipInitialSave = useRef(Boolean(recoveredDraft));
   const state = {
     agent,
@@ -93,6 +94,10 @@ export default function Marriage({
     recognizedChildren,
     details,
   };
+  const fieldErrors = Object.assign(
+    {},
+    ...validatedSteps.map((step) => marriageErrorsForStep(state, step))
+  );
 
   useEffect(() => {
     if (skipInitialSave.current) {
@@ -171,6 +176,21 @@ export default function Marriage({
     setActiveStep(target);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+  const validateStep = (step) => {
+    setValidatedSteps((current) =>
+      current.includes(step) ? current : [...current, step]
+    );
+    const errors = marriageErrorsForStep(state, step);
+    if (Object.keys(errors).length) {
+      setMessage({
+        type: 'error',
+        text: 'Revise los campos marcados en rojo antes de continuar.',
+      });
+      return false;
+    }
+    setMessage({ type: '', text: '' });
+    return true;
+  };
   const back = () => setActiveStep((current) => Math.max(0, current - 1));
   const selectStep = (step) => {
     if (!generating && step <= lastStep) {
@@ -194,6 +214,7 @@ export default function Marriage({
     setActiveStep(0);
     setLastStep(0);
     setAutosave({ savedAt: null, recovered: false, saving: false });
+    setValidatedSteps([]);
   };
   const saveCommonPerson = async (values) => {
     const usesDui =
@@ -206,6 +227,7 @@ export default function Marriage({
     const errors = validateMarriageState(state);
     if (errors.length) {
       setMessage({ type: 'error', text: errors.join(' ') });
+      setValidatedSteps([1, 2, 3, 4, 5]);
       return;
     }
     setGenerating(true);
@@ -265,6 +287,9 @@ export default function Marriage({
           people={people}
           savePerson={saveCommonPerson}
           premaritalDate={details.premaritalDate}
+          errors={fieldErrors}
+          errorPrefix="partyOne"
+          onValidate={() => validateStep(1)}
           onBack={back}
           onNext={next}
         />
@@ -277,6 +302,9 @@ export default function Marriage({
           people={people}
           savePerson={saveCommonPerson}
           premaritalDate={details.premaritalDate}
+          errors={fieldErrors}
+          errorPrefix="partyTwo"
+          onValidate={() => validateStep(2)}
           onBack={back}
           onNext={next}
         />
@@ -291,6 +319,8 @@ export default function Marriage({
             !partyOne.speaksSpanish || !partyTwo.speaksSpanish
           }
           people={people}
+          errors={fieldErrors}
+          onValidate={() => validateStep(3)}
           onBack={back}
           onNext={next}
         />
@@ -301,6 +331,8 @@ export default function Marriage({
           setWitnesses={setWitnesses}
           people={people}
           savePerson={saveCommonPerson}
+          errors={fieldErrors}
+          onValidate={() => validateStep(4)}
           onBack={back}
           onNext={next}
         />
@@ -309,18 +341,31 @@ export default function Marriage({
         <MarriageCelebrationStructure
           values={details}
           setValues={setDetails}
+          errors={fieldErrors}
+          onValidate={() => validateStep(5)}
           onBack={back}
           onNext={next}
         />
       )}
       {activeStep === reviewStep && (
         <>
-          {issues.some((issue) => issue.severity === 'WARNING') && (
-            <Alert severity="warning" sx={{ mb: 2 }}>
-              {issues
-                .filter((issue) => issue.severity === 'WARNING')
-                .map((issue) => issue.message)
-                .join(' ')}
+          {issues.length > 0 && (
+            <Alert
+              severity={
+                issues.some((issue) => issue.severity !== 'WARNING')
+                  ? 'error'
+                  : 'warning'
+              }
+              sx={{ mb: 2 }}
+            >
+              <strong>Requisitos detectados:</strong>
+              <ul>
+                {[...new Set(issues.map((issue) => issue.message))].map(
+                  (issue) => (
+                    <li key={issue}>{issue}</li>
+                  )
+                )}
+              </ul>
             </Alert>
           )}
           <MarriageReviewPanel

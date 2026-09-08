@@ -32,6 +32,13 @@ const downloadBlob = async (response) => {
 const formatQuery = (format = 'docx') =>
   `?format=${encodeURIComponent(format)}`;
 
+const responseErrorMessage = (error, fallback) => {
+  const fieldMessages = Object.values(error.fields || {}).filter(Boolean);
+  return fieldMessages.length
+    ? [...new Set(fieldMessages)].join(' ')
+    : error.message || fallback;
+};
+
 export async function downloadCarSaleDocument(payload, draft, format = 'docx') {
   const response = await fetch(
     `${apiUrl}/api/v1/documents/car-sale/history${formatQuery(format)}`,
@@ -51,7 +58,7 @@ export async function downloadCarSaleDocument(payload, draft, format = 'docx') {
     let message = 'No se pudo generar el documento. Verifique los datos.';
     try {
       const error = await response.json();
-      message = error.message || message;
+      message = responseErrorMessage(error, message);
     } catch (_error) {
       // Keep the friendly fallback if the server did not provide JSON.
     }
@@ -75,7 +82,7 @@ export async function downloadMutualDocument(payload, draft, format = 'docx') {
     let message = 'No se pudo generar el mutuo. Verifique los datos.';
     try {
       const error = await response.json();
-      message = error.message || message;
+      message = responseErrorMessage(error, message);
     } catch (_error) {
       // Keep the friendly fallback if the server did not provide JSON.
     }
@@ -97,7 +104,7 @@ export async function resolveMarriageRequirements(payload) {
     let message = 'No se pudieron validar los requisitos matrimoniales.';
     try {
       const error = await response.json();
-      message = error.message || message;
+      message = responseErrorMessage(error, message);
     } catch (_error) {
       // Keep friendly fallback.
     }
@@ -123,7 +130,7 @@ export async function downloadMarriageDocument(
     let message = 'No se pudo generar el expediente matrimonial.';
     try {
       const error = await response.json();
-      message = error.message || message;
+      message = responseErrorMessage(error, message);
     } catch (_error) {
       // Keep friendly fallback.
     }

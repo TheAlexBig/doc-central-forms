@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { validateMarriageState } from './MarriageRules';
+import {
+  marriageErrorsForStep,
+  validateMarriageFields,
+  validateMarriageState,
+} from './MarriageRules';
 import { validMarriageState } from './MarriageTestData.test-helper';
 
 describe('marriage client rules', () => {
@@ -24,7 +28,7 @@ describe('marriage client rules', () => {
       'instrumento de capitulaciones'
     );
     expect(validateMarriageState(state).join(' ')).toContain(
-      'no cumple requisitos legales'
+      'leer y escribir castellano'
     );
   });
 
@@ -32,5 +36,23 @@ describe('marriage client rules', () => {
     const state = validMarriageState();
     state.partyOne.speaksSpanish = false;
     expect(validateMarriageState(state)).toContain('Seleccione intérprete.');
+  });
+
+  it('returns errors keyed to the exact field and current step', () => {
+    const state = validMarriageState();
+    state.partyOne.nombre = '';
+    state.partyOne.birthCertificateIssueDate = '2026-01-01';
+    state.partyTwo.apellido = '';
+
+    const errors = validateMarriageFields(state);
+    expect(errors['partyOne.nombre']).toBe('Ingrese los nombres.');
+    expect(errors['partyOne.birthCertificateIssueDate']).toContain(
+      'dos meses anteriores'
+    );
+    expect(marriageErrorsForStep(state, 1)).toEqual({
+      'partyOne.nombre': 'Ingrese los nombres.',
+      'partyOne.birthCertificateIssueDate':
+        'La partida debe haberse expedido dentro de los dos meses anteriores al acta.',
+    });
   });
 });
