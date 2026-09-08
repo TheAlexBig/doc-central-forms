@@ -9,6 +9,7 @@ import TextField from '@mui/material/TextField';
 import { DataTerritorialDivision } from '../../Data/DataTerritorialDivision';
 import GetAge from '../../Functions/GetAge';
 import { emptyMarriageWitness } from '../MarriageState';
+import { formatDui } from '../PersonMemory';
 import { FieldGroup, FormActions, FormHeading } from './FormScaffold';
 
 const actions = (back) => [
@@ -24,11 +25,40 @@ const update = (setValues, name) => (event) => {
   setValues((current) => ({ ...current, [name]: value }));
 };
 
+const errorProps = (errors = {}, path) => ({
+  error: Boolean(errors[path]),
+  helperText: errors[path],
+});
+const errorColor = (errors = {}, path) =>
+  errors[path] ? { color: 'error.main' } : undefined;
+
+const SectionErrors = ({ errors = {}, prefixes = [] }) => {
+  const messages = [
+    ...new Set(
+      Object.entries(errors)
+        .filter(([path]) => prefixes.some((prefix) => path.startsWith(prefix)))
+        .map(([, message]) => message)
+    ),
+  ];
+  return messages.length ? (
+    <Alert severity="error" sx={{ mb: 2 }}>
+      <strong>Revise lo siguiente:</strong>
+      <ul>
+        {messages.map((message) => (
+          <li key={message}>{message}</li>
+        ))}
+      </ul>
+    </Alert>
+  ) : null;
+};
+
 const PersonFields = ({
   values,
   setValues,
   people = [],
   identityFlexible = false,
+  errors = {},
+  errorPrefix,
 }) => {
   const load = (event) => {
     const person = people.find((item) => item.id === event.target.value);
@@ -76,6 +106,7 @@ const PersonFields = ({
             label={label}
             value={values[name]}
             onChange={update(setValues, name)}
+            {...errorProps(errors, `${errorPrefix}.${name}`)}
           />
         </Grid>
       ))}
@@ -94,6 +125,7 @@ const PersonFields = ({
               edad: GetAge(event.target.value),
             }))
           }
+          {...errorProps(errors, `${errorPrefix}.fecha_nacimiento`)}
         />
       </Grid>
       <Grid item xs={12} sm={4}>
@@ -104,6 +136,7 @@ const PersonFields = ({
           label="Género"
           value={values.genero}
           onChange={update(setValues, 'genero')}
+          {...errorProps(errors, `${errorPrefix}.genero`)}
         >
           <MenuItem value="Femenino">Femenino</MenuItem>
           <MenuItem value="Masculino">Masculino</MenuItem>
@@ -114,13 +147,27 @@ const PersonFields = ({
           fullWidth
           required
           label="Documento de identidad"
+          error={Boolean(errors[`${errorPrefix}.documento`])}
           helperText={
-            identityFlexible
+            errors[`${errorPrefix}.documento`] ||
+            (identityFlexible
               ? 'DUI, pasaporte u otro documento'
-              : 'Formato DUI: 00000000-0'
+              : 'Formato DUI: 00000000-0')
           }
           value={values.documento}
-          onChange={update(setValues, 'documento')}
+          onChange={(event) => {
+            const dui =
+              !identityFlexible ||
+              values.identityType
+                ?.toLocaleLowerCase()
+                .includes('documento único');
+            setValues((current) => ({
+              ...current,
+              documento: dui
+                ? formatDui(event.target.value)
+                : event.target.value,
+            }));
+          }}
         />
       </Grid>
       <Grid item xs={12} sm={4}>
@@ -138,6 +185,7 @@ const PersonFields = ({
               domicilio: '',
             }))
           }
+          {...errorProps(errors, `${errorPrefix}.departamento`)}
         >
           {Object.keys(DataTerritorialDivision).map((option) => (
             <MenuItem value={option} key={option}>
@@ -161,6 +209,7 @@ const PersonFields = ({
               domicilio: '',
             }))
           }
+          {...errorProps(errors, `${errorPrefix}.municipio`)}
         >
           {municipalities.map((option) => (
             <MenuItem value={option} key={option}>
@@ -178,6 +227,7 @@ const PersonFields = ({
           label="Distrito"
           value={values.domicilio}
           onChange={update(setValues, 'domicilio')}
+          {...errorProps(errors, `${errorPrefix}.domicilio`)}
         >
           {districts.map((option) => (
             <MenuItem value={option} key={option}>
@@ -197,21 +247,26 @@ export function MarriagePartyStructure({
   people,
   savePerson,
   premaritalDate,
+  errors,
+  errorPrefix,
+  onValidate,
   onBack,
   onNext,
 }) {
   const submit = async (event) => {
     event.preventDefault();
+    if (!onValidate()) return;
     const saved = await savePerson(values);
     if (saved !== false) onNext();
   };
   return (
-    <form onSubmit={submit}>
+    <form onSubmit={submit} noValidate>
       <FormHeading
         title={title}
         eyebrow="Contrayente"
         description="Datos personales, filiación y documentos del expediente."
       />
+      <SectionErrors errors={errors} prefixes={[`${errorPrefix}.`]} />
       <FieldGroup title="Datos personales">
         <Grid container spacing={2}>
           <PersonFields
@@ -219,6 +274,8 @@ export function MarriagePartyStructure({
             setValues={setValues}
             people={people}
             identityFlexible
+            errors={errors}
+            errorPrefix={errorPrefix}
           />
           <Grid item xs={12} sm={4}>
             <TextField
@@ -228,6 +285,7 @@ export function MarriagePartyStructure({
               label="Estado familiar"
               value={values.familyStatus}
               onChange={update(setValues, 'familyStatus')}
+              {...errorProps(errors, `${errorPrefix}.familyStatus`)}
             >
               <MenuItem value="SINGLE">Soltero</MenuItem>
               <MenuItem value="DIVORCED">Divorciado</MenuItem>
@@ -242,6 +300,7 @@ export function MarriagePartyStructure({
               label="Nacionalidad"
               value={values.nationality}
               onChange={update(setValues, 'nationality')}
+              {...errorProps(errors, `${errorPrefix}.nationality`)}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -251,6 +310,7 @@ export function MarriagePartyStructure({
               label="Lugar de nacimiento"
               value={values.birthPlace}
               onChange={update(setValues, 'birthPlace')}
+              {...errorProps(errors, `${errorPrefix}.birthPlace`)}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -260,6 +320,7 @@ export function MarriagePartyStructure({
               label="Tipo de identificación"
               value={values.identityType}
               onChange={update(setValues, 'identityType')}
+              {...errorProps(errors, `${errorPrefix}.identityType`)}
             />
           </Grid>
           {['DIVORCED', 'WIDOWED'].includes(values.familyStatus) && (
@@ -274,6 +335,7 @@ export function MarriagePartyStructure({
                 }
                 value={values.familyStatusDocument}
                 onChange={update(setValues, 'familyStatusDocument')}
+                {...errorProps(errors, `${errorPrefix}.familyStatusDocument`)}
               />
             </Grid>
           )}
@@ -296,6 +358,7 @@ export function MarriagePartyStructure({
                 label={label}
                 value={values[name]}
                 onChange={update(setValues, name)}
+                {...errorProps(errors, `${errorPrefix}.${name}`)}
               />
             </Grid>
           ))}
@@ -325,6 +388,7 @@ export function MarriagePartyStructure({
                 label={label}
                 value={values[name]}
                 onChange={update(setValues, name)}
+                {...errorProps(errors, `${errorPrefix}.${name}`)}
               />
             </Grid>
           ))}
@@ -338,6 +402,10 @@ export function MarriagePartyStructure({
               InputLabelProps={{ shrink: true }}
               value={values.birthCertificateIssueDate}
               onChange={update(setValues, 'birthCertificateIssueDate')}
+              {...errorProps(
+                errors,
+                `${errorPrefix}.birthCertificateIssueDate`
+              )}
             />
           </Grid>
         </Grid>
@@ -348,6 +416,7 @@ export function MarriagePartyStructure({
       >
         <Stack>
           <FormControlLabel
+            sx={errorColor(errors, `${errorPrefix}.canConsent`)}
             control={
               <Checkbox
                 checked={values.canConsent}
@@ -383,6 +452,7 @@ export function MarriagePartyStructure({
           ].map(([name, label]) => (
             <FormControlLabel
               key={name}
+              sx={errorColor(errors, `${errorPrefix}.${name}`)}
               control={
                 <Checkbox
                   checked={values[name]}
@@ -406,6 +476,8 @@ export function MarriageDecisionsStructure({
   setRecognizedChildren,
   interpreterRequired,
   people,
+  errors,
+  onValidate,
   onBack,
   onNext,
 }) {
@@ -424,13 +496,24 @@ export function MarriageDecisionsStructure({
     <form
       onSubmit={(event) => {
         event.preventDefault();
-        onNext();
+        if (onValidate()) onNext();
       }}
+      noValidate
     >
       <FormHeading
         title="Régimen y decisiones"
         eyebrow="Expediente"
         description="Opciones patrimoniales y declaraciones que afectan el instrumento."
+      />
+      <SectionErrors
+        errors={errors}
+        prefixes={[
+          'details.propertyRegime',
+          'details.capitulationsDetails',
+          'details.proxyDetails',
+          'details.interpreter.',
+          'recognizedChildren.',
+        ]}
       />
       <FieldGroup title="Régimen patrimonial">
         <Grid container spacing={2}>
@@ -442,6 +525,7 @@ export function MarriageDecisionsStructure({
               label="Régimen patrimonial"
               value={values.propertyRegime}
               onChange={update(setValues, 'propertyRegime')}
+              {...errorProps(errors, 'details.propertyRegime')}
             >
               <MenuItem value="COMMUNITY_DEFERRED">Comunidad diferida</MenuItem>
               <MenuItem value="SEPARATION_OF_PROPERTY">
@@ -480,6 +564,7 @@ export function MarriageDecisionsStructure({
                 label="Instrumento de capitulaciones"
                 value={values.capitulationsDetails}
                 onChange={update(setValues, 'capitulationsDetails')}
+                {...errorProps(errors, 'details.capitulationsDetails')}
               />
             </Grid>
           )}
@@ -502,6 +587,7 @@ export function MarriageDecisionsStructure({
                 label="Poder especial"
                 value={values.proxyDetails}
                 onChange={update(setValues, 'proxyDetails')}
+                {...errorProps(errors, 'details.proxyDetails')}
               />
             </Grid>
           )}
@@ -523,6 +609,7 @@ export function MarriageDecisionsStructure({
                   onChange={(event) =>
                     updateChild(index, 'name', event.target.value)
                   }
+                  {...errorProps(errors, `recognizedChildren.${index}.name`)}
                 />
               </Grid>
               <Grid item xs={12} sm={5}>
@@ -534,6 +621,10 @@ export function MarriageDecisionsStructure({
                   onChange={(event) =>
                     updateChild(index, 'birthCertificate', event.target.value)
                   }
+                  {...errorProps(
+                    errors,
+                    `recognizedChildren.${index}.birthCertificate`
+                  )}
                 />
               </Grid>
               <Grid item xs={12} sm={2}>
@@ -581,6 +672,8 @@ export function MarriageDecisionsStructure({
               }
               people={people}
               identityFlexible
+              errors={errors}
+              errorPrefix="details.interpreter"
             />
           </Grid>
         </FieldGroup>
@@ -595,6 +688,8 @@ export function MarriageWitnessesStructure({
   setWitnesses,
   people,
   savePerson,
+  errors,
+  onValidate,
   onBack,
   onNext,
 }) {
@@ -610,18 +705,20 @@ export function MarriageWitnessesStructure({
     );
   const submit = async (event) => {
     event.preventDefault();
+    if (!onValidate()) return;
     for (const witness of witnesses) {
       if ((await savePerson(witness)) === false) return;
     }
     onNext();
   };
   return (
-    <form onSubmit={submit}>
+    <form onSubmit={submit} noValidate>
       <FormHeading
         title="Testigos"
         eyebrow="Celebración"
         description="Se requieren por lo menos dos. Puede agregar más cuando corresponda."
       />
+      <SectionErrors errors={errors} prefixes={['witnesses']} />
       {witnesses.map((witness, index) => (
         <FieldGroup key={index} title={'Testigo ' + (index + 1)}>
           <Grid container spacing={2}>
@@ -629,9 +726,12 @@ export function MarriageWitnessesStructure({
               values={witness}
               setValues={setWitness(index)}
               people={people}
+              errors={errors}
+              errorPrefix={`witnesses.${index}`}
             />
             <Grid item xs={12}>
               <FormControlLabel
+                sx={errorColor(errors, `witnesses.${index}.readsWritesSpanish`)}
                 control={
                   <Checkbox
                     checked={witness.readsWritesSpanish}
@@ -641,6 +741,7 @@ export function MarriageWitnessesStructure({
                 label="Sabe leer y escribir castellano"
               />
               <FormControlLabel
+                sx={errorColor(errors, `witnesses.${index}.knowsParties`)}
                 control={
                   <Checkbox
                     checked={witness.knowsParties}
@@ -650,6 +751,10 @@ export function MarriageWitnessesStructure({
                 label="Conoce a ambos contrayentes"
               />
               <FormControlLabel
+                sx={errorColor(
+                  errors,
+                  `witnesses.${index}.prohibitedRelationship`
+                )}
                 control={
                   <Checkbox
                     checked={witness.prohibitedRelationship}
@@ -693,7 +798,7 @@ export function MarriageWitnessesStructure({
   );
 }
 
-const Territory = ({ prefix, values, setValues }) => {
+const Territory = ({ prefix, values, setValues, errors }) => {
   const state = values[prefix + 'State'];
   const municipality = values[prefix + 'Municipality'];
   return (
@@ -713,6 +818,7 @@ const Territory = ({ prefix, values, setValues }) => {
               [prefix + 'District']: '',
             }))
           }
+          {...errorProps(errors, `details.${prefix}State`)}
         >
           {Object.keys(DataTerritorialDivision).map((option) => (
             <MenuItem key={option} value={option}>
@@ -736,6 +842,7 @@ const Territory = ({ prefix, values, setValues }) => {
               [prefix + 'District']: '',
             }))
           }
+          {...errorProps(errors, `details.${prefix}Municipality`)}
         >
           {Object.keys(DataTerritorialDivision[state] || {}).map((option) => (
             <MenuItem key={option} value={option}>
@@ -753,6 +860,7 @@ const Territory = ({ prefix, values, setValues }) => {
           label="Distrito"
           value={values[prefix + 'District']}
           onChange={update(setValues, prefix + 'District')}
+          {...errorProps(errors, `details.${prefix}District`)}
         >
           {(DataTerritorialDivision[state]?.[municipality] || []).map(
             (option) => (
@@ -770,6 +878,8 @@ const Territory = ({ prefix, values, setValues }) => {
 export function MarriageCelebrationStructure({
   values,
   setValues,
+  errors,
+  onValidate,
   onBack,
   onNext,
 }) {
@@ -777,14 +887,16 @@ export function MarriageCelebrationStructure({
     <form
       onSubmit={(event) => {
         event.preventDefault();
-        onNext();
+        if (onValidate()) onNext();
       }}
+      noValidate
     >
       <FormHeading
         title="Acta y celebración"
         eyebrow="Lugar y momento"
         description="Acta prematrimonial, número de escritura y ceremonia."
       />
+      <SectionErrors errors={errors} prefixes={['details.']} />
       <FieldGroup title="Acta prematrimonial">
         <Grid container spacing={2}>
           <Grid item xs={12} sm={4}>
@@ -796,6 +908,7 @@ export function MarriageCelebrationStructure({
               InputLabelProps={{ shrink: true }}
               value={values.premaritalDate}
               onChange={update(setValues, 'premaritalDate')}
+              {...errorProps(errors, 'details.premaritalDate')}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -807,12 +920,14 @@ export function MarriageCelebrationStructure({
               InputLabelProps={{ shrink: true }}
               value={values.premaritalTime}
               onChange={update(setValues, 'premaritalTime')}
+              {...errorProps(errors, 'details.premaritalTime')}
             />
           </Grid>
           <Territory
             prefix="premarital"
             values={values}
             setValues={setValues}
+            errors={errors}
           />
         </Grid>
       </FieldGroup>
@@ -827,6 +942,7 @@ export function MarriageCelebrationStructure({
               label="Número de escritura"
               value={values.deedNumber}
               onChange={update(setValues, 'deedNumber')}
+              {...errorProps(errors, 'details.deedNumber')}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -839,6 +955,7 @@ export function MarriageCelebrationStructure({
               inputProps={{ min: values.premaritalDate }}
               value={values.celebrationDate}
               onChange={update(setValues, 'celebrationDate')}
+              {...errorProps(errors, 'details.celebrationDate')}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -850,12 +967,14 @@ export function MarriageCelebrationStructure({
               InputLabelProps={{ shrink: true }}
               value={values.celebrationTime}
               onChange={update(setValues, 'celebrationTime')}
+              {...errorProps(errors, 'details.celebrationTime')}
             />
           </Grid>
           <Territory
             prefix="celebration"
             values={values}
             setValues={setValues}
+            errors={errors}
           />
         </Grid>
       </FieldGroup>
