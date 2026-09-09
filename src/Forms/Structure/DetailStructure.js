@@ -13,6 +13,7 @@ import * as Yup from 'yup';
 import { DataTerritorialDivision } from '../../Data/DataTerritorialDivision';
 import { DetailValidationSchema } from '../Validations/DetailValidationSchema';
 import { FieldGroup, FormActions, FormHeading } from './FormScaffold';
+import { currentTimeValue, todayValue } from '../../Functions/DateTimeValues';
 
 const fieldProps = (name, values, touched, errors) => ({
   error: Boolean(touched[name] && errors[name]),
@@ -37,15 +38,6 @@ const cleanCurrency = (value) => {
     return integer;
   }
   return `${integer || '0'}.${decimalParts.join('').slice(0, 2)}`;
-};
-
-const todayValue = () => new Date().toISOString().slice(0, 10);
-
-const currentTimeValue = () => {
-  const now = new Date();
-  const hours = now.getHours().toString().padStart(2, '0');
-  const minutes = now.getMinutes().toString().padStart(2, '0');
-  return `${hours}:${minutes}`;
 };
 
 const detailSummary = (values) => [

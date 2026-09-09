@@ -14,15 +14,7 @@ import { DataTerritorialDivision } from '../../Data/DataTerritorialDivision';
 import { FieldGroup, FormActions, FormHeading } from './FormScaffold';
 import { calculateMutualPreview } from '../MutualFinancialPreview';
 import MutualPaymentPlanSummary from './MutualPaymentPlanSummary';
-
-const todayValue = () => new Date().toISOString().slice(0, 10);
-
-const currentTimeValue = () => {
-  const now = new Date();
-  const hours = now.getHours().toString().padStart(2, '0');
-  const minutes = now.getMinutes().toString().padStart(2, '0');
-  return `${hours}:${minutes}`;
-};
+import { currentTimeValue, todayValue } from '../../Functions/DateTimeValues';
 
 const required = 'Campo requerido';
 const schema = Yup.object({

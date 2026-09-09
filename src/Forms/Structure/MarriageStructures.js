@@ -9,6 +9,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { DataTerritorialDivision } from '../../Data/DataTerritorialDivision';
 import GetAge from '../../Functions/GetAge';
+import { currentTimeValue, todayValue } from '../../Functions/DateTimeValues';
 import { emptyMarriageWitness } from '../MarriageState';
 import { formatDui } from '../PersonMemory';
 import { FieldGroup, FormActions, FormHeading } from './FormScaffold';
@@ -990,28 +991,67 @@ export function MarriageCelebrationStructure({
             errors={errors}
           />
           <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              required
-              type="date"
-              label="Fecha del acta"
-              InputLabelProps={{ shrink: true }}
-              value={values.premaritalDate}
-              onChange={update(setValues, 'premaritalDate')}
-              {...errorProps(errors, 'details.premaritalDate')}
-            />
+            <Grid container spacing={1}>
+              <Grid item xs>
+                <TextField
+                  fullWidth
+                  required
+                  type="date"
+                  label="Fecha del acta"
+                  InputLabelProps={{ shrink: true }}
+                  value={values.premaritalDate}
+                  onChange={update(setValues, 'premaritalDate')}
+                  {...errorProps(errors, 'details.premaritalDate')}
+                />
+              </Grid>
+              <Grid item xs="auto">
+                <Button
+                  type="button"
+                  onClick={() =>
+                    setValues((current) => ({
+                      ...current,
+                      premaritalDate: todayValue(),
+                    }))
+                  }
+                  sx={{ height: '100%' }}
+                  variant="outlined"
+                >
+                  Hoy
+                </Button>
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              required
-              type="time"
-              label="Hora del acta"
-              InputLabelProps={{ shrink: true }}
-              value={values.premaritalTime}
-              onChange={update(setValues, 'premaritalTime')}
-              {...errorProps(errors, 'details.premaritalTime')}
-            />
+            <Grid container spacing={1}>
+              <Grid item xs>
+                <TextField
+                  fullWidth
+                  required
+                  type="time"
+                  label="Hora del acta"
+                  InputLabelProps={{ shrink: true }}
+                  inputProps={{ step: 300 }}
+                  value={values.premaritalTime}
+                  onChange={update(setValues, 'premaritalTime')}
+                  {...errorProps(errors, 'details.premaritalTime')}
+                />
+              </Grid>
+              <Grid item xs="auto">
+                <Button
+                  type="button"
+                  onClick={() =>
+                    setValues((current) => ({
+                      ...current,
+                      premaritalTime: currentTimeValue(),
+                    }))
+                  }
+                  sx={{ height: '100%' }}
+                  variant="outlined"
+                >
+                  Ahora
+                </Button>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </FieldGroup>
@@ -1036,29 +1076,68 @@ export function MarriageCelebrationStructure({
             />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField
-              fullWidth
-              required
-              type="date"
-              label="Fecha de celebración"
-              InputLabelProps={{ shrink: true }}
-              inputProps={{ min: values.premaritalDate }}
-              value={values.celebrationDate}
-              onChange={update(setValues, 'celebrationDate')}
-              {...errorProps(errors, 'details.celebrationDate')}
-            />
+            <Grid container spacing={1}>
+              <Grid item xs>
+                <TextField
+                  fullWidth
+                  required
+                  type="date"
+                  label="Fecha de celebración"
+                  InputLabelProps={{ shrink: true }}
+                  inputProps={{ min: values.premaritalDate }}
+                  value={values.celebrationDate}
+                  onChange={update(setValues, 'celebrationDate')}
+                  {...errorProps(errors, 'details.celebrationDate')}
+                />
+              </Grid>
+              <Grid item xs="auto">
+                <Button
+                  type="button"
+                  onClick={() =>
+                    setValues((current) => ({
+                      ...current,
+                      celebrationDate: todayValue(),
+                    }))
+                  }
+                  sx={{ height: '100%' }}
+                  variant="outlined"
+                >
+                  Hoy
+                </Button>
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField
-              fullWidth
-              required
-              type="time"
-              label="Hora de celebración"
-              InputLabelProps={{ shrink: true }}
-              value={values.celebrationTime}
-              onChange={update(setValues, 'celebrationTime')}
-              {...errorProps(errors, 'details.celebrationTime')}
-            />
+            <Grid container spacing={1}>
+              <Grid item xs>
+                <TextField
+                  fullWidth
+                  required
+                  type="time"
+                  label="Hora de celebración"
+                  InputLabelProps={{ shrink: true }}
+                  inputProps={{ step: 300 }}
+                  value={values.celebrationTime}
+                  onChange={update(setValues, 'celebrationTime')}
+                  {...errorProps(errors, 'details.celebrationTime')}
+                />
+              </Grid>
+              <Grid item xs="auto">
+                <Button
+                  type="button"
+                  onClick={() =>
+                    setValues((current) => ({
+                      ...current,
+                      celebrationTime: currentTimeValue(),
+                    }))
+                  }
+                  sx={{ height: '100%' }}
+                  variant="outlined"
+                >
+                  Ahora
+                </Button>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </FieldGroup>
