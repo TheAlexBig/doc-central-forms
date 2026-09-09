@@ -55,4 +55,15 @@ describe('marriage client rules', () => {
         'La partida debe haberse expedido dentro de los dos meses anteriores al acta.',
     });
   });
+
+  it('requires the DUI mask only for DUI identification', () => {
+    const state = validMarriageState();
+    state.partyOne.documento = 'ABC-123';
+    expect(validateMarriageFields(state)['partyOne.documento']).toBe(
+      'Use el formato DUI 00000000-0.'
+    );
+
+    state.partyOne.identityType = 'Documento consular';
+    expect(validateMarriageFields(state)['partyOne.documento']).toBeUndefined();
+  });
 });
