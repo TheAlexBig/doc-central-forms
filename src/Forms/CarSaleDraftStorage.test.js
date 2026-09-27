@@ -25,6 +25,7 @@ describe('car sale draft storage', () => {
       '2026-08-24T03:00:00Z'
     );
     expect(readCarSaleDraft(storage)).toEqual({
+      schemaVersion: 2,
       state: { carStates: { placa: 'P123' } },
       savedAt: '2026-08-24T03:00:00Z',
     });
@@ -35,6 +36,21 @@ describe('car sale draft storage', () => {
   it('discards malformed saved data', () => {
     const storage = memoryStorage();
     storage.setItem(CAR_SALE_AUTOSAVE_KEY, '{broken');
+    expect(readCarSaleDraft(storage)).toBeNull();
+    expect(storage.values.has(CAR_SALE_AUTOSAVE_KEY)).toBe(false);
+  });
+
+  it('discards drafts from unsupported schema versions', () => {
+    const storage = memoryStorage();
+    storage.setItem(
+      CAR_SALE_AUTOSAVE_KEY,
+      JSON.stringify({
+        schemaVersion: 1,
+        state: { carStates: { placa: 'P123' } },
+        savedAt: '2026-08-24T03:00:00Z',
+      })
+    );
+
     expect(readCarSaleDraft(storage)).toBeNull();
     expect(storage.values.has(CAR_SALE_AUTOSAVE_KEY)).toBe(false);
   });

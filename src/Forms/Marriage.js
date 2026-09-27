@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Alert from '@mui/material/Alert';
 import GetAge from '../Functions/GetAge';
 import AgentSection from './Sections/AgentSection';
@@ -23,6 +23,8 @@ import {
 } from './MarriageState';
 import { marriageErrorsForStep, validateMarriageState } from './MarriageRules';
 import { resolveMarriageRequirements } from '../Api/DocumentsApi';
+import useDraftAutosave from '../Hooks/useDraftAutosave';
+import useDocumentWorkflow from '../Hooks/useDocumentWorkflow';
 
 const steps = [
   'Responsables',
@@ -33,6 +35,20 @@ const steps = [
   'Acta y celebración',
 ];
 const reviewStep = steps.length;
+const hasMarriageDraftData = ({
+  agent,
+  partyOne,
+  partyTwo,
+  witnesses,
+  details,
+}) =>
+  Boolean(
+    agent ||
+    partyOne.documento ||
+    partyTwo.documento ||
+    witnesses.some((witness) => witness.documento) ||
+    details.deedNumber
+  );
 
 export default function Marriage({
   agents,
@@ -44,9 +60,6 @@ export default function Marriage({
     readMarriageDraft(window.localStorage)
   );
   const recovered = recoveredDraft?.state || {};
-  const [activeStep, setActiveStep] = useState(0);
-  const [lastStep, setLastStep] = useState(recoveredDraft ? steps.length : 0);
-  const [returnToReview, setReturnToReview] = useState(false);
   const [exitOpen, setExitOpen] = useState(false);
   const [agent, setAgent] = useState(recovered.agent || '');
   const [preparer, setPreparer] = useState(recovered.preparer || '');
@@ -64,7 +77,7 @@ export default function Marriage({
       : [emptyMarriageWitness(), emptyMarriageWitness()]
   );
   const [recognizedChildren, setRecognizedChildren] = useState(
-    recovered.recognizedChildren || recovered.children || []
+    recovered.recognizedChildren || []
   );
   const [details, setDetails] = useState({
     ...initialMarriageDetails(),
@@ -74,17 +87,25 @@ export default function Marriage({
       ...recovered.details?.interpreter,
     },
   });
-  const [autosave, setAutosave] = useState({
-    savedAt: recoveredDraft?.savedAt || null,
-    recovered: Boolean(recoveredDraft),
-    saving: false,
-  });
   const [generating, setGenerating] = useState(false);
   const [generatingFormat, setGeneratingFormat] = useState('');
   const [message, setMessage] = useState({ type: '', text: '' });
   const [issues, setIssues] = useState([]);
   const [validatedSteps, setValidatedSteps] = useState([]);
-  const skipInitialSave = useRef(Boolean(recoveredDraft));
+  const {
+    activeStep,
+    lastStep,
+    setActiveStep,
+    next,
+    back,
+    selectStep,
+    editStep,
+    resetWorkflow,
+  } = useDocumentWorkflow({
+    reviewStep,
+    initialLastStep: recoveredDraft ? reviewStep : 0,
+    generating,
+  });
   const state = {
     agent,
     preparer,
@@ -94,54 +115,17 @@ export default function Marriage({
     recognizedChildren,
     details,
   };
+  const { autosave, resetAutosave } = useDraftAutosave({
+    state,
+    recoveredDraft,
+    hasData: hasMarriageDraftData,
+    writeDraft: writeMarriageDraft,
+    clearDraft: clearMarriageDraft,
+  });
   const fieldErrors = Object.assign(
     {},
     ...validatedSteps.map((step) => marriageErrorsForStep(state, step))
   );
-
-  useEffect(() => {
-    if (skipInitialSave.current) {
-      skipInitialSave.current = false;
-      return undefined;
-    }
-    const hasData =
-      agent ||
-      partyOne.documento ||
-      partyTwo.documento ||
-      witnesses.some((witness) => witness.documento) ||
-      details.deedNumber;
-    if (!hasData) {
-      clearMarriageDraft(window.localStorage);
-      return undefined;
-    }
-    setAutosave((current) => ({ ...current, saving: true }));
-    const timeout = window.setTimeout(() => {
-      const savedAt = new Date().toISOString();
-      writeMarriageDraft(
-        window.localStorage,
-        {
-          agent,
-          preparer,
-          partyOne,
-          partyTwo,
-          witnesses,
-          recognizedChildren,
-          details,
-        },
-        savedAt
-      );
-      setAutosave({ savedAt, recovered: false, saving: false });
-    }, 750);
-    return () => window.clearTimeout(timeout);
-  }, [
-    agent,
-    preparer,
-    partyOne,
-    partyTwo,
-    witnesses,
-    recognizedChildren,
-    details,
-  ]);
 
   useEffect(() => {
     if (activeStep !== reviewStep) return;
@@ -169,13 +153,6 @@ export default function Marriage({
     details,
   ]);
 
-  const next = () => {
-    const target = returnToReview ? reviewStep : activeStep + 1;
-    setReturnToReview(false);
-    setLastStep((current) => Math.max(current, target));
-    setActiveStep(target);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
   const validateStep = (step) => {
     setValidatedSteps((current) =>
       current.includes(step) ? current : [...current, step]
@@ -191,17 +168,6 @@ export default function Marriage({
     setMessage({ type: '', text: '' });
     return true;
   };
-  const back = () => setActiveStep((current) => Math.max(0, current - 1));
-  const selectStep = (step) => {
-    if (!generating && step <= lastStep) {
-      setActiveStep(step);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-  const editStep = (step) => {
-    setReturnToReview(true);
-    selectStep(step);
-  };
   const discard = () => {
     clearMarriageDraft(window.localStorage);
     setAgent('');
@@ -211,9 +177,8 @@ export default function Marriage({
     setWitnesses([emptyMarriageWitness(), emptyMarriageWitness()]);
     setRecognizedChildren([]);
     setDetails(initialMarriageDetails());
-    setActiveStep(0);
-    setLastStep(0);
-    setAutosave({ savedAt: null, recovered: false, saving: false });
+    resetWorkflow();
+    resetAutosave();
     setValidatedSteps([]);
   };
   const saveCommonPerson = async (values) => {

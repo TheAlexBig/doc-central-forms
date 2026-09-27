@@ -1,9 +1,7 @@
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
-import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
+import { ReviewSection } from './DocumentReviewScaffold';
 
 const name = (person) =>
   [person?.nombre || person?.nombres, person?.apellido || person?.apellidos]
@@ -26,65 +24,6 @@ const date = (value) =>
         new Date(value + 'T00:00:00')
       )
     : 'Pendiente';
-
-const ReviewSection = ({ number, title, summary, rows, onEdit }) => (
-  <Box
-    sx={{
-      border: '1px solid',
-      borderColor: 'divider',
-      borderRadius: 2,
-      mb: 2,
-      overflow: 'hidden',
-    }}
-  >
-    <Stack
-      alignItems="center"
-      direction="row"
-      justifyContent="space-between"
-      sx={{
-        bgcolor: 'action.hover',
-        borderBottom: '1px solid',
-        borderColor: 'divider',
-        px: 2,
-        py: 1.5,
-      }}
-    >
-      <Stack alignItems="center" direction="row" spacing={1.5}>
-        <Box
-          sx={{
-            bgcolor: 'primary.main',
-            borderRadius: 1,
-            color: 'white',
-            fontWeight: 750,
-            px: 1.25,
-            py: 0.5,
-          }}
-        >
-          {number}
-        </Box>
-        <Box>
-          <Typography fontWeight={700}>{title}</Typography>
-          <Typography color="text.secondary" variant="caption">
-            {summary}
-          </Typography>
-        </Box>
-      </Stack>
-      <Button onClick={onEdit} size="small">
-        Editar
-      </Button>
-    </Stack>
-    <Grid container spacing={0} sx={{ p: 2 }}>
-      {rows.map(([label, value]) => (
-        <Grid item xs={12} sm={6} md={4} key={label} sx={{ mb: 1.25 }}>
-          <Typography color="text.secondary" variant="caption">
-            {label}
-          </Typography>
-          <Typography variant="body2">{value || 'Pendiente'}</Typography>
-        </Grid>
-      ))}
-    </Grid>
-  </Box>
-);
 
 export default function MarriageReview({ data, onEdit }) {
   const sections = [

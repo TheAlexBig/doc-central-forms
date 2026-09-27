@@ -26,6 +26,8 @@ export default function DocumentWorkflowFrame({
   setExitOpen,
   onDiscard,
   onSelect,
+  headerActions,
+  notice,
   children,
 }) {
   const reviewStep = steps.length;
@@ -77,18 +79,22 @@ export default function DocumentWorkflowFrame({
                 {title}
               </Typography>
             </Box>
-            <Button
-              color="inherit"
-              variant="outlined"
-              onClick={() => setExitOpen(true)}
-            >
-              Salir
-            </Button>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+              {headerActions}
+              <Button
+                color="inherit"
+                variant="outlined"
+                onClick={() => setExitOpen(true)}
+              >
+                Salir
+              </Button>
+            </Stack>
           </Stack>
           <ReturnDialog
             open={exitOpen}
             handleClose={() => setExitOpen(false)}
           />
+          {notice}
           {autosave.recovered && (
             <Alert
               action={

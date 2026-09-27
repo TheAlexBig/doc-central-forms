@@ -19,18 +19,6 @@ import {
 } from '../Forms/Structure/FormScaffold';
 import { useDocumentTemplates } from '../Hooks/useDocumentTemplates';
 
-const TEMPLATE_ORDER = [
-  'people-document.txt',
-  'car-document.txt',
-  'document.txt',
-  'first-section-end.txt',
-  'people-authentic.txt',
-  'car-authentic.txt',
-  'document-authentic.txt',
-  'second-section-end.txt',
-  'legal-authentic.txt',
-];
-
 const TemplatePreview = ({ content }) => (
   <Box
     sx={{
@@ -124,16 +112,7 @@ const TemplateManager = ({ documentType, documentLabel }) => {
   const [editing, setEditing] = useState(null);
   const [content, setContent] = useState('');
   const editorRef = useRef(null);
-  const ordered = useMemo(
-    () =>
-      [...templates].sort((left, right) =>
-        documentType === 'car-sale'
-          ? TEMPLATE_ORDER.indexOf(left.name) -
-            TEMPLATE_ORDER.indexOf(right.name)
-          : 0
-      ),
-    [templates, documentType]
-  );
+  const ordered = useMemo(() => templates, [templates]);
 
   const visible = ordered
     .map((template, index) => ({ template, index }))
@@ -240,10 +219,7 @@ const TemplateManager = ({ documentType, documentLabel }) => {
       ) : (
         <Stack spacing={1}>
           {visible.map(({ template, index }) => {
-            const authentic =
-              template.section === 'Auténtica' ||
-              template.name.includes('authentic') ||
-              template.name === 'second-section-end.txt';
+            const authentic = template.section === 'Auténtica';
             return (
               <SurfaceRow key={template.name}>
                 <Stack
@@ -277,9 +253,8 @@ const TemplateManager = ({ documentType, documentLabel }) => {
                         {template.label}
                       </Typography>
                       <Typography color="text.secondary" variant="caption">
-                        {template.section ||
-                          (authentic ? 'Auténtica notarial' : 'Contrato')}{' '}
-                        · {template.requiredVariables.length} variables ·{' '}
+                        {template.section} · {template.requiredVariables.length}{' '}
+                        variables ·{' '}
                         {template.usingDefault
                           ? 'Texto original'
                           : 'Personalizada'}

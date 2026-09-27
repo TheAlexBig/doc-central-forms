@@ -24,7 +24,11 @@ describe('marriage draft storage', () => {
       { partyOne: { nombre: 'Ana' } },
       '2026-09-08T12:00:00Z'
     );
-    expect(readMarriageDraft(storage)?.state.partyOne.nombre).toBe('Ana');
+    expect(readMarriageDraft(storage)).toEqual({
+      schemaVersion: 2,
+      state: { partyOne: { nombre: 'Ana' } },
+      savedAt: '2026-09-08T12:00:00Z',
+    });
     clearMarriageDraft(storage);
     expect(storage.values.has(MARRIAGE_AUTOSAVE_KEY)).toBe(false);
   });
