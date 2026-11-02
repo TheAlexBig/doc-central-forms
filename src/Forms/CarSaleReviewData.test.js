@@ -21,11 +21,13 @@ describe('createCarSaleReviewData', () => {
       personStates: {
         nombre: 'Matias',
         apellido: 'Delgado',
+        fecha_nacimiento: '1991-03-09',
         documento: '12321323-2',
       },
       vendorStates: {
         nombre: 'Jose Alexander',
         apellido: 'Garcia Valladares',
+        fecha_nacimiento: '1985-12-21',
         documento: '05404679-9',
       },
       carStates: {
@@ -44,6 +46,8 @@ describe('createCarSaleReviewData', () => {
     });
 
     expect(review.comprador.documento).toBe('12321323-2');
+    expect(review.comprador.fecha_nacimiento).toBe('1991-03-09');
+    expect(review.vendedor.fecha_nacimiento).toBe('1985-12-21');
     expect(review.preparado_por.nombre).toBe('Andrea');
     expect(review.agente_juridico.nombre).toBe('Fiora');
     expect(review.vehiculo.placa).toBe('P-23233');

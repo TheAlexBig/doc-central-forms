@@ -1,6 +1,7 @@
 const personReviewData = (person) => ({
   nombre: person.nombre,
   apellido: person.apellido,
+  fecha_nacimiento: person.fecha_nacimiento,
   documento: person.documento,
   domicilio: person.domicilio,
   municipio: person.municipio,

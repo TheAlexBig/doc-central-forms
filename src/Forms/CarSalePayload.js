@@ -1,6 +1,7 @@
 import {
   replaceNumericSequences,
   toLegalDate,
+  toLegalDecimal,
   toLegalIdentifier,
   toLegalNumber,
   toLegalTime,
@@ -23,15 +24,15 @@ export const createVehiclePayload = (vehicle) => {
     fabricado: toLegalYear(vehicle.fabricado),
     capacidad: heavyTruck
       ? replaceNumericSequences(vehicle.tipo_capacidad)
-      : `${toLegalNumber(vehicle.capacidad)} ${vehicle.unidad_capacidad || 'ASS'}`,
+      : `${toLegalDecimal(vehicle.capacidad)} ${vehicle.unidad_capacidad || 'ASS'}`,
     dominio: replaceNumericSequences(vehicle.dominio),
     clase: replaceNumericSequences(vehicle.clase),
     tipo: replaceNumericSequences(vehicle.tipo),
     ejes: toLegalNumber(vehicle.ejes),
-    tara: toLegalNumber(vehicle.tara),
+    tara: toLegalDecimal(vehicle.tara),
     tipo_capacidad: replaceNumericSequences(vehicle.tipo_capacidad),
-    cap_carga: toLegalNumber(vehicle.cap_carga),
-    cap_maxima: toLegalNumber(vehicle.cap_maxima),
+    cap_carga: toLegalDecimal(vehicle.cap_carga),
+    cap_maxima: toLegalDecimal(vehicle.cap_maxima),
     traccion: replaceNumericSequences(vehicle.traccion),
     num_motor: toLegalIdentifier(vehicle.num_motor),
     num_chasis: toLegalIdentifier(vehicle.num_chasis),

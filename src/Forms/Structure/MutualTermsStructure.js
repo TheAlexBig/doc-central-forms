@@ -15,6 +15,7 @@ import { FieldGroup, FormActions, FormHeading } from './FormScaffold';
 import { calculateMutualPreview } from '../MutualFinancialPreview';
 import MutualPaymentPlanSummary from './MutualPaymentPlanSummary';
 import { currentTimeValue, todayValue } from '../../Functions/DateTimeValues';
+import DateField from './DateField';
 
 const required = 'Campo requerido';
 const schema = Yup.object({
@@ -208,12 +209,10 @@ export default function MutualTermsStructure({ data, onSubmit, onBack }) {
                   </>
                 ) : (
                   <Grid item xs={12} sm={6}>
-                    <TextField
+                    <DateField
                       {...field('dueDate', values, touched, errors)}
-                      InputLabelProps={{ shrink: true }}
                       inputProps={{ min: values.signingDate }}
                       label="Fecha de vencimiento"
-                      type="date"
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
@@ -402,11 +401,9 @@ export default function MutualTermsStructure({ data, onSubmit, onBack }) {
                 </Alert>
               )}
               {values.billOfExchangeGuarantee && (
-                <TextField
+                <DateField
                   {...field('guaranteeDueDate', values, touched, errors)}
-                  InputLabelProps={{ shrink: true }}
                   label="Vencimiento de la letra"
-                  type="date"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   sx={{ mt: 2, maxWidth: 420 }}
@@ -482,13 +479,11 @@ export default function MutualTermsStructure({ data, onSubmit, onBack }) {
                 <Grid item xs={12} sm={6}>
                   <Grid container spacing={1}>
                     <Grid item xs>
-                      <TextField
+                      <DateField
                         {...field('signingDate', values, touched, errors)}
-                        InputLabelProps={{ shrink: true }}
                         label="Fecha de firma"
                         onBlur={handleBlur}
                         onChange={handleChange}
-                        type="date"
                       />
                     </Grid>
                     <Grid item xs="auto">

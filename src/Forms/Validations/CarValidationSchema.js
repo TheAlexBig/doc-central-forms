@@ -55,7 +55,13 @@ export const CarValidationSchema = {
   clase: Yup.string()
     .required('Campo requerido')
     .oneOf(
-      ['Automóvil', 'Camión liviano', 'Camión pesado', 'Motocicleta'],
+      [
+        'Automóvil',
+        'Camión liviano',
+        'Camión pesado',
+        'Motocicleta',
+        'Pick up',
+      ],
       'Seleccione una clase admitida'
     ),
   tipo: Yup.string()

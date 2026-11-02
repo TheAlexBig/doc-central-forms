@@ -20,6 +20,7 @@ import {
   SurfaceRow,
 } from '../Forms/Structure/FormScaffold';
 import AgentStructure from '../Forms/Structure/AgentStructure';
+import DateField from '../Forms/Structure/DateField';
 
 const SettingsCard = ({ children, sx = {} }) => (
   <Box
@@ -192,16 +193,30 @@ const PeopleManager = ({ people, onRemove, onUpdate }) => {
                   sm={field === 'domicilio' ? 12 : 6}
                   key={field}
                 >
-                  <TextField
-                    fullWidth
-                    label={label}
-                    onChange={(event) =>
-                      setValues({ ...values, [field]: event.target.value })
-                    }
-                    required
-                    size="small"
-                    value={values[field] || ''}
-                  />
+                  {field === 'fecha_nacimiento' ? (
+                    <DateField
+                      fullWidth
+                      label={label}
+                      name={field}
+                      onChange={(event) =>
+                        setValues({ ...values, [field]: event.target.value })
+                      }
+                      required
+                      size="small"
+                      value={values[field] || ''}
+                    />
+                  ) : (
+                    <TextField
+                      fullWidth
+                      label={label}
+                      onChange={(event) =>
+                        setValues({ ...values, [field]: event.target.value })
+                      }
+                      required
+                      size="small"
+                      value={values[field] || ''}
+                    />
+                  )}
                 </Grid>
               ))}
           </Grid>

@@ -102,6 +102,22 @@ describe('createCarSalePayload', () => {
     expect(payload.vehiculo.capacidad).toBe('DOS TON');
   });
 
+  it('renders decimal vehicle capacity as a measurement', () => {
+    const payload = createCarSalePayload({
+      vendorStates: {},
+      personStates: {},
+      carStates: {
+        capacidad: '1.50',
+        unidad_capacidad: 'TON',
+      },
+      detailStates: {},
+      agentStates: {},
+    });
+
+    expect(payload.vehiculo.capacidad).toBe('UNO PUNTO CINCUENTA TON');
+    expect(payload.vehiculo.capacidad).not.toContain('CENTAVOS');
+  });
+
   it('includes the exclusive heavy truck specifications', () => {
     const payload = createCarSalePayload({
       vendorStates: {},

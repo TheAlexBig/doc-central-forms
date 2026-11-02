@@ -13,6 +13,7 @@ import { currentTimeValue, todayValue } from '../../Functions/DateTimeValues';
 import { emptyMarriageWitness } from '../MarriageState';
 import { formatDui } from '../PersonMemory';
 import { FieldGroup, FormActions, FormHeading } from './FormScaffold';
+import DateField from './DateField';
 
 const actions = (back) => [
   { type: 'button', text: 'Atrás', variant: 'outlined', action: back },
@@ -122,12 +123,11 @@ const PersonFields = ({
         </Grid>
       ))}
       <Grid item xs={12} sm={4}>
-        <TextField
+        <DateField
           fullWidth
           required
-          type="date"
           label="Fecha de nacimiento"
-          InputLabelProps={{ shrink: true }}
+          name="fecha_nacimiento"
           value={values.fecha_nacimiento}
           onChange={(event) =>
             setValues((current) => ({
@@ -468,13 +468,12 @@ export function MarriagePartyStructure({
             </Grid>
           ))}
           <Grid item xs={12} sm={6}>
-            <TextField
+            <DateField
               fullWidth
               required
-              type="date"
               label="Fecha de expedición"
               inputProps={{ max: premaritalDate }}
-              InputLabelProps={{ shrink: true }}
+              name="birthCertificateIssueDate"
               value={values.birthCertificateIssueDate}
               onChange={update(setValues, 'birthCertificateIssueDate')}
               {...errorProps(
@@ -993,12 +992,11 @@ export function MarriageCelebrationStructure({
           <Grid item xs={12} sm={6}>
             <Grid container spacing={1}>
               <Grid item xs>
-                <TextField
+                <DateField
                   fullWidth
                   required
-                  type="date"
                   label="Fecha del acta"
-                  InputLabelProps={{ shrink: true }}
+                  name="premaritalDate"
                   value={values.premaritalDate}
                   onChange={update(setValues, 'premaritalDate')}
                   {...errorProps(errors, 'details.premaritalDate')}
@@ -1078,13 +1076,12 @@ export function MarriageCelebrationStructure({
           <Grid item xs={12} sm={4}>
             <Grid container spacing={1}>
               <Grid item xs>
-                <TextField
+                <DateField
                   fullWidth
                   required
-                  type="date"
                   label="Fecha de celebración"
-                  InputLabelProps={{ shrink: true }}
                   inputProps={{ min: values.premaritalDate }}
+                  name="celebrationDate"
                   value={values.celebrationDate}
                   onChange={update(setValues, 'celebrationDate')}
                   {...errorProps(errors, 'details.celebrationDate')}

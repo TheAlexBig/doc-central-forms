@@ -34,7 +34,7 @@ describe('mutual financial preview', () => {
   });
 
   it('formats user-facing values in Spanish', () => {
-    expect(formatMutualDate('2027-09-04')).toBe('4 de septiembre de 2027');
+    expect(formatMutualDate('2027-09-04')).toBe('04/09/2027');
     expect(formatMutualMoney(1234)).toContain('1,234.00');
     expect(
       calculateMutualPreview(

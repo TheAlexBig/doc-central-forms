@@ -20,7 +20,6 @@ export default function CarSaleReviewPanel({
     <DocumentReviewPanel
       {...panelProps}
       message={message}
-      createAnotherHref="/compra-venta"
       storageMessage="Al descargar, Central Docs guardará este documento en el historial."
     >
       <CarSaleReview data={documentData} onEdit={onEdit} />

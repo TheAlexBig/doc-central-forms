@@ -3,6 +3,7 @@ import MutualPaymentPlanSummary from '../Forms/Structure/MutualPaymentPlanSummar
 import { ReviewSection, ReviewSummary } from './DocumentReviewScaffold';
 import {
   calculateMutualPreview,
+  formatMutualDate,
   formatMutualMoney,
 } from '../Forms/MutualFinancialPreview';
 
@@ -17,6 +18,7 @@ const place = (values = {}) =>
     .join(', ') || emptyValue;
 const partyValues = (person) => [
   ['Nombre', fullName(person)],
+  ['Fecha de nacimiento', formatMutualDate(person.fecha_nacimiento)],
   ['DUI', person.documento],
   ['Domicilio', place(person), true],
   ['Oficio', person.oficio],
@@ -87,7 +89,7 @@ export default function MutualReview({ data, onEdit }) {
       values: [
         ['Monto mutuado', data.terms.amount && `$${data.terms.amount}`],
         ['Plazo', data.terms.term],
-        ['Fecha de vencimiento', data.terms.dueDate],
+        ['Fecha de vencimiento', formatMutualDate(data.terms.dueDate)],
         ['Número de cuotas', data.terms.installmentCount],
         [
           'Monto por cuota',
@@ -117,7 +119,12 @@ export default function MutualReview({ data, onEdit }) {
           data.terms.billOfExchangeGuarantee ? 'Sí' : 'No',
         ],
         ...(data.terms.billOfExchangeGuarantee
-          ? [['Vencimiento de la garantía', data.terms.guaranteeDueDate]]
+          ? [
+              [
+                'Vencimiento de la garantía',
+                formatMutualDate(data.terms.guaranteeDueDate),
+              ],
+            ]
           : []),
         [
           'Gastos administrativos',
@@ -125,7 +132,10 @@ export default function MutualReview({ data, onEdit }) {
             `${data.terms.administrativeExpenses}%`,
         ],
         ['Lugar de firma', signingPlace, true],
-        ['Fecha y hora', `${data.terms.signingDate} ${data.terms.signingTime}`],
+        [
+          'Fecha y hora',
+          `${formatMutualDate(data.terms.signingDate)} ${data.terms.signingTime}`,
+        ],
         ['Conoce al deudor', data.terms.identifiesDebtor],
         ['Conoce al acreedor', data.terms.identifiesCreditor],
       ],
@@ -179,7 +189,7 @@ export default function MutualReview({ data, onEdit }) {
         title={`${fullName(data.creditor)} presta a ${fullName(data.debtor)}`}
         chips={[
           `Monto: $${data.terms.amount || emptyValue}`,
-          `Vencimiento: ${data.terms.dueDate || emptyValue}`,
+          `Vencimiento: ${formatMutualDate(data.terms.dueDate) || emptyValue}`,
         ]}
       />
       {sections.map((section, index) => (

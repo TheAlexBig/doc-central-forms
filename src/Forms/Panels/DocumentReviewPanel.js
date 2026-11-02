@@ -24,8 +24,8 @@ export default function DocumentReviewPanel({
   generatingFormat,
   message,
   onBack,
+  onCreateAnother,
   onGenerate,
-  createAnotherHref,
   children,
 }) {
   const [selected, setSelected] = useState(formats[0]);
@@ -101,8 +101,8 @@ export default function DocumentReviewPanel({
               ▾
             </Button>
           </ButtonGroup>
-          {message?.type === 'success' && createAnotherHref && (
-            <Button href={createAnotherHref} variant="outlined">
+          {message?.type === 'success' && onCreateAnother && (
+            <Button onClick={onCreateAnother} variant="outlined">
               Crear otro
             </Button>
           )}

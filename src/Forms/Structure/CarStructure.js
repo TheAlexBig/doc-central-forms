@@ -66,13 +66,13 @@ const getModelOptions = (brand, options) => {
 const vehicleClassOptions = [
   'Automóvil',
   'Motocicleta',
+  'Pick up',
   'Camión liviano',
   'Camión pesado',
 ];
 const vehicleTypeOptions = [
   'Sedán',
   'Hatchback',
-  'Pick-up',
   'Microbús',
   'Panel',
   'Furgón',
@@ -86,7 +86,10 @@ const motorcycleTypeOptions = [
 ];
 
 const capacityUnitForClass = (vehicleClass) =>
-  vehicleClass.toLocaleLowerCase().startsWith('camión') ? 'TON' : 'ASS';
+  vehicleClass.toLocaleLowerCase().startsWith('camión') ||
+  vehicleClass.toLocaleLowerCase() === 'pick up'
+    ? 'TON'
+    : 'ASS';
 
 const isHeavyTruck = (vehicleClass) =>
   vehicleClass?.toLocaleLowerCase() === 'camión pesado';

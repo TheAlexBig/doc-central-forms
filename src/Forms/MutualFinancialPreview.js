@@ -1,3 +1,5 @@
+import { formatDate } from '../Functions/DateFormat';
+
 const parseDate = (value) => {
   const [year, month, day] = String(value || '')
     .split('-')
@@ -20,15 +22,7 @@ export const formatMutualMoney = (value) =>
   }).format(Number(value));
 
 export const formatMutualDate = (value) => {
-  const date = parseDate(value);
-  return date
-    ? new Intl.DateTimeFormat('es-SV', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-        timeZone: 'UTC',
-      }).format(date)
-    : '';
+  return parseDate(value) ? formatDate(value) : '';
 };
 const addMonths = (date, months) => {
   const day = date.getUTCDate();

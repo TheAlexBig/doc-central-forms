@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box';
+import { formatDate } from '../Functions/DateFormat';
 import { ReviewSection, ReviewSummary } from './DocumentReviewScaffold';
 
 const emptyValue = 'Pendiente';
@@ -13,6 +14,7 @@ const place = (values = {}) =>
 
 const personValues = (person) => [
   ['Nombre', fullName(person)],
+  ['Fecha de nacimiento', formatDate(person.fecha_nacimiento, emptyValue)],
   ['DUI', person.documento],
   ['Domicilio', place(person)],
   ['Oficio', person.oficio],
@@ -89,7 +91,10 @@ const CarSaleReview = ({ data, onEdit }) => {
       step: 4,
       values: [
         ['Precio en el documento', `${data.documento.precio} DÓLARES`],
-        ['Firma', `${data.documento.fecha_firma} ${data.documento.hora_firma}`],
+        [
+          'Firma',
+          `${formatDate(data.documento.fecha_firma, emptyValue)} ${data.documento.hora_firma}`,
+        ],
         ['Lugar', place(data.documento), true],
         ['Conoce al vendedor', data.documento.identifica_vendedor],
         ['Conoce al comprador', data.documento.identifica_comprador],
@@ -103,7 +108,7 @@ const CarSaleReview = ({ data, onEdit }) => {
         title={`${data.vehiculo.placa || emptyValue} / ${fullName(data.vendedor)} a ${fullName(data.comprador)}`}
         chips={[
           `Precio: ${data.documento.precio || emptyValue}`,
-          `Firma: ${data.documento.fecha_firma || emptyValue}`,
+          `Firma: ${formatDate(data.documento.fecha_firma, emptyValue)}`,
         ]}
       />
       {sections.map((section, index) => (

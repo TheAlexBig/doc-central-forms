@@ -154,6 +154,34 @@ export const toLegalNumber = (value) => {
   return `${integerWords} CON ${integerToWords(BigInt(cents))} CENTAVOS`;
 };
 
+export const toLegalDecimal = (value) => {
+  let number = String(value ?? '')
+    .trim()
+    .replace(/\s/g, '');
+  if (number.includes(',') && number.includes('.')) {
+    number =
+      number.lastIndexOf('.') > number.lastIndexOf(',')
+        ? number.replace(/,/g, '')
+        : number.replace(/\./g, '').replace(',', '.');
+  } else if (/^\d{1,3}(,\d{3})+$/.test(number)) {
+    number = number.replace(/,/g, '');
+  } else {
+    number = number.replace(',', '.');
+  }
+  if (!number) {
+    return '';
+  }
+  if (!/^\d+(\.\d+)?$/.test(number)) {
+    return replaceNumericSequences(number);
+  }
+  const [integer, fraction = ''] = number.split('.');
+  const integerWords = integerToWords(BigInt(integer));
+  if (!fraction || /^0+$/.test(fraction)) {
+    return integerWords;
+  }
+  return `${integerWords} PUNTO ${integerToWords(BigInt(fraction))}`;
+};
+
 export const toLegalPercentage = (value) => {
   const number = String(value ?? '')
     .trim()

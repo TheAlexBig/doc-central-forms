@@ -72,6 +72,12 @@ export default function CarSale({
       setGeneratingFormat('');
     }
   };
+  const createAnother = () => {
+    discardAutosavedDraft();
+    setGenerationError('');
+    setGenerated(false);
+    workflow.resetWorkflow();
+  };
 
   return (
     <DocumentWorkflowFrame
@@ -117,6 +123,7 @@ export default function CarSale({
           generationError={generationError}
           generated={generated}
           onBack={back}
+          onCreateAnother={createAnother}
           onEdit={edit}
           onGenerate={generate}
         />

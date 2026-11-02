@@ -14,6 +14,8 @@ import { DataTerritorialDivision } from '../../Data/DataTerritorialDivision';
 import { DetailValidationSchema } from '../Validations/DetailValidationSchema';
 import { FieldGroup, FormActions, FormHeading } from './FormScaffold';
 import { currentTimeValue, todayValue } from '../../Functions/DateTimeValues';
+import { formatDate } from '../../Functions/DateFormat';
+import DateField from './DateField';
 
 const fieldProps = (name, values, touched, errors) => ({
   error: Boolean(touched[name] && errors[name]),
@@ -45,7 +47,7 @@ const detailSummary = (values) => [
     label: 'Precio',
     value: values.precio && `$${formatCurrency(values.precio)}`,
   },
-  { label: 'Firma', value: values.fecha_firma },
+  { label: 'Firma', value: formatDate(values.fecha_firma) },
   { label: 'Lugar', value: values.domicilio || values.municipio },
 ];
 
@@ -176,13 +178,11 @@ const DetailStructure = ({ data, title, buttons, submitAction }) => (
             <Grid item xs={12} sm={6}>
               <Grid container spacing={1}>
                 <Grid item xs>
-                  <TextField
+                  <DateField
                     {...fieldProps('fecha_firma', values, touched, errors)}
-                    InputLabelProps={{ shrink: true }}
                     label="Fecha de firma"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    type="date"
                   />
                 </Grid>
                 <Grid item xs="auto">

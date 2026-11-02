@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
+import { formatDate } from '../Functions/DateFormat';
 import { ReviewSection } from './DocumentReviewScaffold';
 
 const name = (person) =>
@@ -18,12 +19,7 @@ const status = {
   WIDOWED: 'Viudo',
   MARRIED: 'Casado',
 };
-const date = (value) =>
-  value
-    ? new Intl.DateTimeFormat('es-SV', { dateStyle: 'long' }).format(
-        new Date(value + 'T00:00:00')
-      )
-    : 'Pendiente';
+const date = (value) => formatDate(value, 'Pendiente');
 
 export default function MarriageReview({ data, onEdit }) {
   const sections = [

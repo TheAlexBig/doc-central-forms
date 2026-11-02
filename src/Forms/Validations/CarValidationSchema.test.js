@@ -9,14 +9,17 @@ const tractionSchema = Yup.object().shape({
 });
 
 describe('vehicle class validation', () => {
-  it.each(['Automóvil', 'Camión liviano', 'Camión pesado', 'Motocicleta'])(
-    'accepts the supported class %s',
-    async (vehicleClass) => {
-      await expect(
-        classSchema.validate({ clase: vehicleClass })
-      ).resolves.toEqual({ clase: vehicleClass });
-    }
-  );
+  it.each([
+    'Automóvil',
+    'Camión liviano',
+    'Camión pesado',
+    'Motocicleta',
+    'Pick up',
+  ])('accepts the supported class %s', async (vehicleClass) => {
+    await expect(
+      classSchema.validate({ clase: vehicleClass })
+    ).resolves.toEqual({ clase: vehicleClass });
+  });
 
   it('rejects a class that is not available in the selector', async () => {
     await expect(classSchema.validate({ clase: 'Autobús' })).rejects.toThrow(

@@ -12,6 +12,7 @@ import { DataTerritorialDivision } from '../../Data/DataTerritorialDivision';
 import { formatDui, normalizeDui } from '../PersonMemory';
 import { PersonValidationSchema } from '../Validations/PersonValidationSchema';
 import { FieldGroup, FormActions, FormHeading } from './FormScaffold';
+import DateField from './DateField';
 
 const fieldProps = (name, values, touched, errors) => ({
   error: Boolean(touched[name] && errors[name]),
@@ -97,9 +98,7 @@ const PersonStructure = ({
             accent="#17695d"
           >
             <Autocomplete
-              options={people.filter(
-                (person) => !isExcludedDui(excludedDui, person.documento)
-              )}
+              options={people}
               getOptionLabel={personLabel}
               isOptionEqualToValue={(option, value) =>
                 normalizeDui(option.documento) === normalizeDui(value.documento)
@@ -160,13 +159,11 @@ const PersonStructure = ({
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
+              <DateField
                 {...fieldProps('fecha_nacimiento', values, touched, errors)}
-                InputLabelProps={{ shrink: true }}
                 label="Fecha de nacimiento"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                type="date"
               />
             </Grid>
             <Grid item xs={12} sm={6}>

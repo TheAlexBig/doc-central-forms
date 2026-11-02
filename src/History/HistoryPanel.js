@@ -17,16 +17,12 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import { EmptyState, SectionHeader } from '../Forms/Structure/FormScaffold';
+import { formatDateTime } from '../Functions/DateFormat';
+import DateField from '../Forms/Structure/DateField';
 import {
   DOCUMENT_TYPE_OPTIONS,
   presentDocumentHistory,
 } from './DocumentHistoryPresentation';
-
-const formatDateTime = (value) =>
-  new Intl.DateTimeFormat('es-SV', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(new Date(value));
 
 const localDateKey = (value) => {
   const date = new Date(value);
@@ -110,24 +106,22 @@ const HistoryPanel = ({ historyProps, onLoad }) => {
           </TextField>
         </Grid>
         <Grid item xs={6} sm={4} md={2}>
-          <TextField
+          <DateField
             fullWidth
-            InputLabelProps={{ shrink: true }}
             label="Desde"
+            name="fromDate"
             onChange={updateFilter(setFromDate)}
             size="small"
-            type="date"
             value={fromDate}
           />
         </Grid>
         <Grid item xs={6} sm={4} md={2}>
-          <TextField
+          <DateField
             fullWidth
-            InputLabelProps={{ shrink: true }}
             label="Hasta"
+            name="toDate"
             onChange={updateFilter(setToDate)}
             size="small"
-            type="date"
             value={toDate}
           />
         </Grid>
